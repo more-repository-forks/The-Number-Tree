@@ -13,16 +13,19 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1",
+	num: "0.2",
 	name: "Beta Test",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
 	<br><h3>v0.1 - Beta Test</h3><br>
+		- Added crafters.<br>
+		- Added crafting wood planks.<br>
+	<br><h3>v0.1 - Beta Test</h3><br>
 		- Added basic skills.<br>
 		- Added the basic area.<br>
 		- Added wood spawns.<br>
-		- Added an upgrade.`
+		- Added five upgrades.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 

@@ -122,58 +122,62 @@ addLayer("b", {
         rows: 7,
         cols: 7,
         getStartData(id) {
-            if (id == 101) return 0
-            else if (id == 102 || id == 201) return 2
-            else if (id == 505) return 101
-            else return 1
+            if (id == 101) return 0;
+            else if (id == 102 || id == 201) return 2;
+            else if (id == 505) return 101;
+            else return 1;
         },
         getUnlocked(id) {return true},
         getCanClick(data, id) {
-            if (data == 0 || data == 2 || data > 1100 && data < 1200) return true
-            else return false
+            if (data == 0 || data == 2 || data > 1100 && data < 1200) return true;
+            else return false;
         },
         onClick(data, id) {
+            let woodMult = 1;
+            if (player.c.points > 0 && player.c.woodPlank > 0) woodMult = player.c.woodPlank * (tmp.c.effect ** 0.1 - 1);
+            if (woodMult > 100) woodMult = 100;
             //transition to immovable tile
-            if (getGridData('b', id - 2) == 0 || getGridData('b', id - 2) == 2) setGridData('b', id - 2, 1)
-            if (getGridData('b', id + 2) == 0 || getGridData('b', id + 2) == 2) setGridData('b', id + 2, 1)
-            if (getGridData('b', id - 99) == 0 || getGridData('b', id - 99) == 2) setGridData('b', id - 99, 1)
-            if (getGridData('b', id + 99) == 0 || getGridData('b', id + 99) == 2) setGridData('b', id + 99, 1)
-            if (getGridData('b', id - 101) == 0 || getGridData('b', id - 101) == 2) setGridData('b', id - 101, 1)
-            if (getGridData('b', id + 101) == 0 || getGridData('b', id + 101) == 2) setGridData('b', id + 101, 1)
-            if (getGridData('b', id - 200) == 0 || getGridData('b', id - 200) == 2) setGridData('b', id - 200, 1)
-            if (getGridData('b', id + 200) == 0 || getGridData('b', id + 200) == 2) setGridData('b', id + 200, 1)
+            if (getGridData('b', id - 2) == 0 || getGridData('b', id - 2) == 2) setGridData('b', id - 2, 1);
+            if (getGridData('b', id + 2) == 0 || getGridData('b', id + 2) == 2) setGridData('b', id + 2, 1);
+            if (getGridData('b', id - 99) == 0 || getGridData('b', id - 99) == 2) setGridData('b', id - 99, 1);
+            if (getGridData('b', id + 99) == 0 || getGridData('b', id + 99) == 2) setGridData('b', id + 99, 1);
+            if (getGridData('b', id - 101) == 0 || getGridData('b', id - 101) == 2) setGridData('b', id - 101, 1);
+            if (getGridData('b', id + 101) == 0 || getGridData('b', id + 101) == 2) setGridData('b', id + 101, 1);
+            if (getGridData('b', id - 200) == 0 || getGridData('b', id - 200) == 2) setGridData('b', id - 200, 1);
+            if (getGridData('b', id + 200) == 0 || getGridData('b', id + 200) == 2) setGridData('b', id + 200, 1);
             //transition to uncollectable wood
-            if (getGridData('b', id - 2) > 1100 && getGridData('b', id - 2) < 1200) setGridData('b', id - 2, getGridData('b', id - 2) - 1000)
-            if (getGridData('b', id + 2) > 1100 && getGridData('b', id + 2) < 1200) setGridData('b', id + 2, getGridData('b', id + 2) - 1000)
-            if (getGridData('b', id - 99) > 1100 && getGridData('b', id - 99) < 1200) setGridData('b', id - 99, getGridData('b', id - 99) - 1000)
-            if (getGridData('b', id + 99) > 1100 && getGridData('b', id + 99) < 1200) setGridData('b', id + 99, getGridData('b', id + 99) - 1000)
-            if (getGridData('b', id - 101) > 1100 && getGridData('b', id - 101) < 1200) setGridData('b', id - 101, getGridData('b', id - 101) - 1000)
-            if (getGridData('b', id + 101) > 1100 && getGridData('b', id + 101) < 1200) setGridData('b', id + 101, getGridData('b', id + 101) - 1000)
-            if (getGridData('b', id - 200) > 1100 && getGridData('b', id - 200) < 1200) setGridData('b', id - 200, getGridData('b', id - 200) - 1000)
-            if (getGridData('b', id + 200) > 1100 && getGridData('b', id + 200) < 1200) setGridData('b', id + 200, getGridData('b', id + 200) - 1000)
+            if (getGridData('b', id - 2) > 1100 && getGridData('b', id - 2) < 1200) setGridData('b', id - 2, getGridData('b', id - 2) - 1000);
+            if (getGridData('b', id + 2) > 1100 && getGridData('b', id + 2) < 1200) setGridData('b', id + 2, getGridData('b', id + 2) - 1000);
+            if (getGridData('b', id - 99) > 1100 && getGridData('b', id - 99) < 1200) setGridData('b', id - 99, getGridData('b', id - 99) - 1000);
+            if (getGridData('b', id + 99) > 1100 && getGridData('b', id + 99) < 1200) setGridData('b', id + 99, getGridData('b', id + 99) - 1000);
+            if (getGridData('b', id - 101) > 1100 && getGridData('b', id - 101) < 1200) setGridData('b', id - 101, getGridData('b', id - 101) - 1000);
+            if (getGridData('b', id + 101) > 1100 && getGridData('b', id + 101) < 1200) setGridData('b', id + 101, getGridData('b', id + 101) - 1000);
+            if (getGridData('b', id - 200) > 1100 && getGridData('b', id - 200) < 1200) setGridData('b', id - 200, getGridData('b', id - 200) - 1000);
+            if (getGridData('b', id + 200) > 1100 && getGridData('b', id + 200) < 1200) setGridData('b', id + 200, getGridData('b', id + 200) - 1000);
             //transition to moveable tile
-            if (getGridData('b', id - 1) == 0 || getGridData('b', id - 1) == 1) setGridData('b', id - 1, 2)
-            if (getGridData('b', id + 1) == 0 || getGridData('b', id + 1) == 1) setGridData('b', id + 1, 2)
-            if (getGridData('b', id - 100) == 0 || getGridData('b', id - 100) == 1) setGridData('b', id - 100, 2)
-            if (getGridData('b', id + 100) == 0 || getGridData('b', id + 100) == 1) setGridData('b', id + 100, 2)
+            if (getGridData('b', id - 1) == 0 || getGridData('b', id - 1) == 1) setGridData('b', id - 1, 2);
+            if (getGridData('b', id + 1) == 0 || getGridData('b', id + 1) == 1) setGridData('b', id + 1, 2);
+            if (getGridData('b', id - 100) == 0 || getGridData('b', id - 100) == 1) setGridData('b', id - 100, 2);
+            if (getGridData('b', id + 100) == 0 || getGridData('b', id + 100) == 1) setGridData('b', id + 100, 2);
             //transition to collectable wood
-            if (getGridData('b', id - 1) > 100 && getGridData('b', id - 1) < 200) setGridData('b', id - 1, 1000 + getGridData('b', id - 1))
-            if (getGridData('b', id + 1) > 100 && getGridData('b', id + 1) < 200) setGridData('b', id + 1, 1000 + getGridData('b', id + 1))
-            if (getGridData('b', id - 100) > 100 && getGridData('b', id - 100) < 200) setGridData('b', id - 100, 1000 + getGridData('b', id - 100))
-            if (getGridData('b', id + 100) > 100 && getGridData('b', id + 100) < 200) setGridData('b', id + 100, 1000 + getGridData('b', id + 100))
+            if (getGridData('b', id - 1) > 100 && getGridData('b', id - 1) < 200) setGridData('b', id - 1, 1000 + getGridData('b', id - 1));
+            if (getGridData('b', id + 1) > 100 && getGridData('b', id + 1) < 200) setGridData('b', id + 1, 1000 + getGridData('b', id + 1));
+            if (getGridData('b', id - 100) > 100 && getGridData('b', id - 100) < 200) setGridData('b', id - 100, 1000 + getGridData('b', id - 100));
+            if (getGridData('b', id + 100) > 100 && getGridData('b', id + 100) < 200) setGridData('b', id + 100, 1000 + getGridData('b', id + 100));
             //other
-            if (getGridData('b', id) > 1100 && getGridData('b', id) < 1200) player.b.wood = player.b.wood + ((getGridData('b', id) - 1100) * tmp.b.effect), player.b.woodTotal = player.b.woodTotal + ((getGridData('b', id) - 1100) * tmp.b.effect)
-            if (getGridData('b', id) > 1100 && getGridData('b', id) < 1200 && hasUpgrade('b', 15) && getRandomInt(0, 100) < 15) player.b.wood = player.b.wood + ((getGridData('b', id) - 1100) * tmp.b.effect), player.b.woodTotal = player.b.woodTotal + ((getGridData('b', id) - 1100) * tmp.b.effect)
-            setGridData('b', id, 0)
+            if (data > 1100 && data < 1200) player.b.wood = player.b.wood + ((data - 1100) * tmp.b.effect), player.b.woodTotal = player.b.woodTotal + (((data - 1100) * tmp.b.effect) * woodMult);
+            if (data > 1100 && data < 1200 && hasUpgrade('b', 15) && getRandomInt(0, 100) < 15) player.b.wood = player.b.wood + ((data - 1100) * tmp.b.effect), player.b.woodTotal = player.b.woodTotal + (((data - 1100) * tmp.b.effect) * woodMult);
+            setGridData('b', id, 0);
         },
         getDisplay(data, id) {
-            let DebugMode_LayerB = false
-            if (DebugMode_LayerB == true) return data
-            else
-                if (data == 0) return "you are here"
-                if (data == 1 || data == 2) return "empty tile"
-                if (data > 100 && data < 200) return "contains:\n" + (data - 100) + " wood"
-                if (data > 1100 && data < 1200) return "contains:\n" + (data - 1100) + " wood"
+            let DebugMode_LayerB = false;
+            if (DebugMode_LayerB == true) return data;
+            else {
+                if (data == 0) return "you are here";
+                if (data == 1 || data == 2) return "empty tile";
+                if (data > 100 && data < 200) return "contains:\n" + (data - 100) + " wood";
+                if (data > 1100 && data < 1200) return "contains:\n" + (data - 1100) + " wood";
+            }
         },
     },
 });
@@ -208,13 +212,21 @@ addLayer("c", {
         {key: "c", description: "C: Reset for crafters", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     effect() {return new Decimal((player['c'].points + 1) ** 0.45)},
-    effectDescription() {return "which multiplies your experience gain by " + format(tmp.c.effect)},
+    effectDescription() {return "which multiplies your experience gain by " + format(tmp.c.effect) + "x"},
     layerShown(){return true},
     update() {
-        if (player.c.woodPlankCraftProgress < 1 && getClickableState('c', 12) == "ON") player.c.woodPlankCraftProgress = player.c.woodPlankCraftProgress + 0.0002
-        else if (player.c.woodPlankCraftProgress < 1 && getClickableState('c', 11) == "ON") player.c.woodPlankCraftProgress = player.c.woodPlankCraftProgress + 0.002
-        else if (player.c.woodPlankCraftProgress >= 1 && getClickableState('c', 12) == "ON") player.c.woodPlank = player.c.woodPlank + 10, setClickableState('c', 12, "OFF"), player.c.woodPlankCraftProgress = 0
-        else if (player.c.woodPlankCraftProgress >= 1 && getClickableState('c', 11) == "ON") player.c.woodPlank = player.c.woodPlank + 1, setClickableState('c', 11, "OFF"), player.c.woodPlankCraftProgress = 0
+        if (player.c.woodPlankCraftProgress < 1 && getClickableState('c', 12) == "ON") player.c.woodPlankCraftProgress = player.c.woodPlankCraftProgress + 0.0002;
+        else if (player.c.woodPlankCraftProgress < 1 && getClickableState('c', 11) == "ON") player.c.woodPlankCraftProgress = player.c.woodPlankCraftProgress + 0.002;
+        else if (player.c.woodPlankCraftProgress >= 1 && getClickableState('c', 12) == "ON") {
+            player.c.woodPlank = player.c.woodPlank + 10;
+            setClickableState('c', 12, "OFF");
+            player.c.woodPlankCraftProgress = 0;
+        }
+        else if (player.c.woodPlankCraftProgress >= 1 && getClickableState('c', 11) == "ON") {
+            player.c.woodPlank = player.c.woodPlank + 1;
+            setClickableState('c', 11, "OFF");
+            player.c.woodPlankCraftProgress = 0;
+        }
     },
     tabFormat: [
         "main-display",
@@ -223,8 +235,9 @@ addLayer("c", {
         ["display-text",
             function() { return 'You have ' + format(player['b'].points) + ' basic skill' },
             {}],
+        "blank",
         ["display-text",
-            function() { return 'You have ' + formatWhole(player.c.woodPlank) + ' wood planks' },
+            function() { return 'You have ' + formatWhole(player.c.woodPlank) + ' wood planks, which each make the crafter effect apply to wood gain at a reduced rate (' + format(tmp.c.effect ** 0.1) + "x), which totals to: " + format(player.c.woodPlank * (tmp.c.effect ** 0.1 - 1)) + 'x (capped at 100x)'},
             {}],
         "blank",
         "clickables",
@@ -272,8 +285,8 @@ addLayer("c", {
             height: 20,
             progress() { return player.c.woodPlankCraftProgress },
             display() {
-                if (getClickableState('c', 12) == "ON") return "time left: " + format(Math.abs(player.c.woodPlankCraftProgress - 1) * 10)
-                else if (getClickableState('c', 11) == "ON") return "time left: " + format(Math.abs(player.c.woodPlankCraftProgress - 1))
+                if (getClickableState('c', 12) == "ON") return "time left: " + format(Math.abs(player.c.woodPlankCraftProgress - 1) * 100)
+                else if (getClickableState('c', 11) == "ON") return "time left: " + format(Math.abs(player.c.woodPlankCraftProgress - 1) * 10)
                 else return "OFF"
             },
             fillStyle() { return {"background-color": "#946621" } },
