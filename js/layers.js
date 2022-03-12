@@ -1,8 +1,10 @@
 function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    min = Math.ceil(min)
+    max = Math.floor(max)
+    return Math.floor(Math.random() * (max - min + 1)) + min
 };
+
+let timeWood = 0
 
 addLayer("b", {
     name: "basic", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -11,7 +13,7 @@ addLayer("b", {
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
-        wood: new Decimal(0),
+        wood: 0,
     }},
     color: "#4BDC13",
     requires: new Decimal(10), // Can be a function that takes requirement increases into account
@@ -36,14 +38,14 @@ addLayer("b", {
     layerShown(){return true},
     update() {
         let randomTile = getRandomInt(0, 7) * 100 + getRandomInt(0, 7)
-        if (getRandomInt(0, 100) == 0)
-            if(getGridData('b', randomTile) == 1) setGridData('b', getRandomInt(0, 7) * 100 + getRandomInt(0, 7), 1101)
-            else
-                if (getGridData('b', randomTile) == 2) setGridData('b', getRandomInt(0, 7) * 100 + getRandomInt(0, 7), 101)
-                else
-                    if (getGridData('b', randomTile) > 1100 && getGridData('b', randomTile) < 1200) setGridData('b', getRandomInt(0, 7) * 100 + getRandomInt(0, 7), getGridData('b', randomTile) + 1)
-                    else
-                        if (getGridData('b', randomTile) > 100 && getGridData('b', randomTile) < 200) setGridData('b', getRandomInt(0, 7) * 100 + getRandomInt(0, 7), getGridData('b', randomTile) + 1)
+        let speedWood = 500
+        if (hasUpgrade('b', 11)) speedWood = speedWood * 0.8
+        if (timeWood < Math.ceil(speedWood)) timeWood = timeWood + 1
+        else if(getGridData('b', randomTile) == 1) setGridData('b', randomTile, 101), timeWood = 0
+        else if (getGridData('b', randomTile) == 2) setGridData('b', randomTile, 1101), timeWood = 0
+        else if (getGridData('b', randomTile) > 1100 && getGridData('b', randomTile) < 1199) setGridData('b', randomTile, getGridData('b', randomTile) + 1), timeWood = 0
+        else if (getGridData('b', randomTile) > 100 && getGridData('b', randomTile) < 199) setGridData('b', randomTile, getGridData('b', randomTile) + 1), timeWood = 0
+        else timeWood = 0
     },
     tabFormat: [
         "main-display",
@@ -52,18 +54,39 @@ addLayer("b", {
         ["display-text",
             function() { return 'You have ' + format(player.points) + ' experience' },
             {}],
-            ["display-text",
+        ["display-text",
             function() { return 'You have ' + format(player.b.wood) + ' wood' },
             {}],
         "blank",
-        "grid"
+        "upgrades",
+        "grid",
     ],
+    upgrades: {
+        11: {
+            fullDisplay(){
+                return '<h3>Finders Keepers</h3><br>Decrease time taken for finding wood by 20%<br><br>Cost: 1.01 wood'
+            },
+            canAfford(){
+                if (player.b.wood >= 1.01) return true
+                else return false
+            },
+            pay(){player.b.wood = player.b.wood - 1.01},
+        },
+    },
     grid: {
         rows: 6,
         cols: 6,
-        getStartData(id) {if (id == 101) return 0; else if (id == 102 || id == 201) return 2; else if (id == 505) return 101; else return 1},
+        getStartData(id) {
+            if (id == 101) return 0
+            else if (id == 102 || id == 201) return 2
+            else if (id == 505) return 101
+            else return 1
+        },
         getUnlocked(id) {return true},
-        getCanClick(data, id) {if (data == 0 || data == 2 || data > 1100 || data < 1200) return true; else return false},
+        getCanClick(data, id) {
+            if (data == 0 || data == 2 || data > 1100 && data < 1200) return true
+            else return false
+        },
         onClick(data, id) {
             //transition to immovable tile
             if (getGridData('b', id - 2) == 0 || getGridData('b', id - 2) == 2) setGridData('b', id - 2, 1)
@@ -94,7 +117,7 @@ addLayer("b", {
             if (getGridData('b', id - 100) > 100 && getGridData('b', id - 100) < 200) setGridData('b', id - 100, 1000 + getGridData('b', id - 100))
             if (getGridData('b', id + 100) > 100 && getGridData('b', id + 100) < 200) setGridData('b', id + 100, 1000 + getGridData('b', id + 100))
             //other
-            if (getGridData('b', id) > 1100 && getGridData('b', id) < 1200) player.b.wood = new Decimal(player.b.wood + ((getGridData('b', id) - 1100) * tmp.b.effect))
+            if (getGridData('b', id) > 1100 && getGridData('b', id) < 1200) player.b.wood = player.b.wood + ((getGridData('b', id) - 1100) * tmp.b.effect)
             setGridData('b', id, 0)
         },
         getDisplay(data, id) {

@@ -18,9 +18,11 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.1 - Beta Test</h3><br>
-		- Added a gridable.<br>
-		- Added stuff.`
+	<br><h3>v0.1 - Beta Test</h3><br>
+		- Added basic skills.<br>
+		- Added the basic area.<br>
+		- Added wood spawns.<br>
+		- Added an upgrade.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -67,7 +69,7 @@ var backgroundStyle = {
 }
 
 function maxTickLength() {
-	return(60)
+	return(1)
 }
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
