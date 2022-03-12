@@ -13,11 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2",
-	name: "Craft All Day Long",
+	num: "1.1",
+	name: "Arcade Time",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<br><h3>v1.1 - Arcade Time</h3><br>
+		- Added minigames.<br>
+		- Added whack-a-mole level 1 and 2.<br>
+		- More minigames coming soon!<br>
 	<br><h3>v1.0 - Craft All Day Long</h3><br>
 		- Added crafters.<br>
 		- Added 3 milestones.<br>
@@ -53,6 +57,7 @@ function getPointGen() {
 	if (hasUpgrade('b', 12)) gain = gain.times(upgradeEffect('b', 12))
 	if (hasUpgrade('b', 14)) gain = gain.times(upgradeEffect('b', 14))
 	if (player['c'].points > 0) gain = gain.times(tmp.c.effect)
+	if (player.m.tickets > 0) gain = gain.times((player.m.tickets + 1) ** 0.1 + (player.m.tickets + 1) / 2000)
 	return gain
 }
 

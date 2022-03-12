@@ -212,7 +212,7 @@ addLayer("c", {
     canBuyMax(){return true},
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "c", description: "C: Reset for crafters", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "c", description: "C: Reset for crafting skill", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     effect() {return new Decimal((player['c'].points + 1) ** 0.45)},
     effectDescription() {return "which multiplies your experience gain by " + format(tmp.c.effect) + "x"},
@@ -435,5 +435,117 @@ addLayer("c", {
                 else return false
             },
         },
+    },
+});
+
+addLayer("m", {
+    name: "minigame coins", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "M", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+        tickets: 0,
+        minigameTime: 0,
+    }},
+    color: "#3C82DE",
+    requires: new Decimal(25000), // Can be a function that takes requirement increases into account
+    resource: "minigame coins", // Name of prestige currency
+    baseResource: "experience", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.5, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    canBuyMax(){return true},
+    row: 0, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "m", description: "M: Reset for minigame coins", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return true},
+    update() {
+        let randomTile = getRandomInt(1, 3) * 100 + getRandomInt(1, 7);
+        let randomTile2 = getRandomInt(1, 3) * 100 + getRandomInt(1, 7);
+        let randomTile3 = getRandomInt(1, 3) * 100 + getRandomInt(1, 7);
+        if (getClickableState('m', 11) == "ON" && getRandomInt(0, 3) == 0) setGridData('m', randomTile, 1);
+        if (getClickableState('m', 11) == "ON" && getRandomInt(0, 2) == 0) setGridData('m', randomTile2, 0);
+        if (getClickableState('m', 12) == "ON") setGridData('m', randomTile3, 0);
+        if (getClickableState('m', 11) == "ON") player.m.minigameTime = player.m.minigameTime + 0.01;
+        if (getClickableState('m', 11) == "ON" && player.m.minigameTime >= 5) {
+            setClickableState('m', 11, "OFF");
+            if (getClickableState('m', 12) == "ON") setClickableState('m', 12, "OFF");
+            player.m.minigameTime = 0;
+        }
+    },
+    doReset(resettingLayer) {
+        if (layers[resettingLayer].row > this.row && resettingLayer != 'c') layerDataReset(this.layer, [])
+    },
+    tabFormat: [
+        "main-display",
+        "prestige-button",
+        "blank",
+        ["display-text",
+            function() { return 'You have ' + format(player.points) + ' experience' },
+            {}],
+        ["display-text",
+            function() { return 'You have ' + formatWhole(player.m.tickets) + ' tickets, which multiplies experience gain by ' + format((player.m.tickets + 1) ** 0.1 + (player.m.tickets + 1) / 2000) + 'x'},
+            {}],
+        "blank",
+        "clickables",
+        "blank",
+        "grid",
+    ],
+    clickables: {
+        11: {
+            title: "Play game",
+            display() { return '<br>whack-a-mole<br><br>Cost: 1 coin<br><br>Level: 1' },
+            canClick() {
+                if (player.m.points > 0 && getClickableState('m', 11) != "ON") return true
+                else return false
+            },
+            onClick() {
+                setClickableState('m', 11, "ON")
+                player.m.points = new Decimal(player.m.points - 1)
+            },
+            unlocked() { return true },
+        },
+        12: {
+            title: "Play game",
+            display() { return '<br>whack-a-mole<br><br>Cost: 10 coins<br><br>Level: 2' },
+            canClick() {
+                if (player.m.points >= 10 && getClickableState('m', 11) != "ON" && getClickableState('m', 12) != "ON") return true
+                else return false
+            },
+            onClick() {
+                setClickableState('m', 11, "ON")
+                setClickableState('m', 12, "ON")
+                player.m.points = new Decimal(player.m.points - 10)
+            },
+            unlocked() { return true },
+        },
+    },
+    grid: {
+        rows: 3,
+        cols: 7,
+        getStartData(id) { return 0 },
+        getUnlocked(id) {
+            if (getClickableState('m', 11) == "ON") return true;
+            else return false;
+        },
+        getCanClick(data, id) {
+            if (data == 1) return true;
+            else return false;
+        },
+        onClick(data, id) {
+            setGridData('m', id, 0); 
+            if (getClickableState('m', 12) == "ON") player.m.tickets = player.m.tickets + getRandomInt(10, 21);
+            else player.m.tickets = player.m.tickets + 1;
+        },
+        getDisplay(data, id) { return "" },
     },
 });
