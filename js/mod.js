@@ -45,6 +45,9 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	if (hasUpgrade('b', 12)) gain = gain.times(upgradeEffect('b', 12))
+	if (hasUpgrade('b', 14)) gain = gain.times(upgradeEffect('b', 14))
+	if (player['c'].points > 0) gain = gain.times(tmp.c.effect)
 	return gain
 }
 
