@@ -7,7 +7,7 @@ function getRandomInt(min, max) {
 let timeWood = 0
 
 addLayer("b", {
-    name: "basic", // This is optional, only used in a few places, If absent it just uses the layer id.
+    name: "basic skill", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "B", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     branches: ['c'],
@@ -28,6 +28,7 @@ addLayer("b", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasUpgrade('b', 13)) mult = mult.times(1.5)
+        if (player.c.woodAxe > 0) mult = mult.times((player.c.woodAxe * (tmp.c.effect ** 0.05 - 1)) + 1)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -41,7 +42,7 @@ addLayer("b", {
     effectDescription() {return "which multiplies your basic resouce gain by " + format(tmp.b.effect)},
     layerShown(){return true},
     update() {
-        let randomTile = getRandomInt(0, 8) * 100 + getRandomInt(0, 8)
+        let randomTile = getRandomInt(1, 8) * 100 + getRandomInt(1, 8)
         let speedWood = 500
         if (hasUpgrade('b', 11)) speedWood = speedWood * 0.8
         if (timeWood < Math.ceil(speedWood)) timeWood = timeWood + 1
@@ -134,7 +135,7 @@ addLayer("b", {
         },
         onClick(data, id) {
             let woodMult = 1;
-            if (player.c.points > 0 && player.c.woodPlank > 0) woodMult = player.c.woodPlank * (tmp.c.effect ** 0.1 - 1);
+            if (player.c.points > 0 && player.c.woodPlank > 0) woodMult = (player.c.woodPlank * (tmp.c.effect ** 0.1 - 1)) + 1;
             if (woodMult > 100) woodMult = 100;
             //transition to immovable tile
             if (getGridData('b', id - 2) == 0 || getGridData('b', id - 2) == 2) setGridData('b', id - 2, 1);
@@ -174,7 +175,7 @@ addLayer("b", {
             if (DebugMode_LayerB == true) return data;
             else {
                 if (data == 0) return "you are here";
-                if (data == 1 || data == 2) return "empty tile";
+                if (data == 1 || data == 2) return "";
                 if (data > 100 && data < 200) return "contains:\n" + (data - 100) + " wood";
                 if (data > 1100 && data < 1200) return "contains:\n" + (data - 1100) + " wood";
             }
@@ -183,7 +184,7 @@ addLayer("b", {
 });
 
 addLayer("c", {
-    name: "crafting", // This is optional, only used in a few places, If absent it just uses the layer id.
+    name: "crafting skill", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "C", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
@@ -191,10 +192,12 @@ addLayer("c", {
 		points: new Decimal(0),
         woodPlank: 0,
         woodPlankCraftProgress: 0,
+        woodAxe: 0,
+        woodAxeCraftProgress: 0,
     }},
     color: "#946621",
     requires: new Decimal(75), // Can be a function that takes requirement increases into account
-    resource: "crafters", // Name of prestige currency
+    resource: "crafting skill", // Name of prestige currency
     baseResource: "basic skill", // Name of resource prestige is based on
     baseAmount() {return player['b'].points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -215,8 +218,21 @@ addLayer("c", {
     effectDescription() {return "which multiplies your experience gain by " + format(tmp.c.effect) + "x"},
     layerShown(){return true},
     update() {
-        if (player.c.woodPlankCraftProgress < 1 && getClickableState('c', 12) == "ON") player.c.woodPlankCraftProgress = player.c.woodPlankCraftProgress + 0.0002;
+        //wood plank crafting
+        if (player.c.woodPlankCraftProgress < 1 && getClickableState('c', 14) == "ON") player.c.woodPlankCraftProgress = player.c.woodPlankCraftProgress + 0.00004;
+        else if (player.c.woodPlankCraftProgress < 1 && getClickableState('c', 13) == "ON") player.c.woodPlankCraftProgress = player.c.woodPlankCraftProgress + 0.0005;
+        else if (player.c.woodPlankCraftProgress < 1 && getClickableState('c', 12) == "ON") player.c.woodPlankCraftProgress = player.c.woodPlankCraftProgress + 0.0002;
         else if (player.c.woodPlankCraftProgress < 1 && getClickableState('c', 11) == "ON") player.c.woodPlankCraftProgress = player.c.woodPlankCraftProgress + 0.002;
+        else if (player.c.woodPlankCraftProgress >= 1 && getClickableState('c', 14) == "ON") {
+            player.c.woodPlank = player.c.woodPlank + 250;
+            setClickableState('c', 14, "OFF");
+            player.c.woodPlankCraftProgress = 0;
+        }
+        else if (player.c.woodPlankCraftProgress >= 1 && getClickableState('c', 13) == "ON") {
+            player.c.woodPlank = player.c.woodPlank + 20;
+            setClickableState('c', 13, "OFF");
+            player.c.woodPlankCraftProgress = 0;
+        }
         else if (player.c.woodPlankCraftProgress >= 1 && getClickableState('c', 12) == "ON") {
             player.c.woodPlank = player.c.woodPlank + 10;
             setClickableState('c', 12, "OFF");
@@ -226,6 +242,19 @@ addLayer("c", {
             player.c.woodPlank = player.c.woodPlank + 1;
             setClickableState('c', 11, "OFF");
             player.c.woodPlankCraftProgress = 0;
+        }
+        //wood axe crafting
+        if (player.c.woodAxeCraftProgress < 1 && getClickableState('c', 22) == "ON") player.c.woodAxeCraftProgress = player.c.woodAxeCraftProgress + 0.0001;
+        else if (player.c.woodAxeCraftProgress < 1 && getClickableState('c', 21) == "ON") player.c.woodAxeCraftProgress = player.c.woodAxeCraftProgress + 0.001;
+        else if (player.c.woodAxeCraftProgress >= 1 && getClickableState('c', 22) == "ON") {
+            player.c.woodAxe = player.c.woodAxe + 10;
+            setClickableState('c', 22, "OFF");
+            player.c.woodAxeCraftProgress = 0;
+        }
+        else if (player.c.woodAxeCraftProgress >= 1 && getClickableState('c', 21) == "ON") {
+            player.c.woodAxe = player.c.woodAxe + 1;
+            setClickableState('c', 21, "OFF");
+            player.c.woodAxeCraftProgress = 0;
         }
     },
     tabFormat: [
@@ -237,19 +266,46 @@ addLayer("c", {
             {}],
         "blank",
         ["display-text",
-            function() { return 'You have ' + formatWhole(player.c.woodPlank) + ' wood planks, which each make the crafter effect apply to wood gain at a reduced rate (' + format(tmp.c.effect ** 0.1) + "x), which totals to: " + format(player.c.woodPlank * (tmp.c.effect ** 0.1 - 1)) + 'x (capped at 100x)'},
+            function() { return 'You have ' + formatWhole(player.c.woodPlank) + ' wood planks, which each make the crafting skill effect apply to wood gain at a reduced rate (' + format(tmp.c.effect ** 0.1) + "x), which totals to: " + format((player.c.woodPlank * (tmp.c.effect ** 0.1 - 1)) + 1) + 'x (capped at 100x)'},
             {}],
         "blank",
+        ["display-text",
+            function() { return 'You have ' + formatWhole(player.c.woodAxe) + ' wood axes, which each make the crafting skill effect apply to basic skill gain at a reduced rate (' + format(tmp.c.effect ** 0.05) + "x), which totals to: " + format((player.c.woodAxe * (tmp.c.effect ** 0.05 - 1)) + 1) + 'x (capped at 100x)'},
+            {}],
+        "blank",
+        "milestones",
         "clickables",
         "blank",
         ["bar", "woodPlankCrafter"],
+        "blank",
+        ["bar", "woodAxeCrafter"],
+        "blank",
     ],
+    milestones: {
+        0: {
+            requirementDescription: "1 crafting skill",
+            effectDescription: "unlock wood plank crafting",
+            done() { return player.c.points.gte(1) },
+        },
+        1: {
+            requirementDescription: "2 crafting skill",
+            effectDescription: "unlock multi-craft",
+            done() { return player.c.points.gte(2) },
+            unlocked() { return player.c.points.gte(1) },
+        },
+        2: {
+            requirementDescription: "3 crafting skill",
+            effectDescription: "unlock wood axe crafting",
+            done() { return player.c.points.gte(3) },
+            unlocked() { return player.c.points.gte(2) },
+        },
+    },
     clickables: {
         11: {
             title: "Craft 1 Wood Plank",
             display() {return "\ninput: 1 wood\n\noutput: 1 wood plank"},
             canClick() {
-                if (player.b.wood >= 1 && getClickableState('c', 11) != "ON" && getClickableState('c', 12) != "ON") return true
+                if (player.b.wood >= 1 && getClickableState('c', 11) != "ON" && getClickableState('c', 12) != "ON" && getClickableState('c', 13) != "ON" && getClickableState('c', 14) != "ON") return true
                 else return false
             },
             onClick() {
@@ -257,7 +313,7 @@ addLayer("c", {
                 player.b.wood = player.b.wood - 1
             },
             unlocked() {
-                if (player.c.points > 0) return true
+                if (hasMilestone('c', 0)) return true
                 else return false
             },
         },
@@ -265,7 +321,7 @@ addLayer("c", {
             title: "Craft 10 Wood Planks",
             display() {return "\ninput: 10 wood\n\noutput: 10 wood planks"},
             canClick() {
-                if (player.b.wood >= 10 && getClickableState('c', 11) != "ON" && getClickableState('c', 12) != "ON") return true
+                if (player.b.wood >= 10 && getClickableState('c', 11) != "ON" && getClickableState('c', 12) != "ON" && getClickableState('c', 13) != "ON" && getClickableState('c', 14) != "ON") return true
                 else return false
             },
             onClick() {
@@ -273,7 +329,71 @@ addLayer("c", {
                 player.b.wood = player.b.wood - 10
             },
             unlocked() {
-                if (player.c.points > 0) return true
+                if (hasMilestone('c', 1)) return true
+                else return false
+            },
+        },
+        13: {
+            title: "Craft 20 Wood Planks (5x speed)",
+            display() {return "\ninput: 100 wood\n\noutput: 20 wood planks"},
+            canClick() {
+                if (player.b.wood >= 100 && getClickableState('c', 11) != "ON" && getClickableState('c', 12) != "ON" && getClickableState('c', 13) != "ON" && getClickableState('c', 14) != "ON") return true
+                else return false
+            },
+            onClick() {
+                setClickableState('c', 13, "ON")
+                player.b.wood = player.b.wood - 100
+            },
+            unlocked() {
+                if (hasMilestone('c', 1)) return true
+                else return false
+            },
+        },
+        14: {
+            title: "Craft 250 Wood Planks (2x speed)",
+            display() {return "\ninput: 500 wood\n\noutput: 250 wood planks"},
+            canClick() {
+                if (player.b.wood >= 500 && getClickableState('c', 11) != "ON" && getClickableState('c', 12) != "ON" && getClickableState('c', 13) != "ON" && getClickableState('c', 14) != "ON") return true
+                else return false
+            },
+            onClick() {
+                setClickableState('c', 14, "ON")
+                player.b.wood = player.b.wood - 500
+            },
+            unlocked() {
+                if (hasMilestone('c', 1)) return true
+                else return false
+            },
+        },
+        21: {
+            title: "Craft 1 Wood Axe",
+            display() {return "\ninput: 5 wood planks\n\noutput: 1 wood axe"},
+            canClick() {
+                if (player.c.woodPlank >= 5 && getClickableState('c', 21) != "ON" && getClickableState('c', 22) != "ON") return true
+                else return false
+            },
+            onClick() {
+                setClickableState('c', 21, "ON")
+                player.c.woodPlank = player.c.woodPlank - 5
+            },
+            unlocked() {
+                if (hasMilestone('c', 2)) return true
+                else return false
+            },
+        },
+        22: {
+            title: "Craft 10 Wood Axes",
+            display() {return "\ninput: 50 wood planks\n\noutput: 10 wood axe"},
+            canClick() {
+                if (player.c.woodPlank >= 50 && getClickableState('c', 21) != "ON" && getClickableState('c', 22) != "ON") return true
+                else return false
+            },
+            onClick() {
+                setClickableState('c', 22, "ON")
+                player.c.woodPlank = player.c.woodPlank - 50
+            },
+            unlocked() {
+                if (hasMilestone('c', 2)) return true
                 else return false
             },
         },
@@ -285,14 +405,33 @@ addLayer("c", {
             height: 20,
             progress() { return player.c.woodPlankCraftProgress },
             display() {
-                if (getClickableState('c', 12) == "ON") return "time left: " + format(Math.abs(player.c.woodPlankCraftProgress - 1) * 100)
-                else if (getClickableState('c', 11) == "ON") return "time left: " + format(Math.abs(player.c.woodPlankCraftProgress - 1) * 10)
-                else return "OFF"
+                if (getClickableState('c', 14) == "ON") return "250 wood planks - time left: " + format(Math.abs(player.c.woodPlankCraftProgress - 1) * 500);
+                else if (getClickableState('c', 13) == "ON") return "20 wood planks - time left: " + format(Math.abs(player.c.woodPlankCraftProgress - 1) * 40);
+                else if (getClickableState('c', 12) == "ON") return "10 wood planks - time left: " + format(Math.abs(player.c.woodPlankCraftProgress - 1) * 100);
+                else if (getClickableState('c', 11) == "ON") return "1 wood plank - time left: " + format(Math.abs(player.c.woodPlankCraftProgress - 1) * 10);
+                else return "wood planks - OFF"
             },
             fillStyle() { return {"background-color": "#946621" } },
             borderStyle() { return {"border-color": "#946621"} },
             unlocked() {
                 if (player.c.points > 0) return true
+                else return false
+            },
+        },
+        woodAxeCrafter: {
+            direction: RIGHT,
+            width: 600,
+            height: 20,
+            progress() { return player.c.woodAxeCraftProgress },
+            display() {
+                if (getClickableState('c', 22) == "ON") return "10 wood axes - time left: " + format(Math.abs(player.c.woodAxeCraftProgress - 1) * 200);
+                else if (getClickableState('c', 21) == "ON") return "1 wood axe - time left: " + format(Math.abs(player.c.woodAxeCraftProgress - 1) * 20);
+                else return "wood axes - OFF"
+            },
+            fillStyle() { return {"background-color": "#946621" } },
+            borderStyle() { return {"border-color": "#946621"} },
+            unlocked() {
+                if (player.c.woodPlank > 4) return true
                 else return false
             },
         },

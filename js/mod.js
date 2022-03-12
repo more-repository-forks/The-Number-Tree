@@ -14,14 +14,16 @@ let modInfo = {
 // Set your version in num and name
 let VERSION = {
 	num: "0.2",
-	name: "Beta Test",
+	name: "Craft All Day Long",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<br><h3>v0.1 - Beta Test</h3><br>
+	<br><h3>v1.0 - Craft All Day Long</h3><br>
 		- Added crafters.<br>
+		- Added 3 milestones.<br>
 		- Added crafting wood planks.<br>
-	<br><h3>v0.1 - Beta Test</h3><br>
+		- Added crafting wood axes.<br>
+	<br><h3>v0.0 - Beta test</h3><br>
 		- Added basic skills.<br>
 		- Added the basic area.<br>
 		- Added wood spawns.<br>
