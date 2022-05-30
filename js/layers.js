@@ -75,6 +75,7 @@ addLayer('c', {
                 return player.points.div(layers.c.buyables[11].cost());
             },
             display() {
+                if (this.progress().gt(1)) return format(100) + '%';
                 return format(this.progress().mul(100)) + '%';
             },
             fillStyle: {'background-color':'red'},
