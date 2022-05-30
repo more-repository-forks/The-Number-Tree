@@ -16,14 +16,10 @@ let VERSION = {
 let winText = '<h3>You won the game!</h3><br>However, it isn\'t the end yet...<br>Wait for more updates for further content.';
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
-function removeachievement(value) {
-	for (var i = 0; i < player.A.achievements.length; i++) {
-		if (player.A.achievements[i] == value) {
-			player.A.achievements.splice(i, 1);
-			return true;
-		};
-	};
-	return false;
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 // Determines if it should show points/sec
