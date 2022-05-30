@@ -2,7 +2,7 @@ let modInfo = {
 	name: 'Color Factory',
 	id: 'Yrahcaz7-ModTree-ColorFactory',
 	author: 'Yrahcaz7',
-	pointsName: 'points',
+	pointsName: 'coins',
 	modFiles: ['layers.js', 'tree.js'],
 	initialStartPoints: new Decimal(0),
 	offlineLimit: 1, // In hours

@@ -40,7 +40,7 @@ addLayer('c', {
                 setBuyableAmount('c', 11, getBuyableAmount('c', 11).add(1));
             },
             display() {
-                return 'Level: ' + formatWhole(getBuyableAmount('c', 11)) + '<br><br>Cost: ' + format(this.cost());
+                return '<br>Level: ' + formatWhole(getBuyableAmount('c', 11)) + '<br><br>Cost: ' + format(this.cost()) + ' coins';
             },
         },
     },
