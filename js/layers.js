@@ -88,15 +88,15 @@ addLayer('c', {
             width: 60,
             height: 60,
             progress() {
-                if (getBuyableAmount('c', 11).lt(10)) prog = 10;
-                else if (getBuyableAmount('c', 11).lt(25)) prog = 25;
-                else if (getBuyableAmount('c', 11).lt(50)) prog = 50;
-                else if (getBuyableAmount('c', 11).lt(100)) prog = 100;
-                else prog = 200;
-                return getBuyableAmount('c', 11).add(1).div(prog);
+                if (getBuyableAmount('c', 11).lt(10)) goal = 10;
+                else if (getBuyableAmount('c', 11).lt(25)) goal = 25;
+                else if (getBuyableAmount('c', 11).lt(50)) goal = 50;
+                else if (getBuyableAmount('c', 11).lt(100)) goal = 100;
+                else goal = 200;
+                return getBuyableAmount('c', 11).add(1).div(goal);
             },
             display() {
-                return '<h1>' + formatWhole(getBuyableAmount('c', 11).add(1));
+                return '<h1 style="font-family:Flavors">' + formatWhole(getBuyableAmount('c', 11).add(1));
             },
             fillStyle: {'background-color':'red'},
             borderStyle: {'border-color':'red'},
@@ -108,7 +108,9 @@ addLayer('c', {
             cost() {
                 return new Decimal(1).add(getBuyableAmount('c', 11).add(1).mul(0.8)).add(new Decimal(1.2).pow(getBuyableAmount('c', 11).add(1)));
             },
-            canAfford() { return player.points.gte(this.cost()) && getBuyableAmount(this.layer, this.id).lt(this.purchaseLimit) },
+            canAfford() {
+                return player.points.gte(this.cost()) && getBuyableAmount(this.layer, this.id).lt(this.purchaseLimit);
+            },
             purchaseLimit: 1000,
             buy() {
                 player.points = player.points.sub(this.cost());
