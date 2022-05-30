@@ -11,6 +11,8 @@ addLayer('c', {
         earnOrange: new Decimal(0),
         timeYellow: 0,
         earnYellow: new Decimal(0),
+        timeGreenyellow: 0,
+        earnGreenyellow: new Decimal(0),
     }},
     color: '#ffffff',
     tooltip() {
@@ -49,6 +51,12 @@ addLayer('c', {
         if (getBuyableAmount('c', 31).gte(50)) earnings = earnings.mul(9);
         if (getBuyableAmount('c', 31).gte(100)) earnings = earnings.mul(25);
         player.c.earnYellow = earnings;
+        earnings = getBuyableAmount('c', 41).mul(1250000);
+        if (getBuyableAmount('c', 41).gte(10)) earnings = earnings.mul(3);
+        if (getBuyableAmount('c', 41).gte(25)) earnings = earnings.mul(6);
+        if (getBuyableAmount('c', 41).gte(50)) earnings = earnings.mul(9);
+        if (getBuyableAmount('c', 41).gte(100)) earnings = earnings.mul(25);
+        player.c.earnGreenyellow = earnings;
         // earn
         if (player.c.timeRed > 1) {
             player.points = player.points.add(player.c.earnRed);
@@ -62,11 +70,17 @@ addLayer('c', {
             player.points = player.points.add(player.c.earnYellow);
             player.c.timeYellow = 0;
         };
+        if (player.c.timeGreenyellow > 1) {
+            player.points = player.points.add(player.c.earnGreenyellow);
+            player.c.timeGreenyellow = 0;
+        };
         player.c.timeRed += diff / 3;
         if (getBuyableAmount('c', 21).gt(0)) player.c.timeOrange += diff / 6;
         else player.c.timeOrange = 0;
         if (getBuyableAmount('c', 31).gt(0)) player.c.timeYellow += diff / 12;
         else player.c.timeYellow = 0;
+        if (getBuyableAmount('c', 41).gt(0)) player.c.timeGreenyellow += diff / 24;
+        else player.c.timeGreenyellow = 0;
     },
     tabFormat: [
         ['display-text',
@@ -108,6 +122,18 @@ addLayer('c', {
                 ['bar', 'yellowBuy'],
                 ['blank', '2px'],
                 ['buyables', '3'],
+            ]],
+        ]],
+        'blank',
+        ['row', [
+            ['bar', 'greenyellowProg'],
+            'blank',
+            ['bar', 'greenyellowBar'],
+            ['blank', ['6.5px', '1px']],
+            ['column', [
+                ['bar', 'greenyellowBuy'],
+                ['blank', '2px'],
+                ['buyables', '4'],
             ]],
         ]],
     ],
@@ -263,6 +289,64 @@ addLayer('c', {
                 if (getBuyableAmount('c', 21).gt(0)) return true;
             },
         },
+        greenyellowBar: {
+            direction: RIGHT,
+            width: 300,
+            height: 50,
+            progress() {
+                return player.c.timeGreenyellow;
+            },
+            display() {
+                if (getBuyableAmount('c', 41).eq(0)) return 'locked';
+                return 'earnings per cycle: ' + format(player.c.earnGreenyellow) + ' coins';
+            },
+            fillStyle: {'background-color':'#88ff00'},
+            borderStyle: {'border-color':'#88ff00'},
+            style: {'color':'#aaaaaa'},
+            unlocked() {
+                if (getBuyableAmount('c', 31).gt(0)) return true;
+            },
+        },
+        greenyellowBuy: {
+            direction: LEFT,
+            width: 180,
+            height: 20,
+            progress() {
+                return player.points.div(layers.c.buyables[41].cost());
+            },
+            display() {
+                if (this.progress().gt(1)) return format(100) + '%';
+                return format(this.progress().mul(100)) + '%';
+            },
+            fillStyle: {'background-color':'#88ff00'},
+            borderStyle: {'border-color':'#88ff00'},
+            style: {'color':'#aaaaaa'},
+            unlocked() {
+                if (getBuyableAmount('c', 31).gt(0)) return true;
+            },
+        },
+        greenyellowProg: {
+            direction: UP,
+            width: 60,
+            height: 60,
+            progress() {
+                if (getBuyableAmount('c', 41).lt(10)) goal = 10;
+                else if (getBuyableAmount('c', 41).lte(25)) goal = 25;
+                else if (getBuyableAmount('c', 41).lte(50)) goal = 50;
+                else if (getBuyableAmount('c', 41).lte(100)) goal = 100;
+                else goal = 200;
+                return getBuyableAmount('c', 41).div(goal);
+            },
+            display() {
+                return '<h1 style="font-family:Flavors">' + formatWhole(getBuyableAmount('c', 41));
+            },
+            fillStyle: {'background-color':'#88ff00'},
+            borderStyle: {'border-color':'#88ff00'},
+            style: {'color':'#aaaaaa','border-radius':'50%'},
+            unlocked() {
+                if (getBuyableAmount('c', 31).gt(0)) return true;
+            },
+        },
     },
     buyables: {
         11: {
@@ -319,6 +403,27 @@ addLayer('c', {
             style: {'background-color':'#aaaaaa','border-radius':'0%','height':'25px','width':'180px'},
             unlocked() {
                 if (getBuyableAmount('c', 21).gt(0)) return true;
+            },
+        },
+        41: {
+            cost() {
+                return new Decimal(1).add(getBuyableAmount('c', 41).add(96).mul(0.8)).add(new Decimal(1.2).pow(getBuyableAmount('c', 41).add(96)));
+            },
+            canAfford() {
+                return player.points.gte(this.cost()) && getBuyableAmount(this.layer, this.id).lt(this.purchaseLimit);
+            },
+            purchaseLimit: 1000,
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount('c', 41, getBuyableAmount('c', 41).add(1));
+            },
+            display() {
+                if (getBuyableAmount('c', 41).eq(0)) return '<h3 style="color:#88ff00">Unlock: ' + format(this.cost()) + ' coins';
+                return '<h3 style="color:#88ff00">Cost: ' + format(this.cost()) + ' coins';
+            },
+            style: {'background-color':'#aaaaaa','border-radius':'0%','height':'25px','width':'180px'},
+            unlocked() {
+                if (getBuyableAmount('c', 31).gt(0)) return true;
             },
         },
     },
