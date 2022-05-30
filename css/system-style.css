@@ -7,7 +7,6 @@
 	margin: auto;
 	-webkit-text-size-adjust: none;
 	text-size-adjust: none;
-
 }
 
 *:focus {
@@ -170,20 +169,19 @@ ul {
 
 .tooltipBox { 
 	position: relative;
-  }
+}
   
-  .tooltipBox:hover .tooltip{
+.tooltipBox:hover .tooltip{
 	opacity: 1;
-  }
+}
 
-  .forceTooltip .tooltip{
+.forceTooltip .tooltip{
 	opacity: 1;
-  }
+}
   
 .respecCheckbox {
 	display: inline-block;
 }
-
 
 #loadingSection {
 	display: flex;
@@ -248,4 +246,3 @@ button > * {
 	background-image: none !important;
 	--background: transparent !important;
 }
-

@@ -1,18 +1,22 @@
-/* Custom Colors */
+/* Rainbow Animation */
+:root {
+    --rainbow: linear-gradient(90deg, #ff00ff, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff)
+}
+
 .rainbow-backround {
     height: 100%;
     width: 100%;
     left: 0;
     top: 0;
     position: absolute;
-    background: linear-gradient(90deg, #ff00ff, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+    background: var(--rainbow);
     background-size: 200%;
     border-radius: 50%;
     animation: rainbow 3s linear infinite;
 }
 
 .rainbow-text {
-    background: linear-gradient(90deg, #ff00ff, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+    background: var(--rainbow);
     background-size: 200%;
     animation: rainbow 3s linear infinite;
     color: transparent;
@@ -69,10 +73,8 @@
     border-radius: 3px;
     opacity: 0;
     transition: opacity 0.5s;
-  
     position: absolute;
     z-index: 20000;
-  
     background-color: var(--background_tooltip);
     color: var(--points);
     content: attr(tooltip);
@@ -85,7 +87,6 @@
     position: absolute;
     bottom: 100%;
     left: 50%;
-
     top: 100%;
     left: 50%;
     margin-left: -5px;
