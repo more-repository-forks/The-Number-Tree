@@ -1,70 +1,62 @@
 let modInfo = {
-	name: "Color Factory",
-	id: "mymod",
-	author: "Yrahcaz7",
-	pointsName: "experience",
-	modFiles: ["layers.js", "tree.js"],
+	name: 'Color Factory',
+	id: 'Yrahcaz7-ModTree-ColorFactory',
+	author: 'Yrahcaz7',
+	pointsName: 'points',
+	modFiles: ['layers.js', 'tree.js'],
+	initialStartPoints: new Decimal(0),
+	offlineLimit: 1, // In hours
+};
 
-	discordName: "",
-	discordLink: "",
-	initialStartPoints: new Decimal (0), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
-}
-
-// Set your version in num and name
 let VERSION = {
-	num: "1.0",
-	name: "Red",
-}
+	num: '1.0',
+	name: 'Red',
+};
 
-let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
+let winText = '<h3>You won the game!</h3><br>However, it isn\'t the end yet...<br>Wait for more updates for further content.';
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
-// (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything"]
-
-function getStartPoints(){
-    return new Decimal(modInfo.initialStartPoints)
-}
+function removeachievement(value) {
+	for (var i = 0; i < player.A.achievements.length; i++) {
+		if (player.A.achievements[i] == value) {
+			player.A.achievements.splice(i, 1);
+			return true;
+		};
+	};
+	return false;
+};
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	return true
-}
+	return true;
+};
 
 // Calculate points/sec!
 function getPointGen() {
-	if(!canGenPoints())
-		return new Decimal(0)
-	let gain = new Decimal(1)
-	return gain
-}
+	let gain = new Decimal(1);
+	return gain;
+};
 
-// You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
-}}
+	nerdMode: false,
+}};
 
 // Display extra things at the top of the page
 var displayThings = [
-]
+];
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
-}
-
-// Less important things beyond this point!
+	return player.points.gte('ee16');
+};
 
 // Style for the background, can be a function
 var backgroundStyle = {
-
-}
+};
 
 function maxTickLength() {
-	return(1)
-}
+	return 1; // In seconds
+};
 
-// Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
-// you can cap their current resources with this.
-function fixOldSave(oldVersion){
-}
+function fixOldSave(oldVersion) {
+};
