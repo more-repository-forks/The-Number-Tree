@@ -44,11 +44,13 @@ addLayer('c', {
             }],
         'blank',
         ['row', [
+            ['bar', 'redProg'],
+            'blank',
             ['bar', 'redBar'],
-            ['blank', ['3.5px', '1px']],
+            ['blank', ['6.5px', '1px']],
             ['column', [
                 ['bar', 'redBuy'],
-                ['blank', '3px'],
+                ['blank', '2px'],
                 ['buyables', '1'],
             ]],
         ]],
@@ -69,7 +71,7 @@ addLayer('c', {
         },
         redBuy: {
             direction: LEFT,
-            width: 140,
+            width: 180,
             height: 20,
             progress() {
                 return player.points.div(layers.c.buyables[11].cost());
@@ -80,6 +82,25 @@ addLayer('c', {
             },
             fillStyle: {'background-color':'red'},
             borderStyle: {'border-color':'red'},
+        },
+        redProg: {
+            direction: UP,
+            width: 60,
+            height: 60,
+            progress() {
+                if (getBuyableAmount('c', 11).lt(10)) prog = 10;
+                else if (getBuyableAmount('c', 11).lt(25)) prog = 25;
+                else if (getBuyableAmount('c', 11).lt(50)) prog = 50;
+                else if (getBuyableAmount('c', 11).lt(100)) prog = 100;
+                else prog = 200;
+                return getBuyableAmount('c', 11).add(1).div(prog);
+            },
+            display() {
+                return '<h1>' + formatWhole(getBuyableAmount('c', 11).add(1));
+            },
+            fillStyle: {'background-color':'red'},
+            borderStyle: {'border-color':'red'},
+            style: {'border-radius':'50%'},
         },
     },
     buyables: {
@@ -94,11 +115,9 @@ addLayer('c', {
                 setBuyableAmount('c', 11, getBuyableAmount('c', 11).add(1));
             },
             display() {
-                return '<span style="color:red">Level: ' + formatWhole(getBuyableAmount('c', 11).add(1)) + '<br><br>Cost: ' + format(this.cost()) + ' coins';
+                return '<h3 style="color:red">Cost: ' + format(this.cost()) + ' coins';
             },
-            style() {
-                return {'background-color':'#cccccc','border-radius':'25%','height':'40px','width':'140px'};
-            },
+            style: {'background-color':'#cccccc','border-radius':'0%','height':'25px','width':'180px'},
         },
     },
 });
