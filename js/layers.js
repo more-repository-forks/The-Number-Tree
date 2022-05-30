@@ -5,6 +5,7 @@ addLayer('c', {
     startData() { return {
         unlocked: true,
         colors: 1,
+        timered: 0,
     }},
     color: '#ffffff',
     tooltip() {
@@ -17,15 +18,38 @@ addLayer('c', {
         let keep = [];
             if (layers[resettingLayer].row > this.row) layerDataReset('c', keep);
         },
+    update(diff) {
+        if (player.c.timered > 1) {
+            player.points = player.points.add(getBuyableAmount('c', 11).add(1).mul(4));
+            player.c.timered = 0;
+        };
+        player.c.timered += diff / 3;
+    },
     tabFormat: [
-        ["display-text",
+        ['display-text',
             function() {
-                text = '<div class="rainbow-text">you have ' + formatWhole(player.c.colors) + ' colors unlocked';
+                text = '<h3 class="rainbow-text">you have ' + formatWhole(player.c.colors) + ' colors unlocked';
                 return text;
             }],
-        "blank",
-        "buyables",
+        'blank',
+        ['row', [
+            ['bar', 'redBar'],
+            'blank',
+            'buyables',
+        ]],
     ],
+    bars: {
+        redBar: {
+            direction: RIGHT,
+            width: 300,
+            height: 50,
+            progress() {
+                return player.c.timered;
+            },
+            fillStyle: {'background-color':'red'},
+            borderStyle: {'border-color':'red'},
+        },
+    },
     buyables: {
         11: {
             cost() {
