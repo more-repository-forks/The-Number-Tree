@@ -1,6 +1,6 @@
 addLayer('c', {
     name: 'Colors',
-    symbol: '<div class="rainbow">',
+    symbol: '<div class="rainbow-backround">',
     position: 0,
     startData() { return {
         unlocked: true,
@@ -20,7 +20,7 @@ addLayer('c', {
     tabFormat: [
         ["display-text",
             function() {
-                text = 'you have ' + formatWhole(player.c.colors) + ' colors unlocked';
+                text = '<div class="rainbow-text">you have ' + formatWhole(player.c.colors) + ' colors unlocked';
                 return text;
             }],
         "blank",
