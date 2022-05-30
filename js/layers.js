@@ -5,7 +5,8 @@ addLayer('c', {
     startData() { return {
         unlocked: true,
         colors: 1,
-        timered: 0,
+        timeRed: 0,
+        earnRed: new Decimal(4),
     }},
     color: '#ffffff',
     tooltip() {
@@ -13,17 +14,27 @@ addLayer('c', {
         return formatWhole(player.c.colors) + ' colors';
     },
     row: 0,
-    layerShown(){return true},
+    layerShown() {
+        return true;
+    },
     doReset(resettingLayer) {
         let keep = [];
             if (layers[resettingLayer].row > this.row) layerDataReset('c', keep);
         },
     update(diff) {
-        if (player.c.timered > 1) {
-            player.points = player.points.add(getBuyableAmount('c', 11).add(1).mul(4));
-            player.c.timered = 0;
+        // calculate
+        earnings = getBuyableAmount('c', 11).add(1).mul(4);
+        if (getBuyableAmount('c', 11).gte(9)) earnings = earnings.mul(3);
+        if (getBuyableAmount('c', 11).gte(24)) earnings = earnings.mul(6);
+        if (getBuyableAmount('c', 11).gte(49)) earnings = earnings.mul(9);
+        if (getBuyableAmount('c', 11).gte(99)) earnings = earnings.mul(25);
+        player.c.earnRed = earnings;
+        // earn
+        if (player.c.timeRed > 1) {
+            player.points = player.points.add(player.c.earnRed);
+            player.c.timeRed = 0;
         };
-        player.c.timered += diff / 3;
+        player.c.timeRed += diff / 3;
     },
     tabFormat: [
         ['display-text',
@@ -44,7 +55,10 @@ addLayer('c', {
             width: 300,
             height: 50,
             progress() {
-                return player.c.timered;
+                return player.c.timeRed;
+            },
+            display() {
+                return 'earnings per cycle: ' + format(player.c.earnRed) + ' coins';
             },
             fillStyle: {'background-color':'red'},
             borderStyle: {'border-color':'red'},
@@ -53,7 +67,7 @@ addLayer('c', {
     buyables: {
         11: {
             cost() {
-                return new Decimal(1.5).pow(getBuyableAmount('c', 11));
+                return new Decimal(1).add(getBuyableAmount('c', 11).add(1).mul(0.8)).add(new Decimal(1.2).pow(getBuyableAmount('c', 11).add(1)));
             },
             canAfford() { return player.points.gte(this.cost()) && getBuyableAmount(this.layer, this.id).lt(this.purchaseLimit) },
             purchaseLimit: 1000,
