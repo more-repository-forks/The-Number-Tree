@@ -29,7 +29,8 @@ addLayer('c', {
         },
     update(diff) {
         // update unlocks
-        if (getBuyableAmount('c', 21).gt(0)) player.c.colors = 3;
+        if (getBuyableAmount('c', 41).gt(0)) player.c.colors = 4;
+        else if (getBuyableAmount('c', 31).gt(0)) player.c.colors = 3;
         else if (getBuyableAmount('c', 21).gt(0)) player.c.colors = 2;
         else player.c.colors = 1;
         // calculate
