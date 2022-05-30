@@ -9,7 +9,7 @@ function loadVue() {
 		`
 	})
 
-// data = a function returning the content (actually HTML)
+	// data = a function returning the content (actually HTML)
 	Vue.component('raw-html', {
 			props: ['layer', 'data'],
 			template: `
@@ -87,6 +87,7 @@ function loadVue() {
 		</div>
 		`
 	})
+
 	Vue.component('infobox', {
 		props: ['layer', 'data'],
 		template: `
@@ -102,7 +103,6 @@ function loadVue() {
 		</div>
 		`
 	})
-
 
 	// Data = width in px, by default fills the full area
 	Vue.component('h-line', {
@@ -371,9 +371,8 @@ function loadVue() {
 		template: `
 		<button v-if="tmp[layer].clickables && tmp[layer].clickables.masterButtonPress && !(tmp[layer].clickables.showMasterButton !== undefined && tmp[layer].clickables.showMasterButton == false)"
 			v-on:click="run(tmp[layer].clickables.masterButtonPress, tmp[layer].clickables)" v-bind:class="{ longUpg: true, can: player[layer].unlocked, locked: !player[layer].unlocked }">{{tmp[layer].clickables.masterButtonText ? tmp[layer].clickables.masterButtonText : "Click me!"}}</button>
-	`
+		`
 	})
-
 
 	// data = optionally, array of rows for the grid to show
 	Vue.component('grid', {
@@ -388,7 +387,7 @@ function loadVue() {
 				<br>
 			</div>
 		</div>
-	`
+		`
 	})
 
 	Vue.component('gridable', {
@@ -445,7 +444,6 @@ function loadVue() {
 		`
 	})
 
-
 	// data = id of the bar
 	Vue.component('bar', {
 		props: ['layer', 'data'],
@@ -463,7 +461,6 @@ function loadVue() {
 		</div></div>
 		`
 	})
-
 
 	Vue.component('achievements', {
 		props: ['layer', 'data'],
@@ -507,8 +504,7 @@ function loadVue() {
 			</span>
 			<tr><table><button class="treeNode hidden"></button></table></tr>
 		</span></div>
-
-	`
+		`
 	})
 
 	// Data is an array with the structure of the tree
@@ -550,9 +546,8 @@ function loadVue() {
 			</span>
 			<tr><table><button class="treeNode hidden"></button></table></tr>
 		</span></div>
-	`
+		`
 	})
-
 
 	// Updates the value in player[layer][data]
 	Vue.component('text-input', {
@@ -581,20 +576,22 @@ function loadVue() {
 			</select>
 		`
 	})
+
 	// These are for buyables, data is the id of the corresponding buyable
 	Vue.component('sell-one', {
 		props: ['layer', 'data'],
 		template: `
 			<button v-if="tmp[layer].buyables && tmp[layer].buyables[data].sellOne && !(tmp[layer].buyables[data].canSellOne !== undefined && tmp[layer].buyables[data].canSellOne == false)" v-on:click="run(tmp[layer].buyables[data].sellOne, tmp[layer].buyables[data])"
 				v-bind:class="{ longUpg: true, can: player[layer].unlocked, locked: !player[layer].unlocked }">{{tmp[layer].buyables.sellOneText ? tmp[layer].buyables.sellOneText : "Sell One"}}</button>
-	`
+		`
 	})
+	
 	Vue.component('sell-all', {
 		props: ['layer', 'data'],
 		template: `
 			<button v-if="tmp[layer].buyables && tmp[layer].buyables[data].sellAll && !(tmp[layer].buyables[data].canSellAll !== undefined && tmp[layer].buyables[data].canSellAll == false)" v-on:click="run(tmp[layer].buyables[data].sellAll, tmp[layer].buyables[data])"
 				v-bind:class="{ longUpg: true, can: player[layer].unlocked, locked: !player[layer].unlocked }">{{tmp[layer].buyables.sellAllText ? tmp[layer].buyables.sellAllText : "Sell All"}}</button>
-	`
+		`
 	})
 
 	// SYSTEM COMPONENTS
@@ -608,7 +605,6 @@ function loadVue() {
 	Vue.component('tooltip', systemComponents['tooltip'])
 	Vue.component('particle', systemComponents['particle'])
 	Vue.component('bg', systemComponents['bg'])
-
 
 	app = new Vue({
 		el: "#app",
@@ -660,6 +656,4 @@ function loadVue() {
 			gridRun,
 		},
 	})
-}
-
- 
+};
