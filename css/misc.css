@@ -1,3 +1,19 @@
+/* Custom Colors */
+.rainbow {
+    height: 100%;
+    width: 100%;
+    top: 0;
+    position: absolute;
+    background: linear-gradient(90deg, #ff0088, #ff0000, #ff8800, #ffff00, #88ff00, #00ff00, #00ff88, #00ffff, #0088ff, #0000ff, #8800ff, #ff00ff, #ff0088, #ff0000, #ff8800, #ffff00, #88ff00, #00ff00, #00ff88, #00ffff, #0088ff, #0000ff, #8800ff, #ff00ff, #ff0088);
+    background-size: 200%;
+    border-radius: 50%;
+    animation: rainbow 10s infinite;
+}
+
+@keyframes rainbow {
+    0%{background-position:0%}
+    100%{background-position:100%}
+}
 
 /* Prestige button */
 .reset {

@@ -1,12 +1,11 @@
 addLayer('c', {
     name: 'Colors',
-    symbol: 'C',
+    symbol: '<div class="rainbow">',
     position: 0,
     startData() { return {
         unlocked: true,
-        colors: 0,
+        colors: 1,
     }},
-    color: '#ffffff',
     tooltip() {
         return formatWhole(player.c.colors) + ' colors';
     },
@@ -30,9 +29,6 @@ addLayer('c', {
             cost() {
                 return new Decimal(1.5).pow(getBuyableAmount('c', 11));
             },
-            title() {
-                return 'Red';
-            },
             canAfford() { return player.points.gte(this.cost()) && getBuyableAmount(this.layer, this.id).lt(this.purchaseLimit) },
             purchaseLimit: 1000,
             buy() {
@@ -40,7 +36,10 @@ addLayer('c', {
                 setBuyableAmount('c', 11, getBuyableAmount('c', 11).add(1));
             },
             display() {
-                return '<br>Level: ' + formatWhole(getBuyableAmount('c', 11)) + '<br><br>Cost: ' + format(this.cost()) + ' coins';
+                return '<h1 style="color:#ff0000">Red</h1><br><br>Level: ' + formatWhole(getBuyableAmount('c', 11).add(1)) + '<br><br>Cost: ' + format(this.cost()) + ' coins';
+            },
+            style() {
+                return {'background-color':'#cccccc','border-radius':'25%','height':'80px','width':'160px'};
             },
         },
     },
