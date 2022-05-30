@@ -1,6 +1,6 @@
 /* Rainbow Animation */
 :root {
-    --rainbow: linear-gradient(90deg, fuchsia, red, yellow, lime, cyan, blue, fuchsia, red, yellow, lime, cyan, blue, fuchsia);
+    --rainbow: linear-gradient(90deg, magenta, red, yellow, lime, cyan, blue, magenta, red, yellow, lime, cyan, blue, magenta);
 }
 
 .rainbow-backround {
