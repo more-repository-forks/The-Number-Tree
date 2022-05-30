@@ -45,8 +45,12 @@ addLayer('c', {
         'blank',
         ['row', [
             ['bar', 'redBar'],
-            'blank',
-            'buyables',
+            ['blank', ['3.5px', '1px']],
+            ['column', [
+                ['bar', 'redBuy'],
+                ['blank', '3px'],
+                ['buyables', '1'],
+            ]],
         ]],
     ],
     bars: {
@@ -59,6 +63,19 @@ addLayer('c', {
             },
             display() {
                 return 'earnings per cycle: ' + format(player.c.earnRed) + ' coins';
+            },
+            fillStyle: {'background-color':'red'},
+            borderStyle: {'border-color':'red'},
+        },
+        redBuy: {
+            direction: LEFT,
+            width: 140,
+            height: 20,
+            progress() {
+                return player.points.div(layers.c.buyables[11].cost());
+            },
+            display() {
+                return format(this.progress().mul(100)) + '%';
             },
             fillStyle: {'background-color':'red'},
             borderStyle: {'border-color':'red'},
@@ -76,10 +93,10 @@ addLayer('c', {
                 setBuyableAmount('c', 11, getBuyableAmount('c', 11).add(1));
             },
             display() {
-                return '<h1 style="color:#ff0000">Red</h1><br><br>Level: ' + formatWhole(getBuyableAmount('c', 11).add(1)) + '<br><br>Cost: ' + format(this.cost()) + ' coins';
+                return '<span style="color:red">Level: ' + formatWhole(getBuyableAmount('c', 11).add(1)) + '<br><br>Cost: ' + format(this.cost()) + ' coins';
             },
             style() {
-                return {'background-color':'#cccccc','border-radius':'25%','height':'80px','width':'160px'};
+                return {'background-color':'#cccccc','border-radius':'25%','height':'40px','width':'140px'};
             },
         },
     },
