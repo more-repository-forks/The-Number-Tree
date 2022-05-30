@@ -114,7 +114,7 @@ var overlay_head = `
 <div class="overlayThing" style="padding-bottom:10px;background-image:linear-gradient(#000000,#000000CC,#00000099,#00000066,#00000000);z-index:1000;position:relative">
     <span v-if="player.devSpeed&&player.devSpeed!=1" class="overlayThing">
         <br>
-        Dev Speed: {{format(player.devSpeed)}}x<br>
+        Dev Speed: {{illionFormat(player.devSpeed)}}x<br>
     </span>
     <span v-if="player.offTime!==undefined" class="overlayThing">
         <br>
@@ -122,10 +122,10 @@ var overlay_head = `
     </span>
     <br>
     <span v-if="player.points.lt('1e1000')" class="overlayThing">You have </span>
-    <h2 class="overlayThing" id="points">{{format(player.points)}}</h2>
+    <h2 class="overlayThing" id="points">{{illionFormat(player.points)}}</h2>
     <span v-if="player.points.lt('1e1e6')" class="overlayThing">{{modInfo.pointsName}}</span>
     <br>
-    <span v-if="canGenPoints()" class="overlayThing">{{tmp.other.oompsMag!=0?format(tmp.other.oomps)+" OOM"+(tmp.other.oompsMag<0?"^OOM":tmp.other.oompsMag>1?"^"+tmp.other.oompsMag:"")+"s" :formatSmall(getPointGen())}}/sec</span>
+    <span v-if="canGenPoints()" class="overlayThing">{{tmp.other.oompsMag!=0?format(tmp.other.oomps)+" OOM"+(tmp.other.oompsMag<0?"^OOM":tmp.other.oompsMag>1?"^"+tmp.other.oompsMag:"")+"s":illionFormat(getPointGen())}}/sec</span>
     <div v-for="thing in tmp.displayThings" class="overlayThing"><span v-if="thing" v-html="thing"></div>
 </div>`
 
