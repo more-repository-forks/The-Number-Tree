@@ -6,7 +6,9 @@ addLayer('c', {
         unlocked: true,
         colors: 1,
     }},
+    color: '#ffffff',
     tooltip() {
+        document.body.style.setProperty('--hqProperty1', '0px');
         return formatWhole(player.c.colors) + ' colors';
     },
     row: 0,

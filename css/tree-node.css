@@ -1,7 +1,7 @@
 /* Tree nodes, button nodes, and side layers */
 .treeNode {
-	height: 100px;
-	width: 100px;
+	height: 120px;
+	width: 120px;
 	border: var(--hqProperty1);
 	border-color: rgba(0, 0, 0, 0.125);
 	border-radius: 50%;
@@ -34,9 +34,9 @@
 }
 
 .smallNode {
-	height: 60px;
-	width: 60px;
-	font-size: 30px;
+	height: 80px;
+	width: 80px;
+	font-size: 40px;
 }
 
 .resetNotify {
@@ -53,8 +53,6 @@
 	border-color: rgba(0, 0, 0, 0.125);
 	box-shadow: var(--hqProperty2a), 0 0 20px #ff0000;
 }
-
-
 
 .mark {
 	position: relative;
