@@ -14,7 +14,7 @@ addLayer('c', {
         timeGreenyellow: 0,
         earnGreenyellow: new Decimal(0),
     }},
-    color: '#ffffff',
+    color: 'white',
     tooltip() {
         document.body.style.setProperty('--hqProperty1', '0px');
         return formatWhole(player.c.colors) + ' colors';
@@ -147,7 +147,7 @@ addLayer('c', {
                 return player.c.timeRed;
             },
             display() {
-                return 'earnings per cycle: ' + format(player.c.earnRed) + ' coins';
+                return 'earnings per cycle: ' + illionFormat(player.c.earnRed) + ' coins';
             },
             fillStyle: {'background-color':'red'},
             borderStyle: {'border-color':'red'},
@@ -160,8 +160,8 @@ addLayer('c', {
                 return player.points.div(layers.c.buyables[11].cost());
             },
             display() {
-                if (this.progress().gt(1)) return format(100) + '%';
-                return format(this.progress().mul(100)) + '%';
+                if (this.progress().gt(1)) return illionFormat(100) + '%';
+                return illionFormat(this.progress().mul(100)) + '%';
             },
             fillStyle: {'background-color':'red'},
             borderStyle: {'border-color':'red'},
@@ -194,7 +194,7 @@ addLayer('c', {
             },
             display() {
                 if (getBuyableAmount('c', 21).eq(0)) return 'locked';
-                return 'earnings per cycle: ' + format(player.c.earnOrange) + ' coins';
+                return 'earnings per cycle: ' + illionFormat(player.c.earnOrange) + ' coins';
             },
             fillStyle: {'background-color':'#ff8800'},
             borderStyle: {'border-color':'#ff8800'},
@@ -207,8 +207,8 @@ addLayer('c', {
                 return player.points.div(layers.c.buyables[21].cost());
             },
             display() {
-                if (this.progress().gt(1)) return format(100) + '%';
-                return format(this.progress().mul(100)) + '%';
+                if (this.progress().gt(1)) return illionFormat(100) + '%';
+                return illionFormat(this.progress().mul(100)) + '%';
             },
             fillStyle: {'background-color':'#ff8800'},
             borderStyle: {'border-color':'#ff8800'},
@@ -241,7 +241,7 @@ addLayer('c', {
             },
             display() {
                 if (getBuyableAmount('c', 31).eq(0)) return 'locked';
-                return 'earnings per cycle: ' + format(player.c.earnYellow) + ' coins';
+                return 'earnings per cycle: ' + illionFormat(player.c.earnYellow) + ' coins';
             },
             fillStyle: {'background-color':'yellow'},
             borderStyle: {'border-color':'yellow'},
@@ -258,8 +258,8 @@ addLayer('c', {
                 return player.points.div(layers.c.buyables[31].cost());
             },
             display() {
-                if (this.progress().gt(1)) return format(100) + '%';
-                return format(this.progress().mul(100)) + '%';
+                if (this.progress().gt(1)) return illionFormat(100) + '%';
+                return illionFormat(this.progress().mul(100)) + '%';
             },
             fillStyle: {'background-color':'yellow'},
             borderStyle: {'border-color':'yellow'},
@@ -299,7 +299,7 @@ addLayer('c', {
             },
             display() {
                 if (getBuyableAmount('c', 41).eq(0)) return 'locked';
-                return 'earnings per cycle: ' + format(player.c.earnGreenyellow) + ' coins';
+                return 'earnings per cycle: ' + illionFormat(player.c.earnGreenyellow) + ' coins';
             },
             fillStyle: {'background-color':'#88ff00'},
             borderStyle: {'border-color':'#88ff00'},
@@ -316,8 +316,8 @@ addLayer('c', {
                 return player.points.div(layers.c.buyables[41].cost());
             },
             display() {
-                if (this.progress().gt(1)) return format(100) + '%';
-                return format(this.progress().mul(100)) + '%';
+                if (this.progress().gt(1)) return illionFormat(100) + '%';
+                return illionFormat(this.progress().mul(100)) + '%';
             },
             fillStyle: {'background-color':'#88ff00'},
             borderStyle: {'border-color':'#88ff00'},
@@ -363,9 +363,9 @@ addLayer('c', {
                 setBuyableAmount('c', 11, getBuyableAmount('c', 11).add(1));
             },
             display() {
-                return '<h3 style="color:red">Cost: ' + format(this.cost()) + ' coins';
+                return '<h3 style="color:red">Cost: ' + illionFormat(this.cost(), true) + ' coins';
             },
-            style: {'background-color':'#ffffff','border-radius':'0%','height':'25px','width':'180px'},
+            style: {'background-color':'white','border-radius':'0%','height':'25px','width':'180px'},
         },
         21: {
             cost() {
@@ -380,10 +380,10 @@ addLayer('c', {
                 setBuyableAmount('c', 21, getBuyableAmount('c', 21).add(1));
             },
             display() {
-                if (getBuyableAmount('c', 21).eq(0)) return '<h3 style="color:#ff8800">Unlock: ' + format(this.cost()) + ' coins';
-                return '<h3 style="color:#ff8800">Cost: ' + format(this.cost()) + ' coins';
+                if (getBuyableAmount('c', 21).eq(0)) return '<h3 style="color:#ff8800">Unlock: ' + illionFormat(this.cost(), true) + ' coins';
+                return '<h3 style="color:#ff8800">Cost: ' + illionFormat(this.cost(), true) + ' coins';
             },
-            style: {'background-color':'#ffffff','border-radius':'0%','height':'25px','width':'180px'},
+            style: {'background-color':'white','border-radius':'0%','height':'25px','width':'180px'},
         },
         31: {
             cost() {
@@ -398,8 +398,8 @@ addLayer('c', {
                 setBuyableAmount('c', 31, getBuyableAmount('c', 31).add(1));
             },
             display() {
-                if (getBuyableAmount('c', 31).eq(0)) return '<h3 style="color:yellow">Unlock: ' + format(this.cost()) + ' coins';
-                return '<h3 style="color:yellow">Cost: ' + format(this.cost()) + ' coins';
+                if (getBuyableAmount('c', 31).eq(0)) return '<h3 style="color:yellow">Unlock: ' + illionFormat(this.cost(), true) + ' coins';
+                return '<h3 style="color:yellow">Cost: ' + illionFormat(this.cost(), true) + ' coins';
             },
             style: {'background-color':'#aaaaaa','border-radius':'0%','height':'25px','width':'180px'},
             unlocked() {
@@ -419,8 +419,8 @@ addLayer('c', {
                 setBuyableAmount('c', 41, getBuyableAmount('c', 41).add(1));
             },
             display() {
-                if (getBuyableAmount('c', 41).eq(0)) return '<h3 style="color:#88ff00">Unlock: ' + format(this.cost()) + ' coins';
-                return '<h3 style="color:#88ff00">Cost: ' + format(this.cost()) + ' coins';
+                if (getBuyableAmount('c', 41).eq(0)) return '<h3 style="color:#88ff00">Unlock: ' + illionFormat(this.cost(), true) + ' coins';
+                return '<h3 style="color:#88ff00">Cost: ' + illionFormat(this.cost(), true) + ' coins';
             },
             style: {'background-color':'#aaaaaa','border-radius':'0%','height':'25px','width':'180px'},
             unlocked() {
