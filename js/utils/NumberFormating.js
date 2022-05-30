@@ -1,3 +1,133 @@
+function illionFormat(decimal, short, precision = 2) {
+    let suffix = "";
+    let divnum = 1;
+    decimal = new Decimal(decimal);
+    if (options.extendplaces && precision == 2) precision = 3;
+    if (decimal.gte(1e90)) {
+        divnum = 1e90;
+        suffix = "novemtrigintillion";
+        if (short) suffix = "nt";
+    } else if (decimal.gte(1e87)) {
+        divnum = 1e87;
+        suffix = "octotrigintillion";
+        if (short) suffix = "ot";
+    } else if (decimal.gte(1e84)) {
+        divnum = 1e84;
+        suffix = "septtrigintillion";
+        if (short) suffix = "St";
+    } else if (decimal.gte(1e81)) {
+        divnum = 1e81;
+        suffix = "setrigintillion";
+        if (short) suffix = "st";
+    } else if (decimal.gte(1e78)) {
+        divnum = 1e78;
+        suffix = "quintrigintillion";
+        if (short) suffix = "Qt";
+    } else if (decimal.gte(1e75)) {
+        divnum = 1e75;
+        suffix = "quattortrigintillion";
+        if (short) suffix = "qt";
+    } else if (decimal.gte(1e72)) {
+        divnum = 1e72;
+        suffix = "tritrigintillion";
+        if (short) suffix = "tt";
+    } else if (decimal.gte(1e69)) {
+        divnum = 1e69;
+        suffix = "duotrigintillion";
+        if (short) suffix = "dt";
+    } else if (decimal.gte(1e66)) {
+        divnum = 1e66;
+        suffix = "untrigintillion";
+        if (short) suffix = "ut";
+    } else if (decimal.gte(1e63)) {
+        divnum = 1e63;
+        suffix = "trigintillion";
+        if (short) suffix = "!t";
+    } else if (decimal.gte(1e60)) {
+        divnum = 1e60;
+        suffix = "novemdecillion";
+        if (short) suffix = "nd";
+    } else if (decimal.gte(1e57)) {
+        divnum = 1e57;
+        suffix = "octodecillion";
+        if (short) suffix = "od";
+    } else if (decimal.gte(1e54)) {
+        divnum = 1e54;
+        suffix = "septdecillion";
+        if (short) suffix = "Sd";
+    } else if (decimal.gte(1e51)) {
+        divnum = 1e51;
+        suffix = "sedecillion";
+        if (short) suffix = "sd";
+    } else if (decimal.gte(1e48)) {
+        divnum = 1e48;
+        suffix = "quindecillion";
+        if (short) suffix = "Qd";
+    } else if (decimal.gte(1e45)) {
+        divnum = 1e45;
+        suffix = "quattordecillion";
+        if (short) suffix = "qd";
+    } else if (decimal.gte(1e42)) {
+        divnum = 1e42;
+        suffix = "tredecillion";
+        if (short) suffix = "td";
+    } else if (decimal.gte(1e39)) {
+        divnum = 1e39;
+        suffix = "duodecillion";
+        if (short) suffix = "dd";
+    } else if (decimal.gte(1e36)) {
+        divnum = 1e36;
+        suffix = "undecillion";
+        if (short) suffix = "ud";
+    } else if (decimal.gte(1e33)) {
+        divnum = 1e33;
+        suffix = "decillion";
+        if (short) suffix = "!d";
+    } else if (decimal.gte(1e30)) {
+        divnum = 1e30;
+        suffix = "nonillion";
+        if (short) suffix = "n";
+    } else if (decimal.gte(1e27)) {
+        divnum = 1e27;
+        suffix = "octillion";
+        if (short) suffix = "o";
+    } else if (decimal.gte(1e24)) {
+        divnum = 1e24;
+        suffix = "septillion";
+        if (short) suffix = "S";
+    } else if (decimal.gte(1e21)) {
+        divnum = 1e21;
+        suffix = "sexillion";
+        if (short) suffix = "s";
+    } else if (decimal.gte(1e18)) {
+        divnum = 1e18;
+        suffix = "quintillion";
+        if (short) suffix = "Q";
+    } else if (decimal.gte(1e15)) {
+        divnum = 1e15;
+        suffix = "quadrillion";
+        if (short) suffix = "q";
+    } else if (decimal.gte(1e12)) {
+        divnum = 1e12;
+        suffix = "trillion";
+        if (short) suffix = "t";
+    } else if (decimal.gte(1e9)) {
+        divnum = 1e9;
+        suffix = "billion";
+        if (short) suffix = "b";
+    } else if (decimal.gte(1e6)) {
+        divnum = 1e6;
+        suffix = "million";
+        if (short) suffix = "m";
+    } else if (decimal.gte(1e3)) {
+        divnum = 1e3;
+        suffix = "thousand";
+        if (short) suffix = "k";
+    } else return format(decimal);
+    if (short) return decimal.div(divnum).toStringWithDecimalPlaces(precision) + suffix;
+    return decimal.div(divnum).toStringWithDecimalPlaces(precision) + " " + suffix;
+};
+
 function exponentialFormat(num, precision, mantissa = true) {
     let e = num.log10().floor();
     let m = num.div(Decimal.pow(10, e));
@@ -90,7 +220,7 @@ function toPlaces(x, precision, maxAccepted) {
 };
 
 // Will also display very small numbers
-function formatSmall(x, precision = 2) { 
+function formatSmall(x, precision = 2) {
     return format(x, precision, true);
 };
 
