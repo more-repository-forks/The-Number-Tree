@@ -24,20 +24,20 @@
 
 .moon.num1 {
     background: lightgray;
-    transform-origin: 280% 200%;
-    animation: 4s linear -2s infinite orbit;
+    transform-origin: 290% 200%;
+    animation: 6s linear -2s infinite orbit;
 }
 
 .moon.num2 {
     background: darkgray;
-    transform-origin: 400% 200%;
-    animation: 8s linear -1s infinite orbit;
+    transform-origin: 410% 200%;
+    animation: 9s linear -7s infinite orbit;
 }
 
 .moon.num3 {
     background: gray;
-    transform-origin: 520% 200%;
-    animation: 12s linear 0s infinite orbit;
+    transform-origin: 530% 200%;
+    animation: 14s linear 0s infinite orbit;
 }
 
 .rainbowline-text {

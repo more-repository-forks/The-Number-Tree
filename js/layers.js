@@ -437,7 +437,7 @@ addLayer('p', {
     }},
     color: "slategray",
     resource: "prestige points",
-    row: 1,
+    row: 2,
     baseResource: "colors",
     baseAmount() {
         return new Decimal(player.c.colors);
