@@ -226,10 +226,10 @@ addLayer('c', {
             width: 60,
             height: 60,
             progress() {
-                if (getBuyableAmount('c', 11).lt(10)) goal = 10;
-                else if (getBuyableAmount('c', 11).lt(25)) goal = 25;
-                else if (getBuyableAmount('c', 11).lt(50)) goal = 50;
-                else if (getBuyableAmount('c', 11).lt(100)) goal = 100;
+                if (getBuyableAmount('c', 11).lt(9)) goal = 10;
+                else if (getBuyableAmount('c', 11).lt(24)) goal = 25;
+                else if (getBuyableAmount('c', 11).lt(49)) goal = 50;
+                else if (getBuyableAmount('c', 11).lt(99)) goal = 100;
                 else goal = 200;
                 return getBuyableAmount('c', 11).add(1).div(goal);
             },
@@ -276,9 +276,9 @@ addLayer('c', {
             height: 60,
             progress() {
                 if (getBuyableAmount('c', 21).lt(10)) goal = 10;
-                else if (getBuyableAmount('c', 21).lte(25)) goal = 25;
-                else if (getBuyableAmount('c', 21).lte(50)) goal = 50;
-                else if (getBuyableAmount('c', 21).lte(100)) goal = 100;
+                else if (getBuyableAmount('c', 21).lt(25)) goal = 25;
+                else if (getBuyableAmount('c', 21).lt(50)) goal = 50;
+                else if (getBuyableAmount('c', 21).lt(100)) goal = 100;
                 else goal = 200;
                 return getBuyableAmount('c', 21).div(goal);
             },
@@ -331,9 +331,9 @@ addLayer('c', {
             height: 60,
             progress() {
                 if (getBuyableAmount('c', 31).lt(10)) goal = 10;
-                else if (getBuyableAmount('c', 31).lte(25)) goal = 25;
-                else if (getBuyableAmount('c', 31).lte(50)) goal = 50;
-                else if (getBuyableAmount('c', 31).lte(100)) goal = 100;
+                else if (getBuyableAmount('c', 31).lt(25)) goal = 25;
+                else if (getBuyableAmount('c', 31).lt(50)) goal = 50;
+                else if (getBuyableAmount('c', 31).lt(100)) goal = 100;
                 else goal = 200;
                 return getBuyableAmount('c', 31).div(goal);
             },
@@ -389,9 +389,9 @@ addLayer('c', {
             height: 60,
             progress() {
                 if (getBuyableAmount('c', 41).lt(10)) goal = 10;
-                else if (getBuyableAmount('c', 41).lte(25)) goal = 25;
-                else if (getBuyableAmount('c', 41).lte(50)) goal = 50;
-                else if (getBuyableAmount('c', 41).lte(100)) goal = 100;
+                else if (getBuyableAmount('c', 41).lt(25)) goal = 25;
+                else if (getBuyableAmount('c', 41).lt(50)) goal = 50;
+                else if (getBuyableAmount('c', 41).lt(100)) goal = 100;
                 else goal = 200;
                 return getBuyableAmount('c', 41).div(goal);
             },
@@ -447,9 +447,9 @@ addLayer('c', {
             height: 60,
             progress() {
                 if (getBuyableAmount('c', 51).lt(10)) goal = 10;
-                else if (getBuyableAmount('c', 51).lte(25)) goal = 25;
-                else if (getBuyableAmount('c', 51).lte(50)) goal = 50;
-                else if (getBuyableAmount('c', 51).lte(100)) goal = 100;
+                else if (getBuyableAmount('c', 51).lt(25)) goal = 25;
+                else if (getBuyableAmount('c', 51).lt(50)) goal = 50;
+                else if (getBuyableAmount('c', 51).lt(100)) goal = 100;
                 else goal = 200;
                 return getBuyableAmount('c', 51).div(goal);
             },
@@ -505,9 +505,9 @@ addLayer('c', {
             height: 60,
             progress() {
                 if (getBuyableAmount('c', 61).lt(10)) goal = 10;
-                else if (getBuyableAmount('c', 61).lte(25)) goal = 25;
-                else if (getBuyableAmount('c', 61).lte(50)) goal = 50;
-                else if (getBuyableAmount('c', 61).lte(100)) goal = 100;
+                else if (getBuyableAmount('c', 61).lt(25)) goal = 25;
+                else if (getBuyableAmount('c', 61).lt(50)) goal = 50;
+                else if (getBuyableAmount('c', 61).lt(100)) goal = 100;
                 else goal = 200;
                 return getBuyableAmount('c', 61).div(goal);
             },
@@ -663,18 +663,18 @@ addLayer('r', {
     baseAmount() {
         return new Decimal(player.c.colors);
     },
-    requires: new Decimal(6),
+    requires: new Decimal(5),
     type: 'custom',
     getResetGain(x = 0) {
-        earnings = [0, 0, 0, 0, 0, 0, 2, 5, 36];
+        earnings = [0, 0, 0, 0, 0, 2, 5, 36];
         return new Decimal(earnings[player.c.colors + x]);
     },
     getNextAt() {
-        if (player.c.colors < 6) return 6;
+        if (!tmp.r.canReset) return tmp.r.requires;
         return player.c.colors + 1;
     },
     canReset() {
-        return player.c.colors >= 6;
+        return player.c.colors >= 5;
     },
     prestigeNotify() {
         return tmp.r.canReset && (new Decimal(tmp.r.resetGain).gte(player.r.points.div(10)));
