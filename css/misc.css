@@ -1,32 +1,50 @@
 /* Rainbow Animation */
 :root {
-    --rainbow: linear-gradient(90deg, magenta, red, yellow, lime, cyan, blue, magenta, red, yellow, lime, cyan, blue, magenta);
+    --rainbowline: linear-gradient(90deg, magenta, red, yellow, lime, cyan, blue, magenta, red, yellow, lime, cyan, blue, magenta);
+    --rainboworb: conic-gradient(magenta, red, yellow, lime, cyan, blue, magenta, red, yellow, lime, cyan, blue, magenta);
 }
 
-.rainbow-backround {
+.rainbowline-backround {
     height: 100%;
     width: 100%;
     left: 0;
     top: 0;
     position: absolute;
-    background: var(--rainbow);
+    background: var(--rainbowline);
     background-size: 200%;
     border-radius: 50%;
-    animation: rainbow 3s linear infinite;
+    animation: rainbowline 3s linear infinite;
 }
 
-.rainbow-text {
-    background: var(--rainbow);
+.rainboworb-backround {
+    height: 150%;
+    width: 150%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    background: var(--rainboworb);
+    background-size: 100%;
+    border-radius: 50%;
+    animation: rainboworb 5s linear infinite;
+}
+
+.rainbowline-text {
+    background: var(--rainbowline);
     background-size: 200%;
-    animation: rainbow 3s linear infinite;
+    animation: rainbowline 3s linear infinite;
     color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
 }
 
-@keyframes rainbow {
+@keyframes rainbowline {
     0%{background-position:0%}
     100%{background-position:100%}
+}
+
+@keyframes rainboworb {
+    0%{transform:rotate(0deg)}
+    100%{transform:rotate(360deg)}
 }
 
 /* Prestige button */
