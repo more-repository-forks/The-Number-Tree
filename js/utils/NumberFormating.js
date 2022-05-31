@@ -1,213 +1,142 @@
 function illionFormat(decimal, short, precision = 2) {
     let suffix = "";
-    let divnum = 1;
+    let divnum = new Decimal(1);
     decimal = new Decimal(decimal);
     if (options.extendplaces && precision == 2) precision = 3;
-    if (decimal.gte(1e153)) {
-        divnum = 1e153;
-        suffix = "quinquagintillion";
-        if (short) suffix = "~Q";
-    } else if (decimal.gte(1e150)) {
-        divnum = 1e150;
-        suffix = "novemquadragintillion";
-        if (short) suffix = "nq";
-    } else if (decimal.gte(1e147)) {
-        divnum = 1e147;
-        suffix = "octoquadragintillion";
-        if (short) suffix = "oq";
-    } else if (decimal.gte(1e144)) {
-        divnum = 1e144;
-        suffix = "septenquadragintillion";
-        if (short) suffix = "Sq";
-    } else if (decimal.gte(1e141)) {
-        divnum = 1e141;
-        suffix = "sexquadragintillion";
-        if (short) suffix = "sq";
-    } else if (decimal.gte(1e138)) {
-        divnum = 1e138;
-        suffix = "quinquadragintillion";
-        if (short) suffix = "Qq";
-    } else if (decimal.gte(1e135)) {
-        divnum = 1e135;
-        suffix = "quattuorquadragintillion";
-        if (short) suffix = "qq";
-    } else if (decimal.gte(1e132)) {
-        divnum = 1e132;
-        suffix = "trequadragintillion";
-        if (short) suffix = "tq";
-    } else if (decimal.gte(1e129)) {
-        divnum = 1e129;
-        suffix = "duoquadragintillion";
-        if (short) suffix = "dq";
-    } else if (decimal.gte(1e126)) {
-        divnum = 1e126;
-        suffix = "unquadragintillion";
-        if (short) suffix = "uq";
-    } else if (decimal.gte(1e123)) {
-        divnum = 1e123;
-        suffix = "quadragintillion";
-        if (short) suffix = "~q";
-    } else if (decimal.gte(1e120)) {
-        divnum = 1e120;
-        suffix = "novemtrigintillion";
-        if (short) suffix = "nt";
-    } else if (decimal.gte(1e117)) {
-        divnum = 1e117;
-        suffix = "octotrigintillion";
-        if (short) suffix = "ot";
-    } else if (decimal.gte(1e114)) {
-        divnum = 1e114;
-        suffix = "septentrigintillion";
-        if (short) suffix = "St";
-    } else if (decimal.gte(1e111)) {
-        divnum = 1e111;
-        suffix = "setrigintillion";
-        if (short) suffix = "st";
-    } else if (decimal.gte(1e108)) {
-        divnum = 1e108;
-        suffix = "quintrigintillion";
-        if (short) suffix = "Qt";
-    } else if (decimal.gte(1e105)) {
-        divnum = 1e105;
-        suffix = "quattuortrigintillion";
-        if (short) suffix = "qt";
-    } else if (decimal.gte(1e102)) {
-        divnum = 1e102;
-        suffix = "tretrigintillion";
-        if (short) suffix = "tt";
-    } else if (decimal.gte(1e99)) {
-        divnum = 1e99;
-        suffix = "duotrigintillion";
-        if (short) suffix = "dt";
-    } else if (decimal.gte(1e96)) {
-        divnum = 1e96;
-        suffix = "untrigintillion";
-        if (short) suffix = "ut";
-    } else if (decimal.gte(1e93)) {
-        divnum = 1e93;
-        suffix = "trigintillion";
-        if (short) suffix = "~t";
-    } else if (decimal.gte(1e90)) {
-        divnum = 1e90;
-        suffix = "novemvigintillion";
-        if (short) suffix = "nv";
-    } else if (decimal.gte(1e87)) {
-        divnum = 1e87;
-        suffix = "octovigintillion";
-        if (short) suffix = "ov";
-    } else if (decimal.gte(1e84)) {
-        divnum = 1e84;
-        suffix = "septenvigintillion";
-        if (short) suffix = "Sv";
-    } else if (decimal.gte(1e81)) {
-        divnum = 1e81;
-        suffix = "sexvigintillion";
-        if (short) suffix = "sv";
-    } else if (decimal.gte(1e78)) {
-        divnum = 1e78;
-        suffix = "quinvigintillion";
-        if (short) suffix = "Qv";
-    } else if (decimal.gte(1e75)) {
-        divnum = 1e75;
-        suffix = "quattuorvigintillion";
-        if (short) suffix = "qv";
-    } else if (decimal.gte(1e72)) {
-        divnum = 1e72;
-        suffix = "trevigintillion";
-        if (short) suffix = "tv";
-    } else if (decimal.gte(1e69)) {
-        divnum = 1e69;
-        suffix = "duovigintillion";
-        if (short) suffix = "dv";
-    } else if (decimal.gte(1e66)) {
-        divnum = 1e66;
-        suffix = "unvigintillion";
-        if (short) suffix = "uv";
-    } else if (decimal.gte(1e63)) {
-        divnum = 1e63;
-        suffix = "vigintillion";
-        if (short) suffix = "!v";
-    } else if (decimal.gte(1e60)) {
-        divnum = 1e60;
-        suffix = "novemdecillion";
-        if (short) suffix = "nd";
-    } else if (decimal.gte(1e57)) {
-        divnum = 1e57;
-        suffix = "octodecillion";
-        if (short) suffix = "od";
-    } else if (decimal.gte(1e54)) {
-        divnum = 1e54;
-        suffix = "septendecillion";
-        if (short) suffix = "Sd";
-    } else if (decimal.gte(1e51)) {
-        divnum = 1e51;
-        suffix = "sexdecillion";
-        if (short) suffix = "sd";
-    } else if (decimal.gte(1e48)) {
-        divnum = 1e48;
-        suffix = "quindecillion";
-        if (short) suffix = "Qd";
-    } else if (decimal.gte(1e45)) {
-        divnum = 1e45;
-        suffix = "quattuordecillion";
-        if (short) suffix = "qd";
-    } else if (decimal.gte(1e42)) {
-        divnum = 1e42;
-        suffix = "tredecillion";
-        if (short) suffix = "td";
-    } else if (decimal.gte(1e39)) {
-        divnum = 1e39;
-        suffix = "duodecillion";
-        if (short) suffix = "dd";
-    } else if (decimal.gte(1e36)) {
-        divnum = 1e36;
-        suffix = "undecillion";
-        if (short) suffix = "ud";
-    } else if (decimal.gte(1e33)) {
-        divnum = 1e33;
-        suffix = "decillion";
-        if (short) suffix = "!d";
-    } else if (decimal.gte(1e30)) {
-        divnum = 1e30;
-        suffix = "nonillion";
-        if (short) suffix = "n";
-    } else if (decimal.gte(1e27)) {
-        divnum = 1e27;
-        suffix = "octillion";
-        if (short) suffix = "o";
-    } else if (decimal.gte(1e24)) {
-        divnum = 1e24;
-        suffix = "septillion";
-        if (short) suffix = "S";
-    } else if (decimal.gte(1e21)) {
-        divnum = 1e21;
-        suffix = "sextillion";
-        if (short) suffix = "s";
-    } else if (decimal.gte(1e18)) {
-        divnum = 1e18;
-        suffix = "quintillion";
-        if (short) suffix = "Q";
-    } else if (decimal.gte(1e15)) {
-        divnum = 1e15;
-        suffix = "quadrillion";
-        if (short) suffix = "q";
-    } else if (decimal.gte(1e12)) {
-        divnum = 1e12;
-        suffix = "trillion";
-        if (short) suffix = "t";
-    } else if (decimal.gte(1e9)) {
-        divnum = 1e9;
-        suffix = "billion";
-        if (short) suffix = "b";
-    } else if (decimal.gte(1e6)) {
-        divnum = 1e6;
-        suffix = "million";
-        if (short) suffix = "m";
-    } else if (decimal.gte(1e3)) {
-        divnum = 1e3;
-        suffix = "thousand";
-        if (short) suffix = "k";
-    } else return format(decimal);
+    if (decimal.gte(1e303)) { // format normally if out of bounds
+        return format(decimal);
+    } else if (decimal.gte(1e33)) { // add prefix if 10th illion or higher
+        let exponent = decimal.layeradd10(-1).floor();
+        // add first part
+        if (exponent % 30 < 3) { // 9th
+            divnum = divnum.mul(1e27);
+            if (!short) suffix += "novem";
+            else suffix += "n";
+        } else if (exponent.sub(27) % 30 < 3) { // 8th
+            divnum = divnum.mul(1e24);
+            if (!short) suffix += "octo";
+            else suffix += "o";
+        } else if (exponent.sub(24) % 30 < 3) { // 7th
+            divnum = divnum.mul(1e21);
+            if (!short) suffix += "septen";
+            else suffix += "S";
+        } else if (exponent.sub(21) % 30 < 3) { // 6th
+            divnum = divnum.mul(1e18);
+            if (!short) suffix += "sex";
+            else suffix += "s";
+        } else if (exponent.sub(18) % 30 < 3) { // 5th
+            divnum = divnum.mul(1e15);
+            if (!short) suffix += "quin";
+            else suffix += "Q";
+        } else if (exponent.sub(15) % 30 < 3) { // 4th
+            divnum = divnum.mul(1e12);
+            if (!short) suffix += "quattuor";
+            else suffix += "q";
+        } else if (exponent.sub(12) % 30 < 3) { // 3rd
+            divnum = divnum.mul(1e9);
+            if (!short) suffix += "tre";
+            else suffix += "t";
+        } else if (exponent.sub(9) % 30 < 3) { // 2nd
+            divnum = divnum.mul(1e6);
+            if (!short) suffix += "duo";
+            else suffix += "b";
+        } else if (exponent.sub(6) % 30 < 3) { // 1st
+            divnum = divnum.mul(1e3);
+            if (!short) suffix += "un";
+            else suffix += "m";
+        } else { // none
+            if (short) suffix += "~";
+        };
+        // add second part
+        decimal = decimal.layeradd10(1);
+        if (decimal.gte(1e273)) { // 90th
+            divnum = divnum.mul(1e273);
+            if (!short) suffix += "nona";
+            else suffix += "n";
+        } else if (decimal.gte(1e243)) { // 80th
+            divnum = divnum.mul(1e243);
+            if (!short) suffix += "octo";
+            else suffix += "o";
+        } else if (decimal.gte(1e213)) { // 70th
+            divnum = divnum.mul(1e213);
+            if (!short) suffix += "septua";
+            else suffix += "S";
+        } else if (decimal.gte(1e183)) { // 60th
+            divnum = divnum.mul(1e183);
+            if (!short) suffix += "sexa";
+            else suffix += "s";
+        } else if (decimal.gte(1e153)) { // 50th
+            divnum = divnum.mul(1e153);
+            if (!short) suffix += "quinqua";
+            else suffix += "Q";
+        } else if (decimal.gte(1e123)) { // 40th
+            divnum = divnum.mul(1e123);
+            if (!short) suffix += "quadra";
+            else suffix += "q";
+        } else if (decimal.gte(1e93)) { // 30th
+            divnum = divnum.mul(1e93);
+            if (!short) suffix += "tri";
+            else suffix += "t";
+        } else if (decimal.gte(1e63)) { // 20th
+            divnum = divnum.mul(1e63);
+            if (!short) suffix += "vi";
+            else suffix += "v";
+        } else { // 10th
+            divnum = divnum.mul(1e33);
+            if (!short) suffix += "dec";
+            else suffix += "d";
+        };
+        if (decimal.gte(1e63)) { // add prefix part 2 ending
+            if (!short) suffix += "gint";
+        };
+    } else { // add prefix if 9th illion or lower
+        if (decimal.gte(1e30)) { // 9th
+            divnum = divnum.mul(1e30);
+            if (!short) suffix += "non";
+            else suffix += "n";
+        } else if (decimal.gte(1e27)) { // 8th
+            divnum = divnum.mul(1e27);
+            if (!short) suffix += "oct";
+            else suffix += "o";
+        } else if (decimal.gte(1e24)) { // 7th
+            divnum = divnum.mul(1e24);
+            if (!short) suffix += "sept";
+            else suffix += "S";
+        } else if (decimal.gte(1e21)) { // 6th
+            divnum = divnum.mul(1e21);
+            if (!short) suffix += "sext";
+            else suffix += "s";
+        } else if (decimal.gte(1e18)) { // 5th
+            divnum = divnum.mul(1e18);
+            if (!short) suffix += "quint";
+            else suffix += "Q";
+        } else if (decimal.gte(1e15)) { // 4th
+            divnum = divnum.mul(1e15);
+            if (!short) suffix += "quadr";
+            else suffix += "q";
+        } else if (decimal.gte(1e12)) { // 3rd
+            divnum = divnum.mul(1e12);
+            if (!short) suffix += "tr";
+            else suffix += "t";
+        } else if (decimal.gte(1e9)) { // 2nd
+            divnum = divnum.mul(1e9);
+            if (!short) suffix += "b";
+            else suffix += "b";
+        } else if (decimal.gte(1e6)) { // 1st
+            divnum = divnum.mul(1e6);
+            if (!short) suffix += "m";
+            else suffix += "m";
+        } else if (decimal.gte(1e3)) { // 0th
+            divnum = divnum.mul(1e3);
+            if (!short) suffix += "thousand";
+            else suffix += "k";
+        } else return format(decimal); // none
+    };
+    // add suffix
+    if (decimal.gte(1e6)) {
+        if (!short) suffix += "illion";
+    };
+    // return formatted decimal
     if (short) return decimal.div(divnum).toStringWithDecimalPlaces(precision) + suffix;
     return decimal.div(divnum).toStringWithDecimalPlaces(precision) + " " + suffix;
 };
@@ -237,7 +166,7 @@ function commaFormat(num, precision) {
 function regularFormat(num, precision) {
     if (num === null || num === undefined) return "NaN";
     if (num.mag < 0.0001) return (0).toFixed(precision);
-    if (num.mag < 0.1 && precision !==0) precision = Math.max(precision, 4);
+    if (num.mag < 0.1 && precision !== 0) precision = Math.max(precision, 4);
     return num.toStringWithDecimalPlaces(precision);
 };
 
