@@ -1,7 +1,6 @@
 /* Rainbow Animation */
 :root {
     --rainbowline: linear-gradient(90deg, magenta, red, yellow, lime, cyan, blue, magenta, red, yellow, lime, cyan, blue, magenta);
-    --rainboworb: conic-gradient(magenta, red, yellow, lime, cyan, blue, magenta, red, yellow, lime, cyan, blue, magenta);
 }
 
 .rainbowline-backround {
@@ -16,16 +15,29 @@
     animation: rainbowline 3s linear infinite;
 }
 
-.rainboworb-backround {
-    height: 150%;
-    width: 150%;
-    left: 0;
-    top: 0;
+.moon {
+    height: 25%;
+    width: 25%;
     position: absolute;
-    background: var(--rainboworb);
-    background-size: 100%;
     border-radius: 50%;
-    animation: rainboworb 5s linear infinite;
+}
+
+.moon.num1 {
+    background: lightgray;
+    transform-origin: 280% 200%;
+    animation: 4s linear -2s infinite orbit;
+}
+
+.moon.num2 {
+    background: darkgray;
+    transform-origin: 400% 200%;
+    animation: 8s linear -1s infinite orbit;
+}
+
+.moon.num3 {
+    background: gray;
+    transform-origin: 520% 200%;
+    animation: 12s linear 0s infinite orbit;
 }
 
 .rainbowline-text {
@@ -42,7 +54,7 @@
     100%{background-position:100%}
 }
 
-@keyframes rainboworb {
+@keyframes orbit {
     0%{transform:rotate(0deg)}
     100%{transform:rotate(360deg)}
 }

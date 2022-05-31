@@ -184,20 +184,23 @@ var options_tab = `
 </table>`
 
 var node_mark = `<div v-if='data'>
-    <div v-if='data === true' class='star'
+    <div v-if='data === true' class='moon num1'
         v-bind:style='{
-            position:"absolute",
-            left:(offset-10)+"px",
-            top:(offset-10)+"px",
+            left:(offset-25)+"px",
+            top:(offset)+"px",
             transform:"scale("+scale||1+","+scale||1+")"}'>
     </div>
-    <img v-else class='mark'
+    <div v-if='data === true' class='moon num2'
         v-bind:style='{
-            position:"absolute",
-            left:(offset-22)+"px",
-            top:(offset-15)+"px",
-            transform:"scale("+scale||1+","+scale||1+")"}'
-        v-bind:src="data">
+            left:(offset-60)+"px",
+            top:(offset)+"px",
+            transform:"scale("+scale||1+","+scale||1+")"}'>
+    </div>
+    <div v-if='data === true' class='moon num3'
+        v-bind:style='{
+            left:(offset-95)+"px",
+            top:(offset)+"px",
+            transform:"scale("+scale||1+","+scale||1+")"}'>
     </div>
 </div>`
 
