@@ -15,6 +15,30 @@
     animation: rainbowline 3s linear infinite;
 }
 
+.rainbowline-text {
+    background: var(--rainbowline);
+    background-size: 200%;
+    animation: rainbowline 3s linear infinite, rainbowglow 5s linear infinite;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+@keyframes rainbowline {
+    0%{background-position:0%}
+    100%{background-position:100%}
+}
+
+@keyframes rainbowglow {
+    0%{text-shadow: 0 0 9px magenta}
+    16.6666666667%{text-shadow: 0 0 9px red}
+    33.3333333334%{text-shadow: 0 0 9px yellow}
+    50%{text-shadow: 0 0 9px lime}
+    66.6666666667%{text-shadow: 0 0 9px cyan}
+    83.3333333333%{text-shadow: 0 0 9px blue}
+    100%{text-shadow: 0 0 9px magenta}
+}
+
 .moon {
     height: 25%;
     width: 25%;
@@ -38,20 +62,6 @@
     background: gray;
     transform-origin: 530% 200%;
     animation: 14s linear 0s infinite orbit;
-}
-
-.rainbowline-text {
-    background: var(--rainbowline);
-    background-size: 200%;
-    animation: rainbowline 3s linear infinite;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-
-@keyframes rainbowline {
-    0%{background-position:0%}
-    100%{background-position:100%}
 }
 
 @keyframes orbit {

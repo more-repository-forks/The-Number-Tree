@@ -116,8 +116,7 @@ addLayer('c', {
     tabFormat: [
         ['display-text',
             function() {
-                text = '<h3 class="rainbowline-text">you have ' + formatWhole(player.c.colors) + ' colors unlocked';
-                return text;
+                return 'You have <h2 class="rainbowline-text">' + formatWhole(player.c.colors) + '</h2> colors unlocked';
             }],
         'blank',
         ['row', [
