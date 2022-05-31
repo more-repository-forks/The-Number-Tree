@@ -41,7 +41,7 @@ const MS_DISPLAYS = ['ALL', 'LAST, AUTO, INCOMPLETE', 'AUTOMATION, INCOMPLETE (r
 
 const MS_SETTINGS = ['always', 'last', 'automation', 'incomplete', 'never'];
 
-const NF_DISPLAYS = ['illions (USA)', 'scientific (num e num)'];
+const NF_DISPLAYS = ['illions (modern)', 'scientific (num e num)'];
 
 const NF_SETTINGS = ['illionUS', 'e'];
 
