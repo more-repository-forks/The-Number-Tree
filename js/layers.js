@@ -12,8 +12,8 @@ addLayer('c', {
         earnOrange: new Decimal(0),
         timeYellow: 0,
         earnYellow: new Decimal(0),
-        timeGreenyellow: 0,
-        earnGreenyellow: new Decimal(0),
+        timeSlime: 0,
+        earnSlime: new Decimal(0),
         timeLime: 0,
         earnLime: new Decimal(0),
     }},
@@ -60,7 +60,7 @@ addLayer('c', {
         if (getBuyableAmount('c', 41).gte(25)) earnings = earnings.mul(6);
         if (getBuyableAmount('c', 41).gte(50)) earnings = earnings.mul(9);
         if (getBuyableAmount('c', 41).gte(100)) earnings = earnings.mul(25);
-        player.c.earnGreenyellow = earnings;
+        player.c.earnSlime = earnings;
         earnings = getBuyableAmount('c', 51).mul(500000000);
         if (getBuyableAmount('c', 51).gte(10)) earnings = earnings.mul(3);
         if (getBuyableAmount('c', 51).gte(25)) earnings = earnings.mul(6);
@@ -80,9 +80,9 @@ addLayer('c', {
             player.points = player.points.add(player.c.earnYellow);
             player.c.timeYellow = 0;
         };
-        if (player.c.timeGreenyellow > 1) {
-            player.points = player.points.add(player.c.earnGreenyellow);
-            player.c.timeGreenyellow = 0;
+        if (player.c.timeSlime > 1) {
+            player.points = player.points.add(player.c.earnSlime);
+            player.c.timeSlime = 0;
         };
         if (player.c.timeLime > 1) {
             player.points = player.points.add(player.c.earnLime);
@@ -93,8 +93,8 @@ addLayer('c', {
         else player.c.timeOrange = 0;
         if (getBuyableAmount('c', 31).gt(0)) player.c.timeYellow += diff / 12;
         else player.c.timeYellow = 0;
-        if (getBuyableAmount('c', 41).gt(0)) player.c.timeGreenyellow += diff / 24;
-        else player.c.timeGreenyellow = 0;
+        if (getBuyableAmount('c', 41).gt(0)) player.c.timeSlime += diff / 24;
+        else player.c.timeSlime = 0;
         if (getBuyableAmount('c', 51).gt(0)) player.c.timeLime += diff / 48;
         else player.c.timeLime = 0;
     },
@@ -142,12 +142,12 @@ addLayer('c', {
         ]],
         'blank',
         ['row', [
-            ['bar', 'greenyellowProg'],
+            ['bar', 'slimeProg'],
             'blank',
-            ['bar', 'greenyellowBar'],
+            ['bar', 'slimeBar'],
             ['blank', ['6.5px', '1px']],
             ['column', [
-                ['bar', 'greenyellowBuy'],
+                ['bar', 'slimeBuy'],
                 ['blank', '2px'],
                 ['buyables', '4'],
             ]],
@@ -321,16 +321,16 @@ addLayer('c', {
                 if (getBuyableAmount('c', 21).gt(0)) return true;
             },
         },
-        greenyellowBar: {
+        slimeBar: {
             direction: RIGHT,
             width: 300,
             height: 50,
             progress() {
-                return player.c.timeGreenyellow;
+                return player.c.timeSlime;
             },
             display() {
                 if (getBuyableAmount('c', 41).eq(0)) return 'locked';
-                return 'earnings per cycle: ' + illionFormat(player.c.earnGreenyellow) + ' coins';
+                return 'earnings per cycle: ' + illionFormat(player.c.earnSlime) + ' coins';
             },
             fillStyle: {'background-color':'#99dd00'},
             borderStyle: {'border-color':'#99dd00'},
@@ -339,7 +339,7 @@ addLayer('c', {
                 if (getBuyableAmount('c', 31).gt(0)) return true;
             },
         },
-        greenyellowBuy: {
+        slimeBuy: {
             direction: LEFT,
             width: 180,
             height: 20,
@@ -357,7 +357,7 @@ addLayer('c', {
                 if (getBuyableAmount('c', 31).gt(0)) return true;
             },
         },
-        greenyellowProg: {
+        slimeProg: {
             direction: UP,
             width: 60,
             height: 60,
