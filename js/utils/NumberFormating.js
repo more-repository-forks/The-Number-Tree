@@ -242,7 +242,9 @@ function illionFormat(decimal, short, precision = 2) {
             divnum = divnum.mul(1e3);
             if (!short) suffix += "thousand";
             else suffix += "k";
-        } else return format(decimal); // none
+        } else { // none
+            return format(decimal, precision);
+        };
     };
     // add suffix
     if (decimal.gte(1e6)) {

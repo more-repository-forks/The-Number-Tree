@@ -33,7 +33,8 @@ addLayer('c', {
         },
     update(diff) {
         // update unlocks
-        if (getBuyableAmount('c', 51).gt(0)) player.c.colors = 5;
+        if (getBuyableAmount('c', 61).gt(0)) player.c.colors = 6;
+        else if (getBuyableAmount('c', 51).gt(0)) player.c.colors = 5;
         else if (getBuyableAmount('c', 41).gt(0)) player.c.colors = 4;
         else if (getBuyableAmount('c', 31).gt(0)) player.c.colors = 3;
         else if (getBuyableAmount('c', 21).gt(0)) player.c.colors = 2;
@@ -69,7 +70,7 @@ addLayer('c', {
         if (getBuyableAmount('c', 51).gte(50)) earnings = earnings.mul(9);
         if (getBuyableAmount('c', 51).gte(100)) earnings = earnings.mul(25);
         player.c.earnLime = earnings;
-        earnings = getBuyableAmount('c', 61).mul(7.5e9);
+        earnings = getBuyableAmount('c', 61).mul(75e9);
         if (getBuyableAmount('c', 61).gte(10)) earnings = earnings.mul(3);
         if (getBuyableAmount('c', 61).gte(25)) earnings = earnings.mul(6);
         if (getBuyableAmount('c', 61).gte(50)) earnings = earnings.mul(9);
@@ -474,7 +475,7 @@ addLayer('c', {
                 if (getBuyableAmount('c', 61).eq(0)) return 'locked';
                 return 'earnings per cycle: ' + illionFormat(player.c.earnTeal) + ' coins';
             },
-            fillStyle: {'background-color':'l#00ff88'},
+            fillStyle: {'background-color':'#00ff88'},
             borderStyle: {'border-color':'#00ff88'},
             style: {'color':'#aaaaaa'},
             unlocked() {
@@ -664,13 +665,22 @@ addLayer('p', {
         return new Decimal(player.c.colors);
     },
     requires: new Decimal(6),
-    type: "normal",
-    exponent: 1,
-    gainMult() {
-        return new Decimal(1);
+    type: "custom",
+    getResetGain(x = 0) {
+        earnings = [0, 0, 0, 0, 0, 0, 2, 5, 36];
+        return new Decimal(earnings[player.c.colors + x]);
     },
-    gainExp() {
-        return new Decimal(1);
+    getNextAt() {
+        if (player.c.colors < 6) return 6;
+        return player.c.colors + 1;
+    },
+    canReset() {
+        return player.c.colors > 5;
+    },
+    prestigeButtonText() {
+        text = '';
+        if (player.p.points.lt(1e3)) text += 'Reset for ';
+        return text+'+<b>'+illionFormat(tmp.p.resetGain,false,0)+'</b> prestige points<br><br>You will gain '+illionFormat(this.getResetGain(1)-this.getResetGain(),true,0)+' more at '+illionFormat(tmp.p.nextAt,true,0)+' colors';
     },
     layerShown() {
         return true;

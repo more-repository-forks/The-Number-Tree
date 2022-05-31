@@ -1,4 +1,4 @@
-/* Rainbow Animation */
+/* Animations */
 :root {
     --rainbowline: linear-gradient(90deg, magenta, red, yellow, lime, cyan, blue, magenta, red, yellow, lime, cyan, blue, magenta);
 }
