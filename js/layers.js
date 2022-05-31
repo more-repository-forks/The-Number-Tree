@@ -1,6 +1,7 @@
 addLayer('c', {
     name: 'Colors',
-    symbol: '<span class="rainbowline-backround">',
+    symbol: '<span class="rainbowline-backround noborder">',
+    noedge: true,
     position: 0,
     startData() { return {
         unlocked: true,
@@ -16,7 +17,6 @@ addLayer('c', {
     }},
     color: 'white',
     tooltip() {
-        document.body.style.setProperty('--hqProperty1', '0px');
         return formatWhole(player.c.colors) + ' colors';
     },
     row: 0,
@@ -429,3 +429,30 @@ addLayer('c', {
         },
     },
 });
+
+addLayer('p', {
+    startData() { return {
+        unlocked: false,
+        points: new Decimal(0),
+    }},
+    color: "slategray",
+    resource: "prestige points",
+    row: 1,
+    baseResource: "colors",
+    baseAmount() {
+        return new Decimal(player.c.colors);
+    },
+    requires: new Decimal(6),
+    type: "normal",
+    exponent: 1,
+    gainMult() {
+        return new Decimal(1);
+    },
+    gainExp() {
+        return new Decimal(1);
+    },
+    layerShown() {
+        return true;
+    },
+    marked: true,
+})

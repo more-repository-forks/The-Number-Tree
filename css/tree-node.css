@@ -14,6 +14,10 @@
 	margin: 0 10px 0 10px;
 }
 
+.noborder {
+	border: 0px transparent;
+}
+
 .nodeLabel {
 	font: inherit;
 	font-family: inherit;
