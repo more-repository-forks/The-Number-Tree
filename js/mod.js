@@ -9,8 +9,8 @@ let modInfo = {
 };
 
 let VERSION = {
-	num: '1.3',
-	name: 'Greenish-Yellow?',
+	num: '2.0',
+	name: 'Gigantic Numbers',
 };
 
 let winText = '<h3>You won the game!</h3><br>However, it isn\'t the end yet...<br>Wait for more updates for further content.';
