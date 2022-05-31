@@ -651,20 +651,20 @@ addLayer('c', {
     },
 });
 
-addLayer('p', {
+addLayer('r', {
     startData() { return {
         unlocked: false,
         points: new Decimal(0),
     }},
-    color: "slategray",
-    resource: "prestige points",
+    color: 'slategray',
+    resource: 'multiplier',
     row: 2,
-    baseResource: "colors",
+    baseResource: 'colors',
     baseAmount() {
         return new Decimal(player.c.colors);
     },
     requires: new Decimal(6),
-    type: "custom",
+    type: 'custom',
     getResetGain(x = 0) {
         earnings = [0, 0, 0, 0, 0, 0, 2, 5, 36];
         return new Decimal(earnings[player.c.colors + x]);
@@ -674,12 +674,15 @@ addLayer('p', {
         return player.c.colors + 1;
     },
     canReset() {
-        return player.c.colors > 5;
+        return player.c.colors >= 6;
+    },
+    prestigeNotify() {
+        return tmp.r.canReset && (new Decimal(tmp.r.resetGain).gte(player.r.points.div(10)));
     },
     prestigeButtonText() {
         text = '';
-        if (player.p.points.lt(1e3)) text += 'Reset for ';
-        return text+'+<b>'+illionFormat(tmp.p.resetGain,false,0)+'</b> prestige points<br><br>You will gain '+illionFormat(this.getResetGain(1)-this.getResetGain(),true,0)+' more at '+illionFormat(tmp.p.nextAt,true,0)+' colors';
+        if (player.r.points.lt(1e3)) text += 'Reset for ';
+        return text+'+<b>'+illionFormat(tmp.r.resetGain,false,0)+'</b> multiplier<br><br>You will gain '+illionFormat(this.getResetGain(1)-this.getResetGain(),true,0)+' more at '+illionFormat(tmp.r.nextAt,true,0)+' colors';
     },
     layerShown() {
         return true;
