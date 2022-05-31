@@ -1,6 +1,6 @@
 addLayer('c', {
     name: 'Colors',
-    symbol: '<div class="rainbowline-backround">',
+    symbol: '<span class="rainbowline-backround">',
     position: 0,
     startData() { return {
         unlocked: true,
