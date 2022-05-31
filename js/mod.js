@@ -9,8 +9,8 @@ let modInfo = {
 };
 
 let VERSION = {
-	num: '2.1',
-	name: 'Tangy Lime',
+	num: '3.0',
+	name: 'The Reset',
 };
 
 let winText = '<h3>You won the game!</h3><br>However, it isn\'t the end yet...<br>Wait for more updates for further content.';
