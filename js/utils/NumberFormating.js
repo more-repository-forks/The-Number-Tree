@@ -3,46 +3,130 @@ function illionFormat(decimal, short, precision = 2) {
     let divnum = 1;
     decimal = new Decimal(decimal);
     if (options.extendplaces && precision == 2) precision = 3;
-    if (decimal.gte(1e90)) {
-        divnum = 1e90;
+    if (decimal.gte(1e153)) {
+        divnum = 1e153;
+        suffix = "quinquagintillion";
+        if (short) suffix = "~Q";
+    } else if (decimal.gte(1e150)) {
+        divnum = 1e150;
+        suffix = "novemquadragintillion";
+        if (short) suffix = "nq";
+    } else if (decimal.gte(1e147)) {
+        divnum = 1e147;
+        suffix = "octoquadragintillion";
+        if (short) suffix = "oq";
+    } else if (decimal.gte(1e144)) {
+        divnum = 1e144;
+        suffix = "septenquadragintillion";
+        if (short) suffix = "Sq";
+    } else if (decimal.gte(1e141)) {
+        divnum = 1e141;
+        suffix = "sexquadragintillion";
+        if (short) suffix = "sq";
+    } else if (decimal.gte(1e138)) {
+        divnum = 1e138;
+        suffix = "quinquadragintillion";
+        if (short) suffix = "Qq";
+    } else if (decimal.gte(1e135)) {
+        divnum = 1e135;
+        suffix = "quattuorquadragintillion";
+        if (short) suffix = "qq";
+    } else if (decimal.gte(1e132)) {
+        divnum = 1e132;
+        suffix = "trequadragintillion";
+        if (short) suffix = "tq";
+    } else if (decimal.gte(1e129)) {
+        divnum = 1e129;
+        suffix = "duoquadragintillion";
+        if (short) suffix = "dq";
+    } else if (decimal.gte(1e126)) {
+        divnum = 1e126;
+        suffix = "unquadragintillion";
+        if (short) suffix = "uq";
+    } else if (decimal.gte(1e123)) {
+        divnum = 1e123;
+        suffix = "quadragintillion";
+        if (short) suffix = "~q";
+    } else if (decimal.gte(1e120)) {
+        divnum = 1e120;
         suffix = "novemtrigintillion";
         if (short) suffix = "nt";
-    } else if (decimal.gte(1e87)) {
-        divnum = 1e87;
+    } else if (decimal.gte(1e117)) {
+        divnum = 1e117;
         suffix = "octotrigintillion";
         if (short) suffix = "ot";
-    } else if (decimal.gte(1e84)) {
-        divnum = 1e84;
-        suffix = "septtrigintillion";
+    } else if (decimal.gte(1e114)) {
+        divnum = 1e114;
+        suffix = "septentrigintillion";
         if (short) suffix = "St";
-    } else if (decimal.gte(1e81)) {
-        divnum = 1e81;
+    } else if (decimal.gte(1e111)) {
+        divnum = 1e111;
         suffix = "setrigintillion";
         if (short) suffix = "st";
-    } else if (decimal.gte(1e78)) {
-        divnum = 1e78;
+    } else if (decimal.gte(1e108)) {
+        divnum = 1e108;
         suffix = "quintrigintillion";
         if (short) suffix = "Qt";
-    } else if (decimal.gte(1e75)) {
-        divnum = 1e75;
-        suffix = "quattortrigintillion";
+    } else if (decimal.gte(1e105)) {
+        divnum = 1e105;
+        suffix = "quattuortrigintillion";
         if (short) suffix = "qt";
-    } else if (decimal.gte(1e72)) {
-        divnum = 1e72;
-        suffix = "tritrigintillion";
+    } else if (decimal.gte(1e102)) {
+        divnum = 1e102;
+        suffix = "tretrigintillion";
         if (short) suffix = "tt";
-    } else if (decimal.gte(1e69)) {
-        divnum = 1e69;
+    } else if (decimal.gte(1e99)) {
+        divnum = 1e99;
         suffix = "duotrigintillion";
         if (short) suffix = "dt";
-    } else if (decimal.gte(1e66)) {
-        divnum = 1e66;
+    } else if (decimal.gte(1e96)) {
+        divnum = 1e96;
         suffix = "untrigintillion";
         if (short) suffix = "ut";
+    } else if (decimal.gte(1e93)) {
+        divnum = 1e93;
+        suffix = "trigintillion";
+        if (short) suffix = "~t";
+    } else if (decimal.gte(1e90)) {
+        divnum = 1e90;
+        suffix = "novemvigintillion";
+        if (short) suffix = "nv";
+    } else if (decimal.gte(1e87)) {
+        divnum = 1e87;
+        suffix = "octovigintillion";
+        if (short) suffix = "ov";
+    } else if (decimal.gte(1e84)) {
+        divnum = 1e84;
+        suffix = "septenvigintillion";
+        if (short) suffix = "Sv";
+    } else if (decimal.gte(1e81)) {
+        divnum = 1e81;
+        suffix = "sexvigintillion";
+        if (short) suffix = "sv";
+    } else if (decimal.gte(1e78)) {
+        divnum = 1e78;
+        suffix = "quinvigintillion";
+        if (short) suffix = "Qv";
+    } else if (decimal.gte(1e75)) {
+        divnum = 1e75;
+        suffix = "quattuorvigintillion";
+        if (short) suffix = "qv";
+    } else if (decimal.gte(1e72)) {
+        divnum = 1e72;
+        suffix = "trevigintillion";
+        if (short) suffix = "tv";
+    } else if (decimal.gte(1e69)) {
+        divnum = 1e69;
+        suffix = "duovigintillion";
+        if (short) suffix = "dv";
+    } else if (decimal.gte(1e66)) {
+        divnum = 1e66;
+        suffix = "unvigintillion";
+        if (short) suffix = "uv";
     } else if (decimal.gte(1e63)) {
         divnum = 1e63;
-        suffix = "trigintillion";
-        if (short) suffix = "!t";
+        suffix = "vigintillion";
+        if (short) suffix = "!v";
     } else if (decimal.gte(1e60)) {
         divnum = 1e60;
         suffix = "novemdecillion";
@@ -53,11 +137,11 @@ function illionFormat(decimal, short, precision = 2) {
         if (short) suffix = "od";
     } else if (decimal.gte(1e54)) {
         divnum = 1e54;
-        suffix = "septdecillion";
+        suffix = "septendecillion";
         if (short) suffix = "Sd";
     } else if (decimal.gte(1e51)) {
         divnum = 1e51;
-        suffix = "sedecillion";
+        suffix = "sexdecillion";
         if (short) suffix = "sd";
     } else if (decimal.gte(1e48)) {
         divnum = 1e48;
@@ -65,7 +149,7 @@ function illionFormat(decimal, short, precision = 2) {
         if (short) suffix = "Qd";
     } else if (decimal.gte(1e45)) {
         divnum = 1e45;
-        suffix = "quattordecillion";
+        suffix = "quattuordecillion";
         if (short) suffix = "qd";
     } else if (decimal.gte(1e42)) {
         divnum = 1e42;
@@ -97,7 +181,7 @@ function illionFormat(decimal, short, precision = 2) {
         if (short) suffix = "S";
     } else if (decimal.gte(1e21)) {
         divnum = 1e21;
-        suffix = "sexillion";
+        suffix = "sextillion";
         if (short) suffix = "s";
     } else if (decimal.gte(1e18)) {
         divnum = 1e18;
