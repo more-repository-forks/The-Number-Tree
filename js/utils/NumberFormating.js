@@ -8,95 +8,95 @@ function illionFormat(decimal, short, precision = 2) {
     if (!short) suffix = " ";
     if (options.extendplaces && precision == 2) precision = 3;
     // illion calculation
-    if (decimal.gte("1e30003")) { // format normally if higher than 9,999th illion
+    if (decimal.gte("e30003")) { // format normally if higher than 9,999th illion
         return format(decimal, precision);
     };
-    if (decimal.gte("1e3003")) { // add prefix if higher than 999th illion
-        if (decimal.gte("1e27003")) { // 9,000th
-            divnum = divnum.mul("1e27003");
+    if (decimal.gte("e3003")) { // add prefix if higher than 999th illion
+        if (decimal.gte("e27003")) { // 9,000th
+            divnum = divnum.mul("e27003");
             centillions += 90;
             if (!short) suffix += "novemmillia";
             else suffix += "nM";
-        } else if (decimal.gte("1e24003")) { // 8,000th
-            divnum = divnum.mul("1e24003");
+        } else if (decimal.gte("e24003")) { // 8,000th
+            divnum = divnum.mul("e24003");
             centillions += 80;
             if (!short) suffix += "octomillia";
             else suffix += "oM";
-        } else if (decimal.gte("1e21003")) { // 7,000th
-            divnum = divnum.mul("1e21003");
+        } else if (decimal.gte("e21003")) { // 7,000th
+            divnum = divnum.mul("e21003");
             centillions += 70;
             if (!short) suffix += "septenmillia";
             else suffix += "SM";
-        } else if (decimal.gte("1e18003")) { // 6,000th
-            divnum = divnum.mul("1e18003");
+        } else if (decimal.gte("e18003")) { // 6,000th
+            divnum = divnum.mul("e18003");
             centillions += 60;
             if (!short) suffix += "sexmillia";
             else suffix += "sM";
-        } else if (decimal.gte("1e15003")) { // 5,000th
-            divnum = divnum.mul("1e15003");
+        } else if (decimal.gte("e15003")) { // 5,000th
+            divnum = divnum.mul("e15003");
             centillions += 50;
             if (!short) suffix += "quinmillia";
             else suffix += "QM";
-        } else if (decimal.gte("1e12003")) { // 4,000th
-            divnum = divnum.mul("1e12003");
+        } else if (decimal.gte("e12003")) { // 4,000th
+            divnum = divnum.mul("e12003");
             centillions += 40;
             if (!short) suffix += "quattuormillia";
             else suffix += "qM";
-        } else if (decimal.gte("1e9003")) { // 3,000th
-            divnum = divnum.mul("1e9003");
+        } else if (decimal.gte("e9003")) { // 3,000th
+            divnum = divnum.mul("e9003");
             centillions += 30;
             if (!short) suffix += "tremillia";
             else suffix += "tM";
-        } else if (decimal.gte("1e6003")) { // 2,000th
-            divnum = divnum.mul("1e6003");
+        } else if (decimal.gte("e6003")) { // 2,000th
+            divnum = divnum.mul("e6003");
             centillions += 20;
             if (!short) suffix += "duomillia";
             else suffix += "dM";
         } else { // 1,000th
-            divnum = divnum.mul("1e3003");
+            divnum = divnum.mul("e3003");
             centillions += 10;
             if (!short) suffix += "millia";
             else suffix += "M";
         };
     };
     if (decimal.gte(1e303)) { // add prefix if higher than 99th illion
-        if (decimal.div(new Decimal(1e300).pow(centillions)).gte("1e2703")) { // 900th
-            divnum = divnum.mul("1e2700");
+        if (decimal.div(new Decimal(1e300).pow(centillions)).gte("e2703")) { // 900th
+            divnum = divnum.mul("e2700");
             centillions += 9;
             if (!short) suffix += "nongen";
             else suffix += "nC";
-        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("1e2403")) { // 800th
-            divnum = divnum.mul("1e2400");
+        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("e2403")) { // 800th
+            divnum = divnum.mul("e2400");
             centillions += 8;
             if (!short) suffix += "octingen";
             else suffix += "oC";
-        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("1e2103")) { // 700th
-            divnum = divnum.mul("1e2100");
+        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("e2103")) { // 700th
+            divnum = divnum.mul("e2100");
             centillions += 7;
             if (!short) suffix += "septingen";
             else suffix += "SC";
-        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("1e1803")) { // 600th
-            divnum = divnum.mul("1e1800");
+        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("e1803")) { // 600th
+            divnum = divnum.mul("e1800");
             centillions += 6;
             if (!short) suffix += "sescen";
             else suffix += "sC";
-        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("1e1503")) { // 500th
-            divnum = divnum.mul("1e1500");
+        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("e1503")) { // 500th
+            divnum = divnum.mul("e1500");
             centillions += 5;
             if (!short) suffix += "quingen";
             else suffix += "QC";
-        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("1e1203")) { // 400th
-            divnum = divnum.mul("1e1200");
+        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("e1203")) { // 400th
+            divnum = divnum.mul("e1200");
             centillions += 4;
             if (!short) suffix += "quadringen";
             else suffix += "qC";
-        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("1e903")) { // 300th
-            divnum = divnum.mul("1e900");
+        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("e903")) { // 300th
+            divnum = divnum.mul("e900");
             centillions += 3;
             if (!short) suffix += "trecen";
             else suffix += "tC";
-        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("1e603")) { // 200th
-            divnum = divnum.mul("1e600");
+        } else if (decimal.div(new Decimal(1e300).pow(centillions)).gte("e603")) { // 200th
+            divnum = divnum.mul("e600");
             centillions += 2;
             if (!short) suffix += "duocen";
             else suffix += "dC";
@@ -108,7 +108,7 @@ function illionFormat(decimal, short, precision = 2) {
         } else { // none
             if (short) suffix += "~";
         };
-        if (decimal.lt("1e3003")) divnum = divnum.mul(1e3);
+        if (decimal.lt("e3003")) divnum = divnum.mul(1e3);
     };
     if (decimal.gte(1e33)) { // add prefix if higher than 9th illion
         let exponent = decimal.layeradd10(-1).floor();
@@ -309,15 +309,15 @@ function format(decimal, precision = 2, small) {
         if (slog.gte(1e6)) return "F" + format(slog.floor());
         return decimal.pow(10, slog.sub(slog.floor())).toStringWithDecimalPlaces(3) + "F" + commaFormat(slog.floor(), 0);
     };
-    if (decimal.gte("1e1000000")) return exponentialFormat(decimal, 0, false);
-    if (decimal.gte("1e10000")) return exponentialFormat(decimal, 0);
+    if (decimal.gte("e1000000")) return exponentialFormat(decimal, 0, false);
+    if (decimal.gte("e10000")) return exponentialFormat(decimal, 0);
     if (decimal.gte(1e9)) return exponentialFormat(decimal, precision);
     if (decimal.gte(1e3)) return commaFormat(decimal, 0);
     if (decimal.gte(0.0001) || !small) return regularFormat(decimal, precision);
     if (decimal.eq(0)) return (0).toFixed(precision);
     decimal = invertOOM(decimal);
     let val = "";
-    if (decimal.lt("1e1000")) {
+    if (decimal.lt("e1000")) {
         val = exponentialFormat(decimal, precision);
         return val.replace(/([^(?:e|F)]*)$/, '-$1');
     };
