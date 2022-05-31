@@ -3,6 +3,7 @@ let options = {};
 function getStartOptions() { return {
 	autosave: true,
 	msDisplay: 'always',
+	nfDisplay: '-illions',
 	theme: 'default',
 	hqTree: false,
 	offlineProd: true,
@@ -40,8 +41,16 @@ const MS_DISPLAYS = ['ALL', 'LAST, AUTO, INCOMPLETE', 'AUTOMATION, INCOMPLETE (r
 
 const MS_SETTINGS = ['always', 'last', 'automation', 'incomplete', 'never'];
 
+const NF_DISPLAYS = ['illions (USA)', 'scientific (num e num)'];
+
+const NF_SETTINGS = ['illionUS', 'e'];
+
 function adjustMSDisp() {
 	options.msDisplay = MS_SETTINGS[(MS_SETTINGS.indexOf(options.msDisplay) + 1) % 5];
+};
+
+function adjustNFDisp() {
+	options.nfDisplay = NF_SETTINGS[(NF_SETTINGS.indexOf(options.nfDisplay) + 1) % 2];
 };
 
 function milestoneShown(layer, id) {
