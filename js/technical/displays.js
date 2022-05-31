@@ -2,9 +2,9 @@ function prestigeButtonText(layer) {
 	if (layers[layer].prestigeButtonText !== undefined)
 		return run(layers[layer].prestigeButtonText(), layers[layer]);
 	if (tmp[layer].type == "normal")
-		return `${player[layer].points.lt(1e3) ? (tmp[layer].resetDescription !== undefined ? tmp[layer].resetDescription : "Reset for ") : ""}+<b>${formatWhole(tmp[layer].resetGain)}</b> ${tmp[layer].resource} ${tmp[layer].resetGain.lt(100) && player[layer].points.lt(1e3) ? `<br><br>Next at ${(tmp[layer].roundUpCost ? formatWhole(tmp[layer].nextAt) : format(tmp[layer].nextAt))} ${tmp[layer].baseResource}` : ""}`
+		return `${player[layer].points.lt(1e3)?(tmp[layer].resetDescription!==undefined?tmp[layer].resetDescription:"Reset for "):""}+<b>${formatWhole(tmp[layer].resetGain)}</b> ${tmp[layer].resource} ${tmp[layer].resetGain.lt(100)&&player[layer].points.lt(1e3)?`<br><br>Next at ${(tmp[layer].roundUpCost?formatWhole(tmp[layer].nextAt):format(tmp[layer].nextAt))} ${tmp[layer].baseResource}`:""}`;
 	if (tmp[layer].type == "static")
-		return `${tmp[layer].resetDescription !== undefined ? tmp[layer].resetDescription : "Reset for "}+<b>${formatWhole(tmp[layer].resetGain)}</b> ${tmp[layer].resource}<br><br>${player[layer].points.lt(30) ? (tmp[layer].baseAmount.gte(tmp[layer].nextAt) && (tmp[layer].canBuyMax !== undefined) && tmp[layer].canBuyMax ? "Next:" : "Req:") : ""} ${formatWhole(tmp[layer].baseAmount)} / ${(tmp[layer].roundUpCost ? formatWhole(tmp[layer].nextAtDisp) : format(tmp[layer].nextAtDisp))} ${tmp[layer].baseResource}`
+		return `${tmp[layer].resetDescription!==undefined?tmp[layer].resetDescription:"Reset for "}+<b>${formatWhole(tmp[layer].resetGain)}</b> ${tmp[layer].resource}<br><br>${player[layer].points.lt(30)?(tmp[layer].baseAmount.gte(tmp[layer].nextAt)&&(tmp[layer].canBuyMax !== undefined) && tmp[layer].canBuyMax?"Next:":"Req:"):""} ${formatWhole(tmp[layer].baseAmount)} / ${(tmp[layer].roundUpCost?formatWhole(tmp[layer].nextAtDisp):format(tmp[layer].nextAtDisp))} ${tmp[layer].baseResource}`;
 	if (tmp[layer].type == "none")
 		return "";
     return "You need prestige button text";
@@ -36,7 +36,7 @@ function achievementStyle(layer, id) {
     ach = tmp[layer].achievements[id];
     let style = [];
     if (ach.image){ 
-        style.push({'background-image': 'url("' + ach.image + '")'})
+        style.push({'background-image': 'url("' + ach.image + '")'});
     };
     if (!ach.unlocked) style.push({'visibility': 'hidden'});
     style.push(ach.style);
@@ -81,27 +81,27 @@ function constructBarStyle(layer, id) {
 	let style = {};
 	if (bar.progress instanceof Decimal)
 		bar.progress = bar.progress.toNumber();
-	bar.progress = (1 -Math.min(Math.max(bar.progress, 0), 1)) * 100;
+	bar.progress = (1 - Math.min(Math.max(bar.progress, 0), 1)) * 100;
 	style.dims = {'width': bar.width + "px", 'height': bar.height + "px"}
 	let dir = bar.direction;
 	style.fillDims = {'width': (bar.width + 0.5) + "px", 'height': (bar.height + 0.5)  + "px"}
 	switch(bar.direction) {
 		case UP:
-			style.fillDims['clip-path'] = 'inset(' + bar.progress + '% 0% 0% 0%)';
+			style.fillDims['clip-path'] = 'inset(' + bar.progress + '% -1px -1px -1px)';
 			style.fillDims.width = bar.width + 1 + 'px';
 			break;
 		case DOWN:
-			style.fillDims['clip-path'] = 'inset(0% 0% ' + bar.progress + '% 0%)';
+			style.fillDims['clip-path'] = 'inset(-1px -1px ' + bar.progress + '% -1px)';
 			style.fillDims.width = bar.width + 1 + 'px';
 			break;
 		case RIGHT:
-			style.fillDims['clip-path'] = 'inset(0% ' + bar.progress + '% 0% 0%)';
+			style.fillDims['clip-path'] = 'inset(-1px ' + bar.progress + '% -1px -1px)';
 			break;
 		case LEFT:
-			style.fillDims['clip-path'] = 'inset(0% 0% 0% ' + bar.progress + '%)';
+			style.fillDims['clip-path'] = 'inset(-1px -1px -1px ' + bar.progress + '%)';
 			break;
 		case DEFAULT:
-			style.fillDims['clip-path'] = 'inset(0% 50% 0% 0%)';
+			style.fillDims['clip-path'] = 'inset(-1px 50% -1px -1px)';
 	};
 	if (bar.instant) {
 		style.fillDims['transition-duration'] = '0s';
@@ -110,7 +110,7 @@ function constructBarStyle(layer, id) {
 };
 
 function constructTabFormat(layer, id, family) {
-	let tabTemp, tabLayer, tabFunc, location, key
+	let tabTemp, tabLayer, tabFunc, location, key;
 	if (id === undefined){
 		tabTemp = tmp[layer].tabFormat;
 		tabLayer = layers[layer].tabFormat;
@@ -157,7 +157,7 @@ function updateTabFormat(layer) {
 
 	// Check for embedded layer
 	if (isPlainObject(tmp[layer].tabFormat) && tmp[layer].tabFormat[tab].embedLayer !== undefined) { 
-		updateTabFormat(tmp[layer].tabFormat[tab].embedLayer)
+		updateTabFormat(tmp[layer].tabFormat[tab].embedLayer);
 	};
 
 	// Update microtabs
