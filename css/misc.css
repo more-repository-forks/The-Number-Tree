@@ -18,7 +18,7 @@
 .rainbowline-text {
     background: var(--rainbowline);
     background-size: 200%;
-    animation: rainbowline 3s linear infinite, rainbowglow 5s linear infinite;
+    animation: 3s linear infinite rainbowline, 5s linear infinite rainbowglow;
     color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
@@ -32,7 +32,7 @@
 @keyframes rainbowglow {
     0%{text-shadow: 0 0 9px magenta}
     16.6666666667%{text-shadow: 0 0 9px red}
-    33.3333333334%{text-shadow: 0 0 9px yellow}
+    33.3333333333%{text-shadow: 0 0 9px yellow}
     50%{text-shadow: 0 0 9px lime}
     66.6666666667%{text-shadow: 0 0 9px cyan}
     83.3333333333%{text-shadow: 0 0 9px blue}
