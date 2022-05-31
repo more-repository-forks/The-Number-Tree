@@ -1,6 +1,8 @@
 addLayer('c', {
     name: 'Colors',
-    symbol: '<span class="rainbowline-backround noborder">',
+    symbol: `<span class="rainbowline-backround noborder">
+        <h5><br></h5>
+        <h3 class="rainbowfade-text">C`,
     noedge: true,
     position: 0,
     startData() { return {
@@ -688,4 +690,4 @@ addLayer('r', {
         return true;
     },
     marked: true,
-})
+});

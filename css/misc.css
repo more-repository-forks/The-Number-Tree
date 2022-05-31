@@ -18,15 +18,31 @@
 .rainbowline-text {
     background: var(--rainbowline);
     background-size: 200%;
-    animation: 3s linear infinite rainbowline, 5s linear infinite rainbowglow;
+    animation: 3s linear infinite rainbowline, 6s linear infinite rainbowglow;
     color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
 }
 
+.rainbowfade-text {
+    background: transparent;
+    animation: 6s linear infinite rainbowfade, 6s linear -3s infinite rainbowglow;
+    color: white;
+}
+
 @keyframes rainbowline {
     0%{background-position:0%}
     100%{background-position:100%}
+}
+
+@keyframes rainbowfade {
+    0%{color: magenta}
+    16.6666666667%{color: red}
+    33.3333333333%{color: yellow}
+    50%{color: lime}
+    66.6666666667%{color: cyan}
+    83.3333333333%{color: blue}
+    100%{color: magenta}
 }
 
 @keyframes rainbowglow {
