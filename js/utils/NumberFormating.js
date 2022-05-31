@@ -3,9 +3,14 @@ function illionFormat(decimal, short, precision = 2) {
     let divnum = new Decimal(1);
     decimal = new Decimal(decimal);
     if (options.extendplaces && precision == 2) precision = 3;
-    if (decimal.gte(1e303)) { // format normally if out of bounds
-        return format(decimal);
-    } else if (decimal.gte(1e33)) { // add prefix if 10th illion or higher
+    if (decimal.gte(1e303)) { // add prefix if 100th illion or higher
+        if (decimal.gte(1e303)) { // 90th
+            divnum = divnum.mul(1e303);
+            if (!short) suffix += "cen";
+            else suffix += "c";
+        };
+    };
+    if (decimal.gte(1e33)) { // add prefix if 10th illion or higher
         let exponent = decimal.layeradd10(-1).floor();
         // add first part
         if (exponent % 30 < 3) { // 9th
@@ -49,46 +54,48 @@ function illionFormat(decimal, short, precision = 2) {
         };
         // add second part
         decimal = decimal.layeradd10(1);
-        if (decimal.gte(1e273)) { // 90th
-            divnum = divnum.mul(1e273);
-            if (!short) suffix += "nona";
-            else suffix += "n";
-        } else if (decimal.gte(1e243)) { // 80th
-            divnum = divnum.mul(1e243);
-            if (!short) suffix += "octo";
-            else suffix += "o";
-        } else if (decimal.gte(1e213)) { // 70th
-            divnum = divnum.mul(1e213);
-            if (!short) suffix += "septua";
-            else suffix += "S";
-        } else if (decimal.gte(1e183)) { // 60th
-            divnum = divnum.mul(1e183);
-            if (!short) suffix += "sexa";
-            else suffix += "s";
-        } else if (decimal.gte(1e153)) { // 50th
-            divnum = divnum.mul(1e153);
-            if (!short) suffix += "quinqua";
-            else suffix += "Q";
-        } else if (decimal.gte(1e123)) { // 40th
-            divnum = divnum.mul(1e123);
-            if (!short) suffix += "quadra";
-            else suffix += "q";
-        } else if (decimal.gte(1e93)) { // 30th
-            divnum = divnum.mul(1e93);
-            if (!short) suffix += "tri";
-            else suffix += "t";
-        } else if (decimal.gte(1e63)) { // 20th
-            divnum = divnum.mul(1e63);
-            if (!short) suffix += "vi";
-            else suffix += "v";
-        } else { // 10th
-            divnum = divnum.mul(1e33);
-            if (!short) suffix += "dec";
-            else suffix += "d";
-        };
-        if (decimal.gte(1e63)) { // add prefix part 2 ending
-            if (!short) suffix += "gint";
-        };
+        if (exponent % 300 > 33) {
+            if (decimal.gte(1e273)) { // 90th
+                divnum = divnum.mul(1e273);
+                if (!short) suffix += "nona";
+                else suffix += "n";
+            } else if (decimal.gte(1e243)) { // 80th
+                divnum = divnum.mul(1e243);
+                if (!short) suffix += "octo";
+                else suffix += "o";
+            } else if (decimal.gte(1e213)) { // 70th
+                divnum = divnum.mul(1e213);
+                if (!short) suffix += "septua";
+                else suffix += "S";
+            } else if (decimal.gte(1e183)) { // 60th
+                divnum = divnum.mul(1e183);
+                if (!short) suffix += "sexa";
+                else suffix += "s";
+            } else if (decimal.gte(1e153)) { // 50th
+                divnum = divnum.mul(1e153);
+                if (!short) suffix += "quinqua";
+                else suffix += "Q";
+            } else if (decimal.gte(1e123)) { // 40th
+                divnum = divnum.mul(1e123);
+                if (!short) suffix += "quadra";
+                else suffix += "q";
+            } else if (decimal.gte(1e93)) { // 30th
+                divnum = divnum.mul(1e93);
+                if (!short) suffix += "tri";
+                else suffix += "t";
+            } else if (decimal.gte(1e63)) { // 20th
+                divnum = divnum.mul(1e63);
+                if (!short) suffix += "vi";
+                else suffix += "v";
+            } else { // 10th
+                divnum = divnum.mul(1e33);
+                if (!short) suffix += "dec";
+                else suffix += "d";
+            };
+            if (decimal.gte(1e63)) { // add prefix part 2 ending
+                if (!short) suffix += "gint";
+            };
+        } else if (short) suffix += "~";
     } else { // add prefix if 9th illion or lower
         if (decimal.gte(1e30)) { // 9th
             divnum = divnum.mul(1e30);
@@ -134,7 +141,10 @@ function illionFormat(decimal, short, precision = 2) {
     };
     // add suffix
     if (decimal.gte(1e6)) {
-        if (!short) suffix += "illion";
+        if (!short) {
+            if (decimal.gte(1e303) && decimal.lt(1e333)) suffix += "t";
+            suffix += "illion";
+        };
     };
     // return formatted decimal
     if (short) return decimal.div(divnum).toStringWithDecimalPlaces(precision) + suffix;
