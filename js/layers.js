@@ -16,6 +16,8 @@ addLayer('c', {
         earnSlime: new Decimal(0),
         timeLime: 0,
         earnLime: new Decimal(0),
+        timeTeal: 0,
+        earnTeal: new Decimal(0),
     }},
     color: 'white',
     tooltip() {
@@ -67,6 +69,12 @@ addLayer('c', {
         if (getBuyableAmount('c', 51).gte(50)) earnings = earnings.mul(9);
         if (getBuyableAmount('c', 51).gte(100)) earnings = earnings.mul(25);
         player.c.earnLime = earnings;
+        earnings = getBuyableAmount('c', 61).mul(7.5e9);
+        if (getBuyableAmount('c', 61).gte(10)) earnings = earnings.mul(3);
+        if (getBuyableAmount('c', 61).gte(25)) earnings = earnings.mul(6);
+        if (getBuyableAmount('c', 61).gte(50)) earnings = earnings.mul(9);
+        if (getBuyableAmount('c', 61).gte(100)) earnings = earnings.mul(25);
+        player.c.earnTeal = earnings;
         // earn
         if (player.c.timeRed > 1) {
             player.points = player.points.add(player.c.earnRed);
@@ -88,6 +96,10 @@ addLayer('c', {
             player.points = player.points.add(player.c.earnLime);
             player.c.timeLime = 0;
         };
+        if (player.c.timeTeal > 1) {
+            player.points = player.points.add(player.c.earnTeal);
+            player.c.timeTeal = 0;
+        };
         player.c.timeRed += diff / 3;
         if (getBuyableAmount('c', 21).gt(0)) player.c.timeOrange += diff / 6;
         else player.c.timeOrange = 0;
@@ -97,6 +109,8 @@ addLayer('c', {
         else player.c.timeSlime = 0;
         if (getBuyableAmount('c', 51).gt(0)) player.c.timeLime += diff / 48;
         else player.c.timeLime = 0;
+        if (getBuyableAmount('c', 61).gt(0)) player.c.timeTeal += diff / 72;
+        else player.c.timeTeal = 0;
     },
     tabFormat: [
         ['display-text',
@@ -162,6 +176,18 @@ addLayer('c', {
                 ['bar', 'limeBuy'],
                 ['blank', '2px'],
                 ['buyables', '5'],
+            ]],
+        ]],
+        'blank',
+        ['row', [
+            ['bar', 'tealProg'],
+            'blank',
+            ['bar', 'tealBar'],
+            ['blank', ['6.5px', '1px']],
+            ['column', [
+                ['bar', 'tealBuy'],
+                ['blank', '2px'],
+                ['buyables', '6'],
             ]],
         ]],
     ],
@@ -387,7 +413,7 @@ addLayer('c', {
                 return player.c.timeLime;
             },
             display() {
-                if (getBuyableAmount('c', 41).eq(0)) return 'locked';
+                if (getBuyableAmount('c', 51).eq(0)) return 'locked';
                 return 'earnings per cycle: ' + illionFormat(player.c.earnLime) + ' coins';
             },
             fillStyle: {'background-color':'lime'},
@@ -437,6 +463,64 @@ addLayer('c', {
                 if (getBuyableAmount('c', 41).gt(0)) return true;
             },
         },
+        tealBar: {
+            direction: RIGHT,
+            width: 300,
+            height: 50,
+            progress() {
+                return player.c.timeTeal;
+            },
+            display() {
+                if (getBuyableAmount('c', 61).eq(0)) return 'locked';
+                return 'earnings per cycle: ' + illionFormat(player.c.earnTeal) + ' coins';
+            },
+            fillStyle: {'background-color':'l#00ff88'},
+            borderStyle: {'border-color':'#00ff88'},
+            style: {'color':'#aaaaaa'},
+            unlocked() {
+                if (getBuyableAmount('c', 51).gt(0)) return true;
+            },
+        },
+        tealBuy: {
+            direction: LEFT,
+            width: 180,
+            height: 20,
+            progress() {
+                return player.points.div(layers.c.buyables[61].cost());
+            },
+            display() {
+                if (this.progress().gt(1)) return illionFormat(100) + '%';
+                return illionFormat(this.progress().mul(100)) + '%';
+            },
+            fillStyle: {'background-color':'#00ff88'},
+            borderStyle: {'border-color':'#00ff88'},
+            style: {'color':'#aaaaaa'},
+            unlocked() {
+                if (getBuyableAmount('c', 51).gt(0)) return true;
+            },
+        },
+        tealProg: {
+            direction: UP,
+            width: 60,
+            height: 60,
+            progress() {
+                if (getBuyableAmount('c', 61).lt(10)) goal = 10;
+                else if (getBuyableAmount('c', 61).lte(25)) goal = 25;
+                else if (getBuyableAmount('c', 61).lte(50)) goal = 50;
+                else if (getBuyableAmount('c', 61).lte(100)) goal = 100;
+                else goal = 200;
+                return getBuyableAmount('c', 61).div(goal);
+            },
+            display() {
+                return '<h1 style="font-family:Flavors">' + formatWhole(getBuyableAmount('c', 61));
+            },
+            fillStyle: {'background-color':'#00ff88'},
+            borderStyle: {'border-color':'#00ff88'},
+            style: {'color':'#aaaaaa','border-radius':'50%'},
+            unlocked() {
+                if (getBuyableAmount('c', 51).gt(0)) return true;
+            },
+        },
     },
     buyables: {
         11: {
@@ -445,12 +529,12 @@ addLayer('c', {
                 return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
             },
             canAfford() {
-                return player.points.gte(this.cost()) && getBuyableAmount(this.layer, this.id).lt(this.purchaseLimit);
+                return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
             },
             purchaseLimit: 1000,
             buy() {
                 player.points = player.points.sub(this.cost());
-                setBuyableAmount('c', 11, getBuyableAmount('c', 11).add(1));
+                setBuyableAmount('c', this.id, getBuyableAmount('c', this.id).add(1));
             },
             display() {
                 return '<h3 style="color:red">Cost: ' + illionFormat(this.cost(), true) + ' coins';
@@ -463,12 +547,12 @@ addLayer('c', {
                 return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
             },
             canAfford() {
-                return player.points.gte(this.cost()) && getBuyableAmount(this.layer, this.id).lt(this.purchaseLimit);
+                return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
             },
             purchaseLimit: 1000,
             buy() {
                 player.points = player.points.sub(this.cost());
-                setBuyableAmount('c', 21, getBuyableAmount('c', 21).add(1));
+                setBuyableAmount('c', this.id, getBuyableAmount('c', this.id).add(1));
             },
             display() {
                 if (getBuyableAmount('c', 21).eq(0)) return '<h3 style="color:#ff8800">Unlock: ' + illionFormat(this.cost(), true) + ' coins';
@@ -482,12 +566,12 @@ addLayer('c', {
                 return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
             },
             canAfford() {
-                return player.points.gte(this.cost()) && getBuyableAmount(this.layer, this.id).lt(this.purchaseLimit);
+                return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
             },
             purchaseLimit: 1000,
             buy() {
                 player.points = player.points.sub(this.cost());
-                setBuyableAmount('c', 31, getBuyableAmount('c', 31).add(1));
+                setBuyableAmount('c', this.id, getBuyableAmount('c', this.id).add(1));
             },
             display() {
                 if (getBuyableAmount('c', 31).eq(0)) return '<h3 style="color:yellow">Unlock: ' + illionFormat(this.cost(), true) + ' coins';
@@ -504,12 +588,12 @@ addLayer('c', {
                 return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
             },
             canAfford() {
-                return player.points.gte(this.cost()) && getBuyableAmount(this.layer, this.id).lt(this.purchaseLimit);
+                return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
             },
             purchaseLimit: 1000,
             buy() {
                 player.points = player.points.sub(this.cost());
-                setBuyableAmount('c', 41, getBuyableAmount('c', 41).add(1));
+                setBuyableAmount('c', this.id, getBuyableAmount('c', this.id).add(1));
             },
             display() {
                 if (getBuyableAmount('c', 41).eq(0)) return '<h3 style="color:#88cc00">Unlock: ' + illionFormat(this.cost(), true) + ' coins';
@@ -526,20 +610,42 @@ addLayer('c', {
                 return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
             },
             canAfford() {
-                return player.points.gte(this.cost()) && getBuyableAmount(this.layer, this.id).lt(this.purchaseLimit);
+                return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
             },
             purchaseLimit: 1000,
             buy() {
                 player.points = player.points.sub(this.cost());
-                setBuyableAmount('c', 51, getBuyableAmount('c', 51).add(1));
+                setBuyableAmount('c', this.id, getBuyableAmount('c', this.id).add(1));
             },
             display() {
-                if (getBuyableAmount('c', 51).eq(0)) return '<h3 style="color:lime">Unlock: ' + illionFormat(this.cost(), true) + ' coins';
+                if (getBuyableAmount('c', this.id).eq(0)) return '<h3 style="color:lime">Unlock: ' + illionFormat(this.cost(), true) + ' coins';
                 return '<h3 style="color:lime">Cost: ' + illionFormat(this.cost(), true) + ' coins';
             },
             style: {'background-color':'#aaaaaa','border-radius':'0%','height':'25px','width':'180px'},
             unlocked() {
                 if (getBuyableAmount('c', 41).gt(0)) return true;
+            },
+        },
+        61: {
+            cost() {
+                x = getBuyableAmount('c', this.id).add(160);
+                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
+            },
+            canAfford() {
+                return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
+            },
+            purchaseLimit: 1000,
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount('c', this.id, getBuyableAmount('c', this.id).add(1));
+            },
+            display() {
+                if (getBuyableAmount('c', this.id).eq(0)) return '<h3 style="color:#00ff88">Unlock: ' + illionFormat(this.cost(), true) + ' coins';
+                return '<h3 style="color:#00ff88">Cost: ' + illionFormat(this.cost(), true) + ' coins';
+            },
+            style: {'background-color':'#aaaaaa','border-radius':'0%','height':'25px','width':'180px'},
+            unlocked() {
+                if (getBuyableAmount('c', 51).gt(0)) return true;
             },
         },
     },
