@@ -12,22 +12,19 @@
     background: var(--rainbowline);
     background-size: 200%;
     border-radius: 50%;
-    animation: rainbowline 3s linear infinite;
+    animation: 3s linear infinite rainbowline;
 }
 
-.rainbowline-text {
-    background: var(--rainbowline);
-    background-size: 200%;
-    animation: 3s linear infinite rainbowline, 6s linear infinite rainbowglow;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
+.rainbowvalue-text {
+    background: transparent;
+    color: white;
+    animation: 6s linear infinite rainbowfade, 6s linear infinite rainbowglow;
 }
 
 .rainbowfade-text {
     background: transparent;
-    animation: 6s linear infinite rainbowfade, 6s linear -3s infinite rainbowglow;
     color: white;
+    animation: 6s linear infinite rainbowfade, 6s linear -3s infinite rainbowglow;
 }
 
 @keyframes rainbowline {
