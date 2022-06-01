@@ -47,36 +47,42 @@ addLayer('c', {
         if (getBuyableAmount('c', 11).gte(24)) earnings = earnings.mul(6);
         if (getBuyableAmount('c', 11).gte(49)) earnings = earnings.mul(9);
         if (getBuyableAmount('c', 11).gte(99)) earnings = earnings.mul(25);
+        if (getGridData('r', 102) != 0) earnings = earnings.mul(getGridData('r', 102));
         player.c.earnRed = earnings;
         earnings = getBuyableAmount('c', 21).mul(412.5);
         if (getBuyableAmount('c', 21).gte(10)) earnings = earnings.mul(3);
         if (getBuyableAmount('c', 21).gte(25)) earnings = earnings.mul(6);
         if (getBuyableAmount('c', 21).gte(50)) earnings = earnings.mul(9);
         if (getBuyableAmount('c', 21).gte(100)) earnings = earnings.mul(25);
+        if (getGridData('r', 103) != 0) earnings = earnings.mul(getGridData('r', 103));
         player.c.earnOrange = earnings;
         earnings = getBuyableAmount('c', 31).mul(17500);
         if (getBuyableAmount('c', 31).gte(10)) earnings = earnings.mul(3);
         if (getBuyableAmount('c', 31).gte(25)) earnings = earnings.mul(6);
         if (getBuyableAmount('c', 31).gte(50)) earnings = earnings.mul(9);
         if (getBuyableAmount('c', 31).gte(100)) earnings = earnings.mul(25);
+        if (getGridData('r', 104) != 0) earnings = earnings.mul(getGridData('r', 104));
         player.c.earnYellow = earnings;
         earnings = getBuyableAmount('c', 41).mul(1250000);
         if (getBuyableAmount('c', 41).gte(10)) earnings = earnings.mul(3);
         if (getBuyableAmount('c', 41).gte(25)) earnings = earnings.mul(6);
         if (getBuyableAmount('c', 41).gte(50)) earnings = earnings.mul(9);
         if (getBuyableAmount('c', 41).gte(100)) earnings = earnings.mul(25);
+        if (getGridData('r', 105) != 0) earnings = earnings.mul(getGridData('r', 105));
         player.c.earnSlime = earnings;
         earnings = getBuyableAmount('c', 51).mul(500000000);
         if (getBuyableAmount('c', 51).gte(10)) earnings = earnings.mul(3);
         if (getBuyableAmount('c', 51).gte(25)) earnings = earnings.mul(6);
         if (getBuyableAmount('c', 51).gte(50)) earnings = earnings.mul(9);
         if (getBuyableAmount('c', 51).gte(100)) earnings = earnings.mul(25);
+        if (getGridData('r', 106) != 0) earnings = earnings.mul(getGridData('r', 106));
         player.c.earnLime = earnings;
         earnings = getBuyableAmount('c', 61).mul(75e9);
         if (getBuyableAmount('c', 61).gte(10)) earnings = earnings.mul(3);
         if (getBuyableAmount('c', 61).gte(25)) earnings = earnings.mul(6);
         if (getBuyableAmount('c', 61).gte(50)) earnings = earnings.mul(9);
         if (getBuyableAmount('c', 61).gte(100)) earnings = earnings.mul(25);
+        if (getGridData('r', 107) != 0) earnings = earnings.mul(getGridData('r', 107));
         player.c.earnTeal = earnings;
         // earn
         if (player.c.timeRed > 1) {
@@ -103,16 +109,28 @@ addLayer('c', {
             player.points = player.points.add(player.c.earnTeal);
             player.c.timeTeal = 0;
         };
+        speed = new Decimal(diff);
+        if (getGridData('r', 202) != 0) speed = speed.mul(getGridData('r', 202));
         player.c.timeRed += diff / 3;
-        if (getBuyableAmount('c', 21).gt(0)) player.c.timeOrange += diff / 6;
+        speed = new Decimal(diff);
+        if (getGridData('r', 203) != 0) speed = speed.mul(getGridData('r', 203));
+        if (getBuyableAmount('c', 21).gt(0)) player.c.timeOrange += speed / 6;
         else player.c.timeOrange = 0;
-        if (getBuyableAmount('c', 31).gt(0)) player.c.timeYellow += diff / 12;
+        speed = new Decimal(diff);
+        if (getGridData('r', 204) != 0) speed = speed.mul(getGridData('r', 204));
+        if (getBuyableAmount('c', 31).gt(0)) player.c.timeYellow += speed / 12;
         else player.c.timeYellow = 0;
-        if (getBuyableAmount('c', 41).gt(0)) player.c.timeSlime += diff / 24;
+        speed = new Decimal(diff);
+        if (getGridData('r', 205) != 0) speed = speed.mul(getGridData('r', 205));
+        if (getBuyableAmount('c', 41).gt(0)) player.c.timeSlime += speed / 24;
         else player.c.timeSlime = 0;
-        if (getBuyableAmount('c', 51).gt(0)) player.c.timeLime += diff / 48;
+        speed = new Decimal(diff);
+        if (getGridData('r', 206) != 0) speed = speed.mul(getGridData('r', 206));
+        if (getBuyableAmount('c', 51).gt(0)) player.c.timeLime += speed / 48;
         else player.c.timeLime = 0;
-        if (getBuyableAmount('c', 61).gt(0)) player.c.timeTeal += diff / 72;
+        speed = new Decimal(diff);
+        if (getGridData('r', 207) != 0) speed = speed.mul(getGridData('r', 207));
+        if (getBuyableAmount('c', 61).gt(0)) player.c.timeTeal += speed / 72;
         else player.c.timeTeal = 0;
     },
     tabFormat: [
@@ -528,7 +546,9 @@ addLayer('c', {
         11: {
             cost() {
                 x = getBuyableAmount('c', 11).add(1);
-                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
+                divnum = 1;
+                if (getGridData('r', 302) != 0) speed = speed.mul(getGridData('r', 302));
+                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
                 return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
@@ -546,7 +566,9 @@ addLayer('c', {
         21: {
             cost() {
                 x = getBuyableAmount('c', 21).add(32);
-                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
+                divnum = 1;
+                if (getGridData('r', 303) != 0) speed = speed.mul(getGridData('r', 303));
+                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
                 return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
@@ -565,7 +587,9 @@ addLayer('c', {
         31: {
             cost() {
                 x = getBuyableAmount('c', 31).add(64);
-                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
+                divnum = 1;
+                if (getGridData('r', 304) != 0) speed = speed.mul(getGridData('r', 304));
+                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
                 return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
@@ -587,7 +611,9 @@ addLayer('c', {
         41: {
             cost() {
                 x = getBuyableAmount('c', 41).add(96);
-                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
+                divnum = 1;
+                if (getGridData('r', 305) != 0) speed = speed.mul(getGridData('r', 305));
+                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
                 return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
@@ -609,7 +635,9 @@ addLayer('c', {
         51: {
             cost() {
                 x = getBuyableAmount('c', 51).add(128);
-                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
+                divnum = 1;
+                if (getGridData('r', 306) != 0) speed = speed.mul(getGridData('r', 306));
+                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
                 return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
@@ -631,7 +659,9 @@ addLayer('c', {
         61: {
             cost() {
                 x = getBuyableAmount('c', this.id).add(160);
-                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x));
+                divnum = 1;
+                if (getGridData('r', 307) != 0) speed = speed.mul(getGridData('r', 307));
+                return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
                 return player.points.gte(this.cost()) && getBuyableAmount('c', this.id).lt(this.purchaseLimit);
@@ -657,18 +687,19 @@ addLayer('r', {
     startData() { return {
         unlocked: false,
         points: new Decimal(0),
+        bestcolors: 1,
     }},
     color: 'slategray',
-    resource: 'multiplier',
+    resource: 'total multiplier',
     row: 2,
     baseResource: 'colors',
     baseAmount() {
         return new Decimal(player.c.colors);
     },
-    requires: new Decimal(5),
+    requires: new Decimal(4),
     type: 'custom',
     getResetGain(x = 0) {
-        earnings = [0, 0, 0, 0, 0, 2, 5, 36];
+        earnings = [0, 0, 0, 0, 2, 5, 36];
         return new Decimal(earnings[player.c.colors + x]);
     },
     getNextAt() {
@@ -676,7 +707,7 @@ addLayer('r', {
         return player.c.colors + 1;
     },
     canReset() {
-        return player.c.colors >= 5;
+        return player.c.colors >= 4;
     },
     prestigeNotify() {
         return tmp.r.canReset && (new Decimal(tmp.r.resetGain).gte(player.r.points.div(10)));
@@ -684,10 +715,86 @@ addLayer('r', {
     prestigeButtonText() {
         text = '';
         if (player.r.points.lt(1e3)) text += 'Reset for ';
+        if (!tmp.r.canReset) return text+'+<b>0</b> multiplier<br><br>You will gain 2 more at 4 colors';
         return text+'+<b>'+illionFormat(tmp.r.resetGain,false,0)+'</b> multiplier<br><br>You will gain '+illionFormat(this.getResetGain(1)-this.getResetGain(),true,0)+' more at '+illionFormat(tmp.r.nextAt,true,0)+' colors';
+    },
+    onPrestige(gain) {
+        if (gain === undefined || gain === null || gain === NaN || gain === Infinity) return;
+        gain = new Decimal(gain);
+        color = getRandomInt(1, player.r.bestcolors);
+        type = getRandomInt(1, 3);
+        id = type*100+color+1;
+        setGridData('r', id, new Decimal(gain.add(getGridData('r', id))));
     },
     layerShown() {
         return true;
     },
     marked: true,
+    update(diff) {
+        if (player.c.colors > player.r.bestcolors) player.r.bestcolors = player.c.colors;
+    },
+    tabFormat: [
+        'main-display',
+        'prestige-button',
+        'blank',
+        ['display-text',
+            function() {
+                return 'You have ' + player.c.colors + ' colors<br>Your best colors is ' + player.r.bestcolors;
+            }],
+        'blank',
+        'grid',
+    ],
+    grid: {
+        rows: 3,
+        cols() {
+            return player.r.bestcolors + 1;
+        },
+        maxCols: 10,
+        getStartData(id) {
+            return 0;
+        },
+        getUnlocked(id) {
+            return true;
+        },
+        getStyle(data, id) {
+            color = 'black';
+            if (id % 100 == 2) color = ('red');
+            if (id % 100 == 3) color = ('#ff8800');
+            if (id % 100 == 4) color = ('yellow');
+            if (id % 100 == 5) color = ('#88cc00');
+            if (id % 100 == 6) color = ('lime');
+            if (id % 100 == 7) color = ('#00ff88');
+            return {'width':'60px','height':'60px','color':color};
+        },
+        getCanClick(data, id) {
+            return true;
+        },
+        onClick(data, id) { 
+            return;
+        },
+        getDisplay(data, id) {
+            if (id == 101) return '<h3>power';
+            if (id == 201) return '<h3>speed';
+            if (id == 301) return '<h3>cost';
+            if (data == 0) return '<h3>*';
+            return '<h3>' + illionFormat(data, true, 0);
+        },
+        getTooltip(data, id) {
+            if (id == 101) return 'this row multiplies power';
+            if (id == 201) return 'this row multiplies speed';
+            if (id == 301) return 'this row divides cost';
+            tip = 'this ';
+            if (id < 200) tip += 'multiplies power';
+            else if (id < 300) tip += 'multiplies speed';
+            else if (id < 400) tip += 'divides cost';
+            tip += ' of ';
+            if (id % 100 == 2) tip += 'red';
+            if (id % 100 == 3) tip += 'orange';
+            if (id % 100 == 4) tip += 'yellow';
+            if (id % 100 == 5) tip += 'slime';
+            if (id % 100 == 6) tip += 'lime';
+            if (id % 100 == 7)tip += 'teal';
+            return tip;
+        },
+    },
 });
