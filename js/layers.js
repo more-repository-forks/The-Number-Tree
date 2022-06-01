@@ -546,8 +546,8 @@ addLayer('c', {
         11: {
             cost() {
                 x = getBuyableAmount('c', 11).add(1);
-                divnum = 1;
-                if (getGridData('r', 302) != 0) speed = speed.mul(getGridData('r', 302));
+                divnum = new Decimal(1);
+                if (getGridData('r', 302) != 0) divnum = divnum.mul(getGridData('r', 302));
                 return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
@@ -566,8 +566,8 @@ addLayer('c', {
         21: {
             cost() {
                 x = getBuyableAmount('c', 21).add(32);
-                divnum = 1;
-                if (getGridData('r', 303) != 0) speed = speed.mul(getGridData('r', 303));
+                divnum = new Decimal(1);
+                if (getGridData('r', 303) != 0) divnum = divnum.mul(getGridData('r', 303));
                 return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
@@ -587,8 +587,8 @@ addLayer('c', {
         31: {
             cost() {
                 x = getBuyableAmount('c', 31).add(64);
-                divnum = 1;
-                if (getGridData('r', 304) != 0) speed = speed.mul(getGridData('r', 304));
+                divnum = new Decimal(1);
+                if (getGridData('r', 304) != 0) divnum = divnum.mul(getGridData('r', 304));
                 return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
@@ -611,8 +611,8 @@ addLayer('c', {
         41: {
             cost() {
                 x = getBuyableAmount('c', 41).add(96);
-                divnum = 1;
-                if (getGridData('r', 305) != 0) speed = speed.mul(getGridData('r', 305));
+                divnum = new Decimal(1);
+                if (getGridData('r', 305) != 0) divnum = divnum.mul(getGridData('r', 305));
                 return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
@@ -635,8 +635,8 @@ addLayer('c', {
         51: {
             cost() {
                 x = getBuyableAmount('c', 51).add(128);
-                divnum = 1;
-                if (getGridData('r', 306) != 0) speed = speed.mul(getGridData('r', 306));
+                divnum = new Decimal(1);
+                if (getGridData('r', 306) != 0) divnum = divnum.mul(getGridData('r', 306));
                 return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
@@ -659,8 +659,8 @@ addLayer('c', {
         61: {
             cost() {
                 x = getBuyableAmount('c', this.id).add(160);
-                divnum = 1;
-                if (getGridData('r', 307) != 0) speed = speed.mul(getGridData('r', 307));
+                divnum = new Decimal(1);
+                if (getGridData('r', 307) != 0) divnum = divnum.mul(getGridData('r', 307));
                 return new Decimal(1).add(x.mul(0.8)).add(new Decimal(1.2).pow(x)).div(divnum);
             },
             canAfford() {
