@@ -58,6 +58,7 @@ function illionFormat(decimal, short, precision = 2) {
             if (!short) suffix += "millia";
             else suffix += "M";
         };
+        if (!short) suffix += "-";
     };
     if (decimal.gte(1e303)) { // add prefix if higher than 99th illion
         if (decimal.div(new Decimal(1e300).pow(centillions)).gte("e2703")) { // 900th
@@ -108,6 +109,7 @@ function illionFormat(decimal, short, precision = 2) {
         } else { // none
             if (short) suffix += "~";
         };
+        if (!short) suffix += "-";
         if (decimal.lt("e3003")) divnum = divnum.mul(1e3);
     };
     if (decimal.gte(1e33)) { // add prefix if higher than 9th illion
