@@ -8,17 +8,17 @@ addLayer('c', {
     startData() { return {
         unlocked: true,
         colors: 1,
-        timeRed: 0,
+        timeRed: new Decimal(0),
         earnRed: new Decimal(4),
-        timeOrange: 0,
+        timeOrange: new Decimal(0),
         earnOrange: new Decimal(0),
-        timeYellow: 0,
+        timeYellow: new Decimal(0),
         earnYellow: new Decimal(0),
-        timeSlime: 0,
+        timeSlime: new Decimal(0),
         earnSlime: new Decimal(0),
-        timeLime: 0,
+        timeLime: new Decimal(0),
         earnLime: new Decimal(0),
-        timeTeal: 0,
+        timeTeal: new Decimal(0),
         earnTeal: new Decimal(0),
     }},
     color: 'white',
@@ -85,53 +85,53 @@ addLayer('c', {
         if (getGridData('r', 107) != 0) earnings = earnings.mul(getGridData('r', 107));
         player.c.earnTeal = earnings;
         // earn
-        if (player.c.timeRed > 1) {
+        if (player.c.timeRed.gt(1)) {
             player.points = player.points.add(player.c.earnRed);
-            player.c.timeRed = 0;
+            player.c.timeRed = new Decimal(0);
         };
-        if (player.c.timeOrange > 1) {
+        if (player.c.timeOrange.gt(1)) {
             player.points = player.points.add(player.c.earnOrange);
-            player.c.timeOrange = 0;
+            player.c.timeOrange = new Decimal(0);
         };
-        if (player.c.timeYellow > 1) {
+        if (player.c.timeYellow.gt(1)) {
             player.points = player.points.add(player.c.earnYellow);
-            player.c.timeYellow = 0;
+            player.c.timeYellow = new Decimal(0);
         };
-        if (player.c.timeSlime > 1) {
+        if (player.c.timeSlime.gt(1)) {
             player.points = player.points.add(player.c.earnSlime);
-            player.c.timeSlime = 0;
+            player.c.timeSlime = new Decimal(0);
         };
-        if (player.c.timeLime > 1) {
+        if (player.c.timeLime.gt(1)) {
             player.points = player.points.add(player.c.earnLime);
-            player.c.timeLime = 0;
+            player.c.timeLime = new Decimal(0);
         };
-        if (player.c.timeTeal > 1) {
+        if (player.c.timeTeal.gt(1)) {
             player.points = player.points.add(player.c.earnTeal);
-            player.c.timeTeal = 0;
+            player.c.timeTeal = new Decimal(0);
         };
         speed = new Decimal(diff);
         if (getGridData('r', 202) != 0) speed = speed.mul(getGridData('r', 202));
-        player.c.timeRed += diff / 3;
+        player.c.timeRed = player.c.timeRed.add(speed.div(3));
         speed = new Decimal(diff);
         if (getGridData('r', 203) != 0) speed = speed.mul(getGridData('r', 203));
-        if (getBuyableAmount('c', 21).gt(0)) player.c.timeOrange += speed / 6;
-        else player.c.timeOrange = 0;
+        if (getBuyableAmount('c', 21).gt(0)) player.c.timeOrange = player.c.timeOrange.add(speed.div(6));
+        else player.c.timeOrange = new Decimal(0);
         speed = new Decimal(diff);
         if (getGridData('r', 204) != 0) speed = speed.mul(getGridData('r', 204));
-        if (getBuyableAmount('c', 31).gt(0)) player.c.timeYellow += speed / 12;
-        else player.c.timeYellow = 0;
+        if (getBuyableAmount('c', 31).gt(0)) player.c.timeYellow = player.c.timeYellow.add(speed.div(12));
+        else player.c.timeYellow = new Decimal(0);
         speed = new Decimal(diff);
         if (getGridData('r', 205) != 0) speed = speed.mul(getGridData('r', 205));
-        if (getBuyableAmount('c', 41).gt(0)) player.c.timeSlime += speed / 24;
-        else player.c.timeSlime = 0;
+        if (getBuyableAmount('c', 41).gt(0)) player.c.timeSlime = player.c.timeSlime.add(speed.div(24));
+        else player.c.timeSlime = new Decimal(0);
         speed = new Decimal(diff);
         if (getGridData('r', 206) != 0) speed = speed.mul(getGridData('r', 206));
-        if (getBuyableAmount('c', 51).gt(0)) player.c.timeLime += speed / 48;
-        else player.c.timeLime = 0;
+        if (getBuyableAmount('c', 51).gt(0)) player.c.timeLime = player.c.timeLime.add(speed.div(48));
+        else player.c.timeLime = new Decimal(0);
         speed = new Decimal(diff);
         if (getGridData('r', 207) != 0) speed = speed.mul(getGridData('r', 207));
-        if (getBuyableAmount('c', 61).gt(0)) player.c.timeTeal += speed / 72;
-        else player.c.timeTeal = 0;
+        if (getBuyableAmount('c', 61).gt(0)) player.c.timeTeal = player.c.timeTeal.add(speed.div(72));
+        else player.c.timeTeal = new Decimal(0);
     },
     tabFormat: [
         ['display-text',
@@ -140,6 +140,10 @@ addLayer('c', {
             }],
         'blank',
         ['row', [
+            ['display-text',
+                function() {
+                    return '<b class="sidetext" style="color:red">RED';
+                }],
             ['bar', 'redProg'],
             'blank',
             ['bar', 'redBar'],
@@ -152,6 +156,10 @@ addLayer('c', {
         ]],
         'blank',
         ['row', [
+            ['display-text',
+                function() {
+                    return '<b class="sidetext" style="color:#ff8800">ORANGE';
+                }],
             ['bar', 'orangeProg'],
             'blank',
             ['bar', 'orangeBar'],
@@ -164,6 +172,10 @@ addLayer('c', {
         ]],
         'blank',
         ['row', [
+            ['display-text',
+                function() {
+                    if (player.c.colors >= 2) return '<b class="sidetext" style="color:yellow">YELLOW';
+                }],
             ['bar', 'yellowProg'],
             'blank',
             ['bar', 'yellowBar'],
@@ -176,6 +188,10 @@ addLayer('c', {
         ]],
         'blank',
         ['row', [
+            ['display-text',
+                function() {
+                    if (player.c.colors >= 3) return '<b class="sidetext" style="color:#99dd00">SLIME';
+                }],
             ['bar', 'slimeProg'],
             'blank',
             ['bar', 'slimeBar'],
@@ -188,6 +204,10 @@ addLayer('c', {
         ]],
         'blank',
         ['row', [
+            ['display-text',
+                function() {
+                    if (player.c.colors >= 4) return '<b class="sidetext" style="color:lime">LIME';
+                }],
             ['bar', 'limeProg'],
             'blank',
             ['bar', 'limeBar'],
@@ -200,6 +220,10 @@ addLayer('c', {
         ]],
         'blank',
         ['row', [
+            ['display-text',
+                function() {
+                    if (player.c.colors >= 5) return '<b class="sidetext" style="color:#00ff88">TEAL';
+                }],
             ['bar', 'tealProg'],
             'blank',
             ['bar', 'tealBar'],
@@ -324,7 +348,7 @@ addLayer('c', {
             borderStyle: {'border-color':'yellow'},
             style: {'color':'#aaaaaa'},
             unlocked() {
-                if (getBuyableAmount('c', 21).gt(0)) return true;
+                if (player.c.colors >= 2) return true;
             },
         },
         yellowBuy: {
@@ -342,7 +366,7 @@ addLayer('c', {
             borderStyle: {'border-color':'yellow'},
             style: {'color':'#aaaaaa'},
             unlocked() {
-                if (getBuyableAmount('c', 21).gt(0)) return true;
+                if (player.c.colors >= 2) return true;
             },
         },
         yellowProg: {
@@ -364,7 +388,7 @@ addLayer('c', {
             borderStyle: {'border-color':'yellow'},
             style: {'color':'#aaaaaa','border-radius':'50%'},
             unlocked() {
-                if (getBuyableAmount('c', 21).gt(0)) return true;
+                if (player.c.colors >= 2) return true;
             },
         },
         slimeBar: {
@@ -382,7 +406,7 @@ addLayer('c', {
             borderStyle: {'border-color':'#99dd00'},
             style: {'color':'white'},
             unlocked() {
-                if (getBuyableAmount('c', 31).gt(0)) return true;
+                if (player.c.colors >= 3) return true;
             },
         },
         slimeBuy: {
@@ -400,7 +424,7 @@ addLayer('c', {
             borderStyle: {'border-color':'#99dd00'},
             style: {'color':'white'},
             unlocked() {
-                if (getBuyableAmount('c', 31).gt(0)) return true;
+                if (player.c.colors >= 3) return true;
             },
         },
         slimeProg: {
@@ -422,7 +446,7 @@ addLayer('c', {
             borderStyle: {'border-color':'#99dd00'},
             style: {'color':'white','border-radius':'50%'},
             unlocked() {
-                if (getBuyableAmount('c', 31).gt(0)) return true;
+                if (player.c.colors >= 3) return true;
             },
         },
         limeBar: {
@@ -440,7 +464,7 @@ addLayer('c', {
             borderStyle: {'border-color':'lime'},
             style: {'color':'#aaaaaa'},
             unlocked() {
-                if (getBuyableAmount('c', 41).gt(0)) return true;
+                if (player.c.colors >= 4) return true;
             },
         },
         limeBuy: {
@@ -458,7 +482,7 @@ addLayer('c', {
             borderStyle: {'border-color':'lime'},
             style: {'color':'#aaaaaa'},
             unlocked() {
-                if (getBuyableAmount('c', 41).gt(0)) return true;
+                if (player.c.colors >= 4) return true;
             },
         },
         limeProg: {
@@ -480,7 +504,7 @@ addLayer('c', {
             borderStyle: {'border-color':'lime'},
             style: {'color':'#aaaaaa','border-radius':'50%'},
             unlocked() {
-                if (getBuyableAmount('c', 41).gt(0)) return true;
+                if (player.c.colors >= 4) return true;
             },
         },
         tealBar: {
@@ -498,7 +522,7 @@ addLayer('c', {
             borderStyle: {'border-color':'#00ff88'},
             style: {'color':'#aaaaaa'},
             unlocked() {
-                if (getBuyableAmount('c', 51).gt(0)) return true;
+                if (player.c.colors >= 5) return true;
             },
         },
         tealBuy: {
@@ -516,7 +540,7 @@ addLayer('c', {
             borderStyle: {'border-color':'#00ff88'},
             style: {'color':'#aaaaaa'},
             unlocked() {
-                if (getBuyableAmount('c', 51).gt(0)) return true;
+                if (player.c.colors >= 5) return true;
             },
         },
         tealProg: {
@@ -538,7 +562,7 @@ addLayer('c', {
             borderStyle: {'border-color':'#00ff88'},
             style: {'color':'#aaaaaa','border-radius':'50%'},
             unlocked() {
-                if (getBuyableAmount('c', 51).gt(0)) return true;
+                if (player.c.colors >= 5) return true;
             },
         },
     },
@@ -605,7 +629,7 @@ addLayer('c', {
             },
             style: {'background-color':'#aaaaaa','border-radius':'0%','height':'25px','width':'180px'},
             unlocked() {
-                if (getBuyableAmount('c', 21).gt(0)) return true;
+                if (player.c.colors >= 2) return true;
             },
         },
         41: {
@@ -629,7 +653,7 @@ addLayer('c', {
             },
             style: {'background-color':'white','border-radius':'0%','height':'25px','width':'180px'},
             unlocked() {
-                if (getBuyableAmount('c', 31).gt(0)) return true;
+                if (player.c.colors >= 3) return true;
             },
         },
         51: {
@@ -653,7 +677,7 @@ addLayer('c', {
             },
             style: {'background-color':'#aaaaaa','border-radius':'0%','height':'25px','width':'180px'},
             unlocked() {
-                if (getBuyableAmount('c', 41).gt(0)) return true;
+                if (player.c.colors >= 4) return true;
             },
         },
         61: {
@@ -677,7 +701,7 @@ addLayer('c', {
             },
             style: {'background-color':'#aaaaaa','border-radius':'0%','height':'25px','width':'180px'},
             unlocked() {
-                if (getBuyableAmount('c', 51).gt(0)) return true;
+                if (player.c.colors >= 5) return true;
             },
         },
     },
