@@ -3,23 +3,15 @@
 <head>
 
 	<link rel='stylesheet' type='text/css' href='css/system-style.css'/>
-	<link rel='stylesheet' type='text/css' href='css/bars.css'/>
-	<link rel='stylesheet' type='text/css' href='css/components.css'/>
 	<link rel='stylesheet' type='text/css' href='css/general-style.css'/>
-	<link rel='stylesheet' type='text/css' href='css/misc.css'/>
 	<link rel='stylesheet' type='text/css' href='css/other-tabs.css'/>
-	<link rel='stylesheet' type='text/css' href='css/popup.css'/>
-	<link rel='stylesheet' type='text/css' href='css/tree-node.css'/>
 	<link rel='stylesheet' type='text/css' href='css/animations.css'/>
 
 	<link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet'>
 	<link href='https://fonts.googleapis.com/css?family=Flavors' rel='stylesheet'>
 
 	<script src='https://cdn.jsdelivr.net/npm/vue@2.6.12'></script>
-	<script src='js/technical/break_eternity.js'></script>
-	<script src='js/mod.js'></script>
 	<script src='js/technical/loader.js'></script>
-	<script src='js/technical/layerSupport.js'></script>
 
 </head>
 
@@ -52,10 +44,10 @@
 
 		<div id='treeOverlay' v-if='!(tmp.gameEnded && !player.keepGoing) && (player.tab === "none" || tmp.other.splitScreen || !readData(layoutInfo.showTree))' class='treeOverlay' onscroll='resizeCanvas()'
 			v-bind:class='{ 
-			fullWidth: (player.tab == "none" || player.navTab == "none"), 
-			col: (player.tab !== "none" && player.navTab !== "none"), 
-			left: (player.tab !== "none" && player.navTab !== "none")}'
-			 :style='{"margin-top": !readData(layoutInfo.showTree) && player.tab == "info-tab" ? "50px" : ""}'>
+				fullWidth: (player.tab == "none" || player.navTab == "none"), 
+				col: (player.tab !== "none" && player.navTab !== "none"), 
+				left: (player.tab !== "none" && player.navTab !== "none")}'
+			:style='{"margin-top": !readData(layoutInfo.showTree) && player.tab == "info-tab" ? "50px" : ""}'>
 			<div id='version' onclick='showTab("changelog-tab")' class='overlayThing' style='margin-right: 13px' >
 				{{VERSION.withoutName}}</div>
 			<button v-if='((player.navTab == "none" && (tmp[player.tab].row == "side" || tmp[player.tab].row == "otherside" || player[player.tab].prevTab)) || player[player.navTab]?.prevTab)' class='other-back overlayThing' onclick='goBack(player.navTab == "none" ? player.tab : player.navTab)'>←</button>
