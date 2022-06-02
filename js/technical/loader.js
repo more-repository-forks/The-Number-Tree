@@ -1,9 +1,9 @@
 // File names
 cssFiles = ['bars', 'components', 'misc', 'popup', 'tree-node'];
 htmlFiles = ['changelog', 'systemComponents'];
-techFiles = ['break_eternity', 'temp', 'layerSupport', 'displays', 'systemComponents', 'canvas', 'particleSystem'];
-utilFiles = ['easyAccess', 'NumberFormating', 'options', 'save', 'themes'];
-modFiles = ['mod', 'layers', 'tree', 'game', 'utils', 'components'];
+techFiles = ['break_eternity', 'temp', 'layerSupport', 'displays', 'components', 'systemComponents', 'canvas', 'particleSystem'];
+utilFiles = ['easyAccess', 'NumberFormating', 'options', 'save', 'themes', 'utils'];
+modFiles = ['mod', 'layers', 'tree', 'game'];
 
 // Load files
 for (file in cssFiles) {
