@@ -1,9 +1,9 @@
 // File names
-cssFiles = ['bars', 'components', 'misc', 'popup', 'tree-node'];
+cssFiles = ['animations', 'bars', 'components', 'misc', 'other-tabs', 'popup', 'tree-node'];
 htmlFiles = ['changelog', 'systemComponents'];
-techFiles = ['break_eternity', 'temp', 'layerSupport', 'displays', 'components', 'systemComponents', 'canvas', 'particleSystem'];
+techFiles = ['break_eternity', 'canvas', 'components', 'displays', 'layerSupport', 'particleSystem', 'systemComponents', 'temp'];
 utilFiles = ['easyAccess', 'NumberFormating', 'options', 'save', 'themes', 'utils'];
-modFiles = ['mod', 'layers', 'tree', 'game'];
+jsFiles = ['mod', 'layers', 'tree', 'game'];
 
 // Load files
 for (file in cssFiles) {
@@ -11,33 +11,33 @@ for (file in cssFiles) {
     script.setAttribute('rel', 'stylesheet');
     script.setAttribute('type', 'text/css');
     script.setAttribute('href', 'css/' + cssFiles[file] + '.css');
-    document.head.insertBefore(script, document.getElementById('loader'));
+    document.head.insertBefore(script, null);
 };
 
 for (file in htmlFiles) {
     let script = document.createElement('script');
     script.setAttribute('src', 'html/' + htmlFiles[file] + '.html');
     script.setAttribute('async', 'false');
-    document.head.insertBefore(script, document.getElementById('loader'));
+    document.head.insertBefore(script, null);
 };
 
 for (file in techFiles) {
     let script = document.createElement('script');
     script.setAttribute('src', 'js/technical/' + techFiles[file] + '.js');
     script.setAttribute('async', 'false');
-    document.head.insertBefore(script, document.getElementById('loader'));
+    document.head.insertBefore(script, null);
 };
 
 for (file in utilFiles) {
     let script = document.createElement('script');
     script.setAttribute('src', 'js/utils/' + utilFiles[file] + '.js');
     script.setAttribute('async', 'false');
-    document.head.insertBefore(script, document.getElementById('loader'));
+    document.head.insertBefore(script, null);
 };
 
-for (file in modFiles) {
+for (file in jsFiles) {
     let script = document.createElement('script');
-    script.setAttribute('src', 'js/' + modFiles[file] + '.js');
+    script.setAttribute('src', 'js/' + jsFiles[file] + '.js');
     script.setAttribute('async', 'false');
-    document.head.insertBefore(script, document.getElementById('loader'));
+    document.head.insertBefore(script, null);
 };
