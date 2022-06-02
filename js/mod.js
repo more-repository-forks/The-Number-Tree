@@ -3,7 +3,8 @@ let modInfo = {
 	id: 'Yrahcaz7-ModTree-ColorFactory',
 	author: 'Yrahcaz7',
 	pointsName: 'coins',
-	modFiles: ['layers.js', 'tree.js'],
+	modFiles: ['layers', 'tree', 'game', 'utils', 'components'],
+	techFiles: ['temp', 'displays', 'systemComponents', 'canvas', 'particleSystem'],
 	initialStartPoints: new Decimal(0),
 	offlineLimit: 1, // In hours
 	allowSmall: true,
