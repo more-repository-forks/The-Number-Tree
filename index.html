@@ -10,7 +10,7 @@
 	<link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet'>
 	<link href='https://fonts.googleapis.com/css?family=Flavors' rel='stylesheet'>
 
-	<script src='https://cdn.jsdelivr.net/npm/vue@2.6.12'></script>
+	<script src='js/technical/vue.js'></script>
 	<script src='js/technical/loader.js'></script>
 
 </head>
@@ -20,7 +20,7 @@
 		<canvas id='treeCanvas' class='canvas' v-if='!(tmp.gameEnded && !player.keepGoing)'></canvas>
 
 		<div v-if='false' id='loadingSection' class='fullWidth'>
-			<h1>Loading... (If this takes too long it means there was a serious error!)←</h1>
+			<h1>Loading... (If this takes too long it means there was a serious error!)</h1>
 		</div>
 		<div class='vl' v-if='player.navTab !== "none" && tmp.other.splitScreen && player.tab!="none" && !(tmp.gameEnded && !player.keepGoing)'></div>
 		<div v-if='(tmp.gameEnded && !player.keepGoing)' class='fullWidth'>
