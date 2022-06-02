@@ -5,6 +5,7 @@ let modInfo = {
 	pointsName: 'coins',
 	modFiles: ['layers', 'tree', 'game', 'utils', 'components'],
 	techFiles: ['temp', 'displays', 'systemComponents', 'canvas', 'particleSystem'],
+	utilFiles: ['easyAccess', 'NumberFormating', 'options', 'save', 'themes'],
 	initialStartPoints: new Decimal(0),
 	offlineLimit: 1, // In hours
 	allowSmall: true,
