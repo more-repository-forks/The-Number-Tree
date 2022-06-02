@@ -3,6 +3,7 @@ let modInfo = {
 	id: 'Yrahcaz7-ModTree-ColorFactory',
 	author: 'Yrahcaz7',
 	pointsName: 'coins',
+	htmlFiles: ['changelog', 'systemComponents'],
 	modFiles: ['layers', 'tree', 'game', 'utils', 'components'],
 	techFiles: ['temp', 'displays', 'systemComponents', 'canvas', 'particleSystem'],
 	utilFiles: ['easyAccess', 'NumberFormating', 'options', 'save', 'themes'],
