@@ -1,4 +1,4 @@
-/* Animations */
+/* Rainbow Animations */
 :root {
     --rainbowline: linear-gradient(90deg, magenta, red, yellow, lime, cyan, blue, magenta, red, yellow, lime, cyan, blue, magenta);
 }
@@ -28,8 +28,8 @@
 }
 
 @keyframes rainbowline {
-    0%{background-position:0%}
-    100%{background-position:100%}
+    0%{background-position: 0%}
+    100%{background-position: 100%}
 }
 
 @keyframes rainbowfade {
@@ -51,6 +51,8 @@
     83.3333333333%{text-shadow: 0 0 9px blue}
     100%{text-shadow: 0 0 9px magenta}
 }
+
+/* Moon Animations */
 
 .moon {
     height: 25%;
@@ -78,8 +80,15 @@
 }
 
 @keyframes orbit {
-    0%{transform:rotate(0deg)}
-    100%{transform:rotate(360deg)}
+    0%{transform: rotate(0deg)}
+    100%{transform: rotate(360deg)}
+}
+
+/* Sideways Text */
+
+.sidetext {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
 }
 
 /* Prestige button */
