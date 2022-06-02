@@ -6,6 +6,7 @@ let modInfo = {
 	modFiles: ['layers.js', 'tree.js'],
 	initialStartPoints: new Decimal(0),
 	offlineLimit: 1, // In hours
+	allowSmall: true,
 };
 
 let VERSION = {
