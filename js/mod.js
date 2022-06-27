@@ -1,16 +1,16 @@
 let modInfo = {
 	name: 'Color Factory',
-	id: 'Yrahcaz7-ModTree-ColorFactory',
+	id: 'Yrahcaz7-ModTree-TheNumberTree',
 	author: 'Yrahcaz7',
-	pointsName: 'coins',
+	pointsName: 'points',
 	initialStartPoints: new Decimal(0),
 	offlineLimit: 1, // In hours
 	allowSmall: true,
 };
 
 let VERSION = {
-	num: '3.0',
-	name: 'The Reset',
+	num: '0.1',
+	name: 'Beta',
 };
 
 let winText = '<h3>You won the game!</h3><br>However, it isn\'t the end yet...<br>Wait for more updates for further content.';
@@ -23,7 +23,7 @@ function getRandomInt(min, max) {
 };
 
 // Determines if it should show points/sec
-function canGenPoints(){
+function canGenPoints() {
 	return false;
 };
 
