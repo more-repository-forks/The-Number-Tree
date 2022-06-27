@@ -1,6 +1,6 @@
-addLayer("rn", {
-    name: "roman numerals",
-    symbol: "RN",
+addLayer('rn', {
+    name: 'roman numerals',
+    symbol: 'RN',
     row: 0,
     position: 0,
     startData() { return {
@@ -9,14 +9,14 @@ addLayer("rn", {
         best: new Decimal(0),
         total: new Decimal(0),
     }},
-    color: "#884400",
-    resource: "roman numerals",
-    baseResource: "points",
+    color: '#884400',
+    resource: 'roman numerals',
+    baseResource: 'points',
     baseAmount() {
         return player.points;
     },
     requires: new Decimal(5),
-    type: "normal",
+    type: 'normal',
     exponent: 0.5,
     gainMult() {
         let gain = new Decimal(1);
@@ -27,23 +27,23 @@ addLayer("rn", {
         return new Decimal(1);
     },
     hotkeys: [{
-        key: "r", // Use uppercase if it's combined with shift, or "ctrl+x" for holding down ctrl.
-        description: "R: reset your points for roman numerals",
-        onPress() { if (player.p.unlocked) doReset("p") },
+        key: 'r', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
+        description: 'R: reset your points for roman numerals',
+        onPress() { if (player.rn.unlocked) doReset('rn') },
     }],
     layerShown() {
         return true;
     },
     tabFormat: [
-        ["display-text",
+        ['display-text',
             function() { return 'You have <h2 class="layer-rn">' + numeralFormat(player.rn.points) + '</h2> roman numerals' },
         ],
-        "blank",
-        "prestige-button",
-        "resource-display",
-        "blank",
-        "upgrades",
-        "blank",
+        'blank',
+        'prestige-button',
+        'resource-display',
+        'blank',
+        'upgrades',
+        'blank',
     ],
     upgrades: {
         11: {
