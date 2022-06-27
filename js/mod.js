@@ -30,6 +30,7 @@ function canGenPoints() {
 // Calculate points/sec!
 function getPointGen() {
 	let gain = new Decimal(1);
+	if (hasUpgrade('rn', 11)) gain = gain.mul(upgradeEffect('rn', 11));
 	return gain;
 };
 

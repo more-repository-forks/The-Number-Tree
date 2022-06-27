@@ -6,6 +6,8 @@ addLayer("rn", {
     startData() { return {
         unlocked: true,
         points: new Decimal(0),
+        best: new Decimal(0),
+        total: new Decimal(0),
     }},
     color: "#884400",
     resource: "roman numerals",
@@ -13,11 +15,13 @@ addLayer("rn", {
     baseAmount() {
         return player.points;
     },
-    requires: new Decimal(10),
+    requires: new Decimal(5),
     type: "normal",
     exponent: 0.5,
     gainMult() {
-        return new Decimal(1);
+        let gain = new Decimal(1);
+        if (hasUpgrade('rn', 12)) gain = gain.mul(upgradeEffect('rn', 12));
+        return gain;
     },
     gainExp() {
         return new Decimal(1);
@@ -31,6 +35,35 @@ addLayer("rn", {
         ],
         "blank",
         "prestige-button",
+        "resource-display",
+        "blank",
+        "upgrades",
         "blank",
     ],
+    upgrades: {
+        11: {
+            fullDisplay() {
+                return `<h3>Counting</h3><br>
+                    multiply point generation based on the amount of roman numerals you have.<br>
+                    Currently: ` + format(this.effect()) + `x<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+            },
+            effect() {
+                return player.rn.points.add(1).pow(0.25);
+            },
+            cost: new Decimal(4),
+        },
+        12: {
+            fullDisplay() {
+                return `<h3>Practice</h3><br>
+                    multiply roman numeral gain based on the amount of total roman numerals you have.<br>
+                    Currently: ` + format(this.effect()) + `x<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+            },
+            effect() {
+                return player.rn.total.add(1).pow(0.2);
+            },
+            cost: new Decimal(10),
+        },
+    },
 });
