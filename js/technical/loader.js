@@ -1,5 +1,5 @@
 // File names
-cssFiles = ['animations', 'bars', 'components', 'misc', 'other-tabs', 'popup', 'tree-node'];
+cssFiles = ['bars', 'components', 'misc', 'other-tabs', 'popup', 'tree-node'];
 htmlFiles = ['changelog', 'systemComponents'];
 techFiles = ['break_eternity', 'canvas', 'components', 'displays', 'layerSupport', 'particleSystem', 'systemComponents', 'temp'];
 utilFiles = ['easyAccess', 'NumberFormating', 'options', 'save', 'themes', 'utils'];

@@ -24,12 +24,12 @@ function getRandomInt(min, max) {
 
 // Determines if it should show points/sec
 function canGenPoints() {
-	return false;
+	return true;
 };
 
 // Calculate points/sec!
 function getPointGen() {
-	let gain = new Decimal(0);
+	let gain = new Decimal(1);
 	return gain;
 };
 

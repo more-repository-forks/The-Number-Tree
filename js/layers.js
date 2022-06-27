@@ -7,7 +7,7 @@ addLayer("rn", {
         unlocked: true,
         points: new Decimal(0),
     }},
-    color: "#4BDC13",
+    color: "#884400",
     resource: "roman numerals",
     baseResource: "points",
     baseAmount() {
@@ -25,4 +25,12 @@ addLayer("rn", {
     layerShown() {
         return true;
     },
+    tabFormat: [
+        ["display-text",
+            function() { return 'You have <h2 class="layer-rn">' + numeralFormat(player.rn.points) + '</h2> roman numerals' },
+        ],
+        "blank",
+        "prestige-button",
+        "blank",
+    ],
 });
