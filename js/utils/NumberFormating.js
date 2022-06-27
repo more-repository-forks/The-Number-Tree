@@ -263,26 +263,41 @@ const romanNumerals = [
     ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
     ["X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"],
     ["C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"],
-    ["M", "MM", "MMM", "MMMM", "MMMMM"]
+    ["M", "MM", "MMM", "M&#8577", "&#8577", "&#8577M", "&#8577MM", "&#8577MMM", "&#8577M&#8577"]
 ];
 
-function numeralFormat(decimal, precision = 2) {
+function numeralFormat(decimal) {
     // setup
-    let result = "";
+    let result = "", result2 = "";
+    let places = 0;
     decimal = new Decimal(decimal);
-    if (options.extendplaces && precision == 2) precision = 3;
+    let decimal2 = decimal, decimal3;
     // normal format if too high
     if (decimal.layer >= 2) return format(decimal, precision);
     // calculation
     if (decimal.mag === 0) return "N";
-    let numsArray = [...decimal.mag.toString()].reverse();
+    if (decimal.gte(1e4)) {
+        places = decimal.mul(2).log10().trunc();
+        places = places.div(4).trunc().mul(4);
+        decimal2 = decimal.div(new Decimal(10).pow(places)).trunc();
+        decimal3 = (decimal.sub(decimal2.mul(1e4))).abs();
+        let numsArray = [...decimal3.mag.toString()].reverse();
+        for (let i = 0; i < numsArray.length; i++) {
+            numsArray[i] = +numsArray[i];
+            if (numsArray[i] === 0) continue;
+            result2 = romanNumerals[i][numsArray[i] - 1] + result2;
+        };
+    };
+    let numsArray = [...decimal2.mag.toString()].reverse();
     for (let i = 0; i < numsArray.length; i++) {
         numsArray[i] = +numsArray[i];
         if (numsArray[i] === 0) continue;
         result = romanNumerals[i][numsArray[i] - 1] + result;
     };
     // return formatted decimal
-    if (hasUpgrade('rn', 21) && player.rn.calc) return result + " (" + formatWhole(decimal) + ")";
+    if (result2) result += "." + result2;
+    if (places) result += "e" + places;
+    if (hasUpgrade("rn", 21) && player.rn.calc) return result + " (" + formatWhole(decimal) + ")";
     return result;
 };
 
