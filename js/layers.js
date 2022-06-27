@@ -26,6 +26,13 @@ addLayer('rn', {
     gainExp() {
         return new Decimal(1);
     },
+    prestigeButtonText() {
+        let resetGain = new Decimal(tmp.rn.resetGain), text = '';
+        if (player.rn.points.lt(1e3)) text = 'Reset for ';
+        text += '+<b>' + numeralFormat(resetGain) + '</b> roman numerals';
+        if (resetGain.lt(100)&&player.rn.points.lt(1e3)) text += '<br><br>Next at ' + format(tmp.rn.nextAt) + ' points';
+        return text;
+    },
     hotkeys: [{
         key: 'r', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
         description: 'R: reset your points for roman numerals',
