@@ -3,6 +3,9 @@ addLayer('rn', {
     symbol: 'RN',
     row: 0,
     position: 0,
+    tooltip() {
+        return numeralFormat(player.rn.points) + ' roman numerals';
+    },
     startData() { return {
         unlocked: true,
         points: new Decimal(0),
