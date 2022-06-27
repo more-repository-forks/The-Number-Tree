@@ -8,6 +8,7 @@ addLayer('rn', {
         points: new Decimal(0),
         best: new Decimal(0),
         total: new Decimal(0),
+        calc: true,
     }},
     color: '#884400',
     resource: 'roman numerals',
@@ -50,6 +51,7 @@ addLayer('rn', {
         'resource-display',
         'blank',
         'upgrades',
+        'clickables',
         'blank',
     ],
     upgrades: {
@@ -112,6 +114,31 @@ addLayer('rn', {
                 return player.points.add(1).pow(0.1);
             },
             cost: new Decimal(350),
+        },
+        21: {
+            fullDisplay() {
+                return `<h3>Calculator</h3><br>
+                    shows the numeric equivalent to all roman numerals alongside the normal values.<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+            },
+            cost: new Decimal(1000),
+        },
+    },
+    clickables: {
+        11: {
+            display() {
+                if (player.rn.calc) return '<h3>turn<br>calulator<br>off';
+                return '<h3>turn<br>calulator<br>on';
+            },
+            canClick() {
+                return true;
+            },
+            onClick() {
+                player.rn.calc = !player.rn.calc;
+            },
+            unlocked() {
+                return hasUpgrade('rn', 21);
+            },
         },
     },
 });

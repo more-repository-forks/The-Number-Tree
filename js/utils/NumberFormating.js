@@ -282,6 +282,7 @@ function numeralFormat(decimal, precision = 2) {
         result = romanNumerals[i][numsArray[i] - 1] + result;
     };
     // return formatted decimal
+    if (hasUpgrade('rn', 21) && player.rn.calc) return result + " (" + formatWhole(decimal) + ")";
     return result;
 };
 
