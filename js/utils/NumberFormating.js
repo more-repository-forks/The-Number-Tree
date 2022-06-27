@@ -8,7 +8,7 @@ function illionFormat(decimal, short, precision = 2) {
     if (!short) suffix = " ";
     if (options.extendplaces && precision == 2) precision = 3;
     // illion calculation
-    if (decimal.gte("e30003") || options.nfDisplay == "e") { // format normally if higher than 9,999th illion
+    if (decimal.gte("e30003") || options.nfDisplay != "illions") { // format normally if higher than 9,999th illion
         return format(decimal, precision);
     };
     if (decimal.gte("e3003")) { // add prefix if higher than 999th illion

@@ -26,6 +26,11 @@ addLayer("rn", {
     gainExp() {
         return new Decimal(1);
     },
+    hotkeys: [{
+        key: "r", // Use uppercase if it's combined with shift, or "ctrl+x" for holding down ctrl.
+        description: "R: reset your points for roman numerals",
+        onPress() { if (player.p.unlocked) doReset("p") },
+    }],
     layerShown() {
         return true;
     },
@@ -88,6 +93,18 @@ addLayer("rn", {
                 return 2;
             },
             cost: new Decimal(100),
+        },
+        15: {
+            fullDisplay() {
+                return `<h3>Point Scores</h3><br>
+                    multiply points gain based on the amount of points you have.<br>
+                    Currently: ` + format(this.effect()) + `x<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+            },
+            effect() {
+                return player.points.add(1).pow(0.1);
+            },
+            cost: new Decimal(350),
         },
     },
 });

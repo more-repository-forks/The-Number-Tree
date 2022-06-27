@@ -3,7 +3,7 @@ let options = {};
 function getStartOptions() { return {
 	autosave: true,
 	msDisplay: 'always',
-	nfDisplay: '-illions',
+	nfDisplay: 'e',
 	theme: 'default',
 	hqTree: false,
 	offlineProd: true,
@@ -43,7 +43,7 @@ const MS_SETTINGS = ['always', 'last', 'automation', 'incomplete', 'never'];
 
 const NF_DISPLAYS = ['illions (modern)', 'scientific (num e num)'];
 
-const NF_SETTINGS = ['illionUS', 'e'];
+const NF_SETTINGS = ['illions', 'e'];
 
 function adjustMSDisp() {
 	options.msDisplay = MS_SETTINGS[(MS_SETTINGS.indexOf(options.msDisplay) + 1) % 5];
