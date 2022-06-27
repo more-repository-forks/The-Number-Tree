@@ -259,6 +259,32 @@ function illionFormat(decimal, short, precision = 2) {
     return decimal.div(divnum).toStringWithDecimalPlaces(precision) + suffix;
 };
 
+const romanNumerals = [
+    ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
+    ["X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"],
+    ["C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"],
+    ["M", "MM", "MMM", "MMMM", "MMMMM"]
+];
+
+function numeralFormat(decimal, precision = 2) {
+    // setup
+    let result = "";
+    decimal = new Decimal(decimal);
+    if (options.extendplaces && precision == 2) precision = 3;
+    // normal format if too high
+    if (decimal.layer >= 2) return format(decimal, precision);
+    // calculation
+    if (decimal.mag === 0) return "N";
+    let numsArray = [...decimal.mag.toString()].reverse();
+    for (let i = 0; i < numsArray.length; i++) {
+        numsArray[i] = +numsArray[i];
+        if (numsArray[i] === 0) continue;
+        result = romanNumerals[i][numsArray[i] - 1] + result;
+    };
+    // return formatted decimal
+    return result;
+};
+
 function exponentialFormat(num, precision, mantissa = true) {
     let e = num.log10().floor();
     let m = num.div(Decimal.pow(10, e));
