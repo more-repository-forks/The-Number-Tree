@@ -65,5 +65,29 @@ addLayer("rn", {
             },
             cost: new Decimal(10),
         },
+        13: {
+            fullDisplay() {
+                return `<h3>Again</h3><br>
+                    multiply points gain by 10 when you have less than 10 points.<br>
+                    Currently: ` + format(this.effect()) + `x<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+            },
+            effect() {
+                return 10;
+            },
+            cost: new Decimal(30),
+        },
+        14: {
+            fullDisplay() {
+                return `<h3>Again, Again</h3><br>
+                    multiply points gain by 2 when you have less than 50 points.<br>
+                    Currently: ` + format(this.effect()) + `x<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+            },
+            effect() {
+                return 2;
+            },
+            cost: new Decimal(100),
+        },
     },
 });
