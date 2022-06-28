@@ -270,18 +270,29 @@ const romanNumerals = [
 
 function numeralFormat(num) {
     // setup
-    let result = "";
+    let result = "", resultE = "";
     let places = 0;
     let decimal = new Decimal(num);
-    // normal format if too high
-    if (decimal.layer >= 2) return format(decimal, precision);
+    let layer = new Decimal(decimal.layer);
     // calculation
     if (decimal.mag === 0) return "N";
+    if (decimal.gte("e500000")) {
+        decimal = decimal.layeradd10(0 - (decimal.layer - 1));
+        if (decimal.gte("e500000")) {
+            layer = layer.add(1);
+            decimal = decimal.layeradd10(-1);
+        };
+    };
     if (decimal.gte(1e5)) {
         places = decimal.mul(2).log10().trunc();
         places = places.div(5).trunc().mul(5).sub(1);
         decimal = decimal.div(new Decimal(10).pow(places)).trunc();
-        console.log(decimal);
+        let numsArray = [...places.toString()].reverse();
+        for (let i = 0; i < numsArray.length; i++) {
+            numsArray[i] = +numsArray[i];
+            if (numsArray[i] === 0) continue;
+            resultE = romanNumerals[i][numsArray[i] - 1] + resultE;
+        };
     };
     let numsArray = [...decimal.mag.toString()].reverse();
     for (let i = 0; i < numsArray.length; i++) {
@@ -290,7 +301,18 @@ function numeralFormat(num) {
         result = romanNumerals[i][numsArray[i] - 1] + result;
     };
     // return formatted decimal
-    if (places) result += "e" + places;
+    if (layer == 2) result = "e " + result;
+    else if (layer == 3) result = "ee " + result;
+    else if (layer >= 4) result = "eee " + result;
+    if (new Decimal(num).gte("eeee1000")) {
+        let numsArray = [...layer.toString()].reverse(), resultF = "";
+        for (let i = 0; i < numsArray.length; i++) {
+            numsArray[i] = +numsArray[i];
+            if (numsArray[i] === 0) continue;
+            resultF = romanNumerals[i][numsArray[i] - 1] + resultF;
+        };
+        result = "eee " + resultE + " F " + resultF;
+    } else if (resultE) result += " e " + resultE;
     if (hasUpgrade("rn", 21) && player.rn.calc) return result + " (" + formatWhole(new Decimal(num)) + ")";
     return result;
 };
