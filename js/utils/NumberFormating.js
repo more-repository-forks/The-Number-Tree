@@ -262,42 +262,36 @@ function illionFormat(decimal, short, precision = 2) {
 const romanNumerals = [
     ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
     ["X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"],
-    ["C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"],
-    ["M", "MM", "MMM", "M&#8577", "&#8577", "&#8577M", "&#8577MM", "&#8577MMM", "&#8577M&#8577"]
+    ["C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "C&#8576"],
+    ["&#8576", "&#8576&#8576", "&#8576&#8576&#8576", "&#8576&#8577", "&#8577", "&#8577&#8576", "&#8577&#8576&#8576", "&#8577&#8576&#8576&#8576", "&#8576&#8578"],
+    ["&#8578", "&#8578&#8578", "&#8578&#8578&#8578", "&#8578&#8583", "&#8583", "&#8583&#8578", "&#8583&#8578&#8578", "&#8583&#8578&#8578&#8578", "&#8578&#8584"],
+    ["&#8584", "&#8584&#8584", "&#8584&#8584&#8584", "&#8584&#8584&#8584&#8584", "&#8584&#8584&#8584&#8584&#8584"],
 ];
 
-function numeralFormat(decimal) {
+function numeralFormat(num) {
     // setup
-    let result = "", result2 = "";
+    let result = "";
     let places = 0;
-    decimal = new Decimal(decimal);
-    let decimal2 = decimal, decimal3;
+    let decimal = new Decimal(num);
     // normal format if too high
     if (decimal.layer >= 2) return format(decimal, precision);
     // calculation
     if (decimal.mag === 0) return "N";
-    if (decimal.gte(1e4)) {
+    if (decimal.gte(1e5)) {
         places = decimal.mul(2).log10().trunc();
-        places = places.div(4).trunc().mul(4);
-        decimal2 = decimal.div(new Decimal(10).pow(places)).trunc();
-        decimal3 = (decimal.sub(decimal2.mul(1e4))).abs();
-        let numsArray = [...decimal3.mag.toString()].reverse();
-        for (let i = 0; i < numsArray.length; i++) {
-            numsArray[i] = +numsArray[i];
-            if (numsArray[i] === 0) continue;
-            result2 = romanNumerals[i][numsArray[i] - 1] + result2;
-        };
+        places = places.div(5).trunc().mul(5).sub(1);
+        decimal = decimal.div(new Decimal(10).pow(places)).trunc();
+        console.log(decimal);
     };
-    let numsArray = [...decimal2.mag.toString()].reverse();
+    let numsArray = [...decimal.mag.toString()].reverse();
     for (let i = 0; i < numsArray.length; i++) {
         numsArray[i] = +numsArray[i];
         if (numsArray[i] === 0) continue;
         result = romanNumerals[i][numsArray[i] - 1] + result;
     };
     // return formatted decimal
-    if (result2) result += "." + result2;
     if (places) result += "e" + places;
-    if (hasUpgrade("rn", 21) && player.rn.calc) return result + " (" + formatWhole(decimal) + ")";
+    if (hasUpgrade("rn", 21) && player.rn.calc) return result + " (" + formatWhole(new Decimal(num)) + ")";
     return result;
 };
 
