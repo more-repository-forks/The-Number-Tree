@@ -383,12 +383,15 @@ addLayer('d', {
         description: 'D: reset your arabic numerals for digits',
         onPress() { if (player.d.unlocked) doReset('d') },
     }],
+    effect() {
+        return player.d.points.mul(0.1).add(1).mul(player.d.number.add(1).pow(0.2));
+    },
     layerShown() {
         return true;
     },
     tabFormat: [
         ['display-text',
-            function() { return 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits' },
+            function() { return 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which multiplies arabic numeral generation by <h2 class="layer-d">' + format(tmp.d.effect) + '</h2>x'},
         ],
         'blank',
         'prestige-button',
@@ -415,16 +418,17 @@ addLayer('d', {
         } else {
             player.d.limited = false;
         };
-        player.d.meta = (+player.d.number).toString(2);
-        if ((+player.d.points - player.d.meta.length) == 0) return;
-        for (let i = 0; i <= (+player.d.points - player.d.meta.length); i++) {
+        player.d.meta = (player.d.number.toNumber()).toString(2);
+        let meta = player.d.meta;
+        if ((tmp.d.grid.cols - meta.length) == 0) return;
+        for (let i = 0; i < (tmp.d.grid.cols - meta.length); i++) {
             player.d.meta = '0' + player.d.meta;
         };
     },
     grid: {
         rows: 1,
         cols() {
-            return +player.d.points;
+            return player.d.points.toNumber();
         },
         maxCols: 99,
         getStartData(id) {
