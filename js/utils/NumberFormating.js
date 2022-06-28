@@ -269,6 +269,8 @@ const romanNumerals = [
 ];
 
 function numeralFormat(num) {
+    // override
+    if (hasUpgrade("rn", 21) && player.rn.calc && hasUpgrade("rn", 41) && player.rn.overCalc) return formatWhole(new Decimal(num));
     // setup
     let result = "", resultE = "";
     let places = 0;

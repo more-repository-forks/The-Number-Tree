@@ -13,6 +13,7 @@ addLayer('rn', {
         total: new Decimal(0),
         calc: true,
         upCalc: false,
+        overCalc: false,
     }},
     color: '#884400',
     resource: 'roman numerals',
@@ -106,8 +107,10 @@ addLayer('rn', {
                 return 10;
             },
             cap() {
-                if (hasUpgrade('rn', 23)) return new Decimal(10).mul(upgradeEffect('rn', 23));
-                return 10;
+                cap = new Decimal(10);
+                if (hasUpgrade('rn', 23)) cap = cap.mul(upgradeEffect('rn', 23));
+                if (hasUpgrade('rn', 42)) cap = cap.mul(upgradeEffect('rn', 42));
+                return cap;
             },
             cost: new Decimal(30),
         },
@@ -127,6 +130,7 @@ addLayer('rn', {
                 cap = new Decimal(50);
                 if (hasUpgrade('rn', 24)) cap = cap.mul(upgradeEffect('rn', 24));
                 if (hasUpgrade('rn', 34)) cap = cap.mul(upgradeEffect('rn', 34));
+                if (hasUpgrade('rn', 42)) cap = cap.mul(upgradeEffect('rn', 42));
                 return cap;
             },
             cost: new Decimal(100),
@@ -302,6 +306,34 @@ addLayer('rn', {
                 return player.rn.upgrades.length >= 10;
             },
         },
+        41: {
+            fullDisplay() {
+                let text = `<h3>Override</h3><br>
+                    you can override non-calculator values with calculator values.<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                return text;
+            },
+            cost: new Decimal(1e50),
+            unlocked() {
+                return hasMilestone('d', 0);
+            },
+        },
+        42: {
+            fullDisplay() {
+                let text = `<h3>Uncapped</h3><br>
+                    multiply the caps of <b>Again</b> and <b>Faster</b> based on your best roman numerals.<br>
+                    Currently: ` + format(this.effect()) + `x<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                return text;
+            },
+            effect() {
+                return player.rn.best.mul(1e10).add(1).pow(0.8).mul(1e4);
+            },
+            cost: new Decimal(1e66),
+            unlocked() {
+                return hasMilestone('d', 1);
+            },
+        },
     },
     clickables: {
         11: {
@@ -322,17 +354,34 @@ addLayer('rn', {
         12: {
             display() {
                 if (!player.rn.calc) return '<h3>turn on calculator to access';
+                if (player.rn.overCalc) return '<h3>turn off override to access';
                 if (player.rn.upCalc) return '<h3>currently prioritizing arabic numerals';
                 return '<h3>currently prioritizing roman numerals';
             },
             canClick() {
-                if (player.rn.calc) return true;
+                if (player.rn.calc && !player.rn.overCalc) return true;
             },
             onClick() {
                 player.rn.upCalc = !player.rn.upCalc;
             },
             unlocked() {
                 return hasUpgrade('rn', 31);
+            },
+        },
+        13: {
+            display() {
+                if (!player.rn.calc) return '<h3>turn on calculator to access';
+                if (player.rn.overCalc) return '<h3>override active';
+                return '<h3>override inactive';
+            },
+            canClick() {
+                if (player.rn.calc) return true;
+            },
+            onClick() {
+                player.rn.overCalc = !player.rn.overCalc;
+            },
+            unlocked() {
+                return hasUpgrade('rn', 41);
             },
         },
     },
@@ -385,22 +434,37 @@ addLayer('d', {
     layerShown() {
         return true;
     },
-    tabFormat: [
-        ['display-text',
-            function() { return 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral generation by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'},
-        ],
-        'blank',
-        'prestige-button',
-        'resource-display',
-        'grid',
-        'blank',
-        ['row', [['buyables', '1'], 'clickables', ['buyables', '2']]],
-        ['blank', '13px'],
-        ['buyables', '3'],
-        ['blank', '13px'],
-        ['buyables', '4'],
-        'blank',
-    ],
+    tabFormat: {
+        "Numbers": {
+            content: [
+                ['display-text',
+                    function() {return 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral generation by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'},
+                ],
+                'blank',
+                'prestige-button',
+                'resource-display',
+                'grid',
+                'blank',
+                ['row', [['buyables', '1'], 'clickables', ['buyables', '2']]],
+                ['blank', '13px'],
+                ['buyables', '3'],
+                ['blank', '13px'],
+                ['buyables', '4'],
+                'blank',
+            ],
+        },
+        "Milestones": {
+            content: [
+                ['display-text',
+                    function() { return 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral generation by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'},
+                ],
+                'blank',
+                'prestige-button',
+                'resource-display',
+                'milestones',
+            ],
+        },
+    },
     update(diff) {
         player.d.timer += diff;
         if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
@@ -452,8 +516,8 @@ addLayer('d', {
             if (data != '0') color = 'red';
             if (this.cols() < 25) return {'height':'50px','width':'50px','border-radius':'50%','color':color};
             if (this.cols() < 40) return {'height':'45px','width':'45px','border-radius':'50%','color':color};
-            if (this.cols() < 61) return {'height':'40px','width':'40px','border-radius':'50%','color':color};
-            if (this.cols() < 86) return {'height':'35px','width':'35px','border-radius':'50%','color':color};
+            if (this.cols() < 60) return {'height':'40px','width':'40px','border-radius':'50%','color':color};
+            if (this.cols() < 84) return {'height':'35px','width':'35px','border-radius':'50%','color':color};
             return {'height':'30px','width':'30px','border-radius':'50%','color':color};
         },
     },
@@ -564,6 +628,22 @@ addLayer('d', {
             },
             style: {'width':'120px','height':'120px'},
             purchaseLimit: 89,
+        },
+    },
+    milestones: {
+        0: {
+            requirementDescription: "70 digits and number 1,000,000",
+            effectDescription: "unlocks a new roman numeral upgrade",
+            done() {
+                return player.d.points.gte(70) && player.d.number.gte(1000000);
+            },
+        },
+        1: {
+            requirementDescription: "80 digits and number 10,000,000",
+            effectDescription: "unlocks a new roman numeral upgrade",
+            done() {
+                return player.d.points.gte(80) && player.d.number.gte(10000000);
+            },
         },
     },
 });
