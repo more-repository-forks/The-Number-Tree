@@ -364,7 +364,7 @@ addLayer('d', {
     },
     requires: new Decimal(1e10),
     type: 'static',
-    exponent: 1,
+    exponent: 1.2,
     gainMult() {
         let gain = new Decimal(1);
         return gain;
