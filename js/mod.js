@@ -1,5 +1,5 @@
 let modInfo = {
-	name: 'Color Factory',
+	name: 'The Number Tree',
 	id: 'Yrahcaz7-ModTree-TheNumberTree',
 	author: 'Yrahcaz7',
 	pointsName: 'arabic numerals',
