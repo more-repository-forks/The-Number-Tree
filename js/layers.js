@@ -444,10 +444,17 @@ addLayer('d', {
             cols = this.cols();
             id = id - 101;
             data = player.d.meta.charAt(id);
+            setGridData('d', id + 101, data);
             return '<h2>' + data;
         },
         getStyle(data, id) {
-            return {'height':'45px','width':'45px','border-radius':'50%'};
+            let color = 'black';
+            if (data != '0') color = 'red';
+            if (this.cols() < 25) return {'height':'50px','width':'50px','border-radius':'50%','color':color};
+            if (this.cols() < 40) return {'height':'45px','width':'45px','border-radius':'50%','color':color};
+            if (this.cols() < 61) return {'height':'40px','width':'40px','border-radius':'50%','color':color};
+            if (this.cols() < 86) return {'height':'35px','width':'35px','border-radius':'50%','color':color};
+            return {'height':'30px','width':'30px','border-radius':'50%','color':color};
         },
     },
     clickables: {
