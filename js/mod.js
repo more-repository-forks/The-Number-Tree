@@ -31,9 +31,10 @@ function canGenPoints() {
 function getPointGen() {
 	let gain = new Decimal(1);
 	if (hasUpgrade('rn', 11)) gain = gain.mul(upgradeEffect('rn', 11));
-	if (hasUpgrade('rn', 13) && player.points.lt(10)) gain = gain.mul(upgradeEffect('rn', 13));
+	if (hasUpgrade('rn', 13) && player.points.lt(getUpgradeCap('rn', 13))) gain = gain.mul(upgradeEffect('rn', 13));
 	if (hasUpgrade('rn', 14) && player.points.lt(50)) gain = gain.mul(upgradeEffect('rn', 14));
 	if (hasUpgrade('rn', 15)) gain = gain.mul(upgradeEffect('rn', 15));
+	if (hasUpgrade('rn', 25)) gain = gain.mul(upgradeEffect('rn', 25));
 	return gain;
 };
 
