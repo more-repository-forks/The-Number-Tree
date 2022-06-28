@@ -278,7 +278,7 @@ addLayer('rn', {
                 return text;
             },
             effect() {
-                return 100;
+                return 200;
             },
             cost: new Decimal(10000000),
             unlocked() {
@@ -333,6 +333,129 @@ addLayer('rn', {
             },
             unlocked() {
                 return hasUpgrade('rn', 31);
+            },
+        },
+    },
+});
+
+addLayer('d', {
+    name: 'digits',
+    symbol: 'D',
+    row: 0,
+    position: 1,
+    tooltip() {
+        return formatWhole(player.d.points) + ' digits';
+    },
+    startData() { return {
+        unlocked: false,
+        points: new Decimal(0),
+        best: new Decimal(0),
+        total: new Decimal(0),
+        number: new Decimal(0),
+        meta: '',
+        limited: false,
+    }},
+    color: '#444444',
+    resource: 'digits',
+    baseResource: 'arabic numerals',
+    baseAmount() {
+        return player.points;
+    },
+    requires: new Decimal(1e10),
+    type: 'static',
+    exponent: 1,
+    gainMult() {
+        let gain = new Decimal(1);
+        return gain;
+    },
+    gainExp() {
+        return new Decimal(1);
+    },
+    prestigeButtonText() {
+        let resetGain = new Decimal(tmp.d.resetGain), text = '';
+        if (player.d.points.lt(1e3)) text = 'Reset for ';
+        text += '+<b>' + formatWhole(resetGain) + '</b> digits';
+        if (resetGain.lt(100)&&player.d.points.lt(1e3)) text += '<br><br>Next at ' + format(tmp.d.nextAt) + ' arabic numerals';
+        return text;
+    },
+    hotkeys: [{
+        key: 'd', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
+        description: 'D: reset your arabic numerals for digits',
+        onPress() { if (player.d.unlocked) doReset('d') },
+    }],
+    layerShown() {
+        return true;
+    },
+    tabFormat: [
+        ['display-text',
+            function() { return 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits' },
+        ],
+        'blank',
+        'prestige-button',
+        ['display-text',
+            function() {
+                let text = '';
+                if (player.d.limited) text = ' (maxed)';
+                return 'You have ' + format(player.points) + ' arabic numerals<br><br>'
+                    + 'Your best digits is ' + formatWhole(player.d.best) + '<br>'
+                    + 'You have made a total of ' + formatWhole(player.d.total) + ' digits<br><br>'
+                    + 'Your number is ' + formatWhole(player.d.number) + text;
+            },
+        ],
+        'grid',
+        'blank',
+        'clickables',
+        'blank',
+    ],
+    update(diff) {
+        let limit = new Decimal(2).pow(player.d.points).round().sub(1);
+        if (player.d.number.gte(limit)) {
+            player.d.number = limit;
+            player.d.limited = true;
+        } else {
+            player.d.limited = false;
+        };
+        player.d.meta = (+player.d.number).toString(2);
+        if ((+player.d.points - player.d.meta.length) == 0) return;
+        for (let i = 0; i <= (+player.d.points - player.d.meta.length); i++) {
+            player.d.meta = '0' + player.d.meta;
+        };
+    },
+    grid: {
+        rows: 1,
+        cols() {
+            return +player.d.points;
+        },
+        maxCols: 99,
+        getStartData(id) {
+            return 0;
+        },
+        getUnlocked(id) { // Default
+            return true;
+        },
+        getCanClick(data, id) {
+            return false;
+        },
+        getDisplay(data, id) {
+            cols = this.cols();
+            id = id - 101;
+            data = player.d.meta.charAt(id);
+            return '<h2>' + data;
+        },
+        getStyle(data, id) {
+            return {'height':'50px','width':'50px','border-radius':'50%'};
+        },
+    },
+    clickables: {
+        11: {
+            display() {
+                return '<h3>Make number 1 larger';
+            },
+            canClick() {
+                return true;
+            },
+            onClick() {
+                player.d.number = player.d.number.add(1);
             },
         },
     },
