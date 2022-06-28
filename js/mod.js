@@ -35,6 +35,7 @@ function getPointGen() {
 	if (hasUpgrade('rn', 14) && player.points.lt(getUpgradeCap('rn', 14))) gain = gain.mul(upgradeEffect('rn', 14));
 	if (hasUpgrade('rn', 15)) gain = gain.mul(upgradeEffect('rn', 15));
 	if (hasUpgrade('rn', 25)) gain = gain.mul(upgradeEffect('rn', 25));
+	if (hasUpgrade('rn', 35)) gain = gain.mul(upgradeEffect('rn', 35));
 	return gain;
 };
 

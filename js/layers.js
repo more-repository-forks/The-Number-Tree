@@ -27,6 +27,7 @@ addLayer('rn', {
         let gain = new Decimal(1);
         if (hasUpgrade('rn', 12)) gain = gain.mul(upgradeEffect('rn', 12));
         if (hasUpgrade('rn', 22)) gain = gain.mul(upgradeEffect('rn', 22));
+        if (hasUpgrade('rn', 32)) gain = gain.mul(upgradeEffect('rn', 32));
         return gain;
     },
     gainExp() {
@@ -123,8 +124,10 @@ addLayer('rn', {
                 return 2;
             },
             cap() {
-                if (hasUpgrade('rn', 24)) return new Decimal(50).mul(upgradeEffect('rn', 24));
-                return 50;
+                cap = new Decimal(50);
+                if (hasUpgrade('rn', 24)) cap = cap.mul(upgradeEffect('rn', 24));
+                if (hasUpgrade('rn', 34)) cap = cap.mul(upgradeEffect('rn', 34));
+                return cap;
             },
             cost: new Decimal(100),
         },
@@ -180,6 +183,7 @@ addLayer('rn', {
                 return text;
             },
             effect() {
+                if (hasUpgrade('rn', 33)) return new Decimal(10).mul(upgradeEffect('rn', 33));
                 return 10;
             },
             cost: new Decimal(10000),
@@ -206,7 +210,7 @@ addLayer('rn', {
         25: {
             fullDisplay() {
                 let text = `<h3>Patterns</h3><br>
-                    multiply arabic numeral gain based on your best roman numerals.<br>
+                    multiply arabic numeral gain based on the amount of arabic numerals you have.<br>
                     Currently: ` + format(this.effect()) + `x<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
                 if (player.nerdMode) text += '';
@@ -227,7 +231,73 @@ addLayer('rn', {
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
                 return text;
             },
+            cost: new Decimal(250000),
+            unlocked() {
+                return player.rn.upgrades.length >= 10;
+            },
+        },
+        32: {
+            fullDisplay() {
+                let text = `<h3>Studying</h3><br>
+                    multiply roman numeral gain based on your best roman numerals.<br>
+                    Currently: ` + format(this.effect()) + `x<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                if (player.nerdMode) text += '';
+                return text;
+            },
+            effect() {
+                return player.rn.best.mul(20000).add(1).pow(0.075);
+            },
             cost: new Decimal(500000),
+            unlocked() {
+                return player.rn.upgrades.length >= 10;
+            },
+        },
+        33: {
+            fullDisplay() {
+                let text = `<h3>Cycle</h3><br>
+                    multiply the effect of <b>Again, Again</b> by ` + format(this.effect()) + `.<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                if (player.nerdMode) text += '';
+                return text;
+            },
+            effect() {
+                return 100;
+            },
+            cost: new Decimal(2000000),
+            unlocked() {
+                return player.rn.upgrades.length >= 10;
+            },
+        },
+        34: {
+            fullDisplay() {
+                let text = `<h3>Fastest</h3><br>
+                    multiply the cap of <b>Faster</b> by ` + format(this.effect()) + `.<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                if (player.nerdMode) text += '';
+                return text;
+            },
+            effect() {
+                return 100;
+            },
+            cost: new Decimal(10000000),
+            unlocked() {
+                return player.rn.upgrades.length >= 10;
+            },
+        },
+        35: {
+            fullDisplay() {
+                let text = `<h3>Correlation</h3><br>
+                    multiply arabic numeral gain based on your best roman numerals.<br>
+                    Currently: ` + format(this.effect()) + `x<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                if (player.nerdMode) text += '';
+                return text;
+            },
+            effect() {
+                return player.rn.best.div(100).add(1).pow(0.2);
+            },
+            cost: new Decimal(25000000),
             unlocked() {
                 return player.rn.upgrades.length >= 10;
             },
