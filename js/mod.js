@@ -58,7 +58,7 @@ var backgroundStyle = {
 };
 
 function maxTickLength() {
-	return 1; // In seconds
+	return 0.1; // In seconds
 };
 
 function fixOldSave(oldVersion) {

@@ -355,6 +355,7 @@ addLayer('d', {
         clickPower: new Decimal(1),
         meta: '',
         limited: false,
+        timer: 0,
     }},
     color: '#444444',
     resource: 'digits',
@@ -410,11 +411,20 @@ addLayer('d', {
         'grid',
         'blank',
         ['row', [['buyables', '1'], 'clickables', ['buyables', '2']]],
+        ['blank', '13px'],
+        ['buyables', '3'],
+        ['blank', '13px'],
+        ['buyables', '4'],
         'blank',
     ],
     update(diff) {
+        player.d.timer += diff;
+        if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
+            player.d.number = player.d.number.add(buyableEffect('d', 31));
+            player.d.timer = 0;
+        };
         power = new Decimal(1);
-        if (getBuyableAmount('d', 11).gt(0)) power = power.add(getBuyableAmount('d', 11));
+        if (getBuyableAmount('d', 11).gt(0)) power = power.add(buyableEffect('d', 11));
         if (getBuyableAmount('d', 21).gt(0)) power = power.mul(buyableEffect('d', 21));
         player.d.clickPower = power;
         let limit = new Decimal(2).pow(player.d.points).round().sub(1);
@@ -453,7 +463,7 @@ addLayer('d', {
             return '<h2>' + data;
         },
         getStyle(data, id) {
-            return {'height':'50px','width':'50px','border-radius':'50%'};
+            return {'height':'45px','width':'45px','border-radius':'50%'};
         },
     },
     clickables: {
@@ -474,11 +484,14 @@ addLayer('d', {
             cost() {
                 return new Decimal(1e5).pow(getBuyableAmount(this.layer, this.id).div(5).add(1)).mul(1e10);
             },
+            effect() {
+                return getBuyableAmount(this.layer, this.id);
+            },
             display() {
                 return `<h3>One Up</h3><br>`
-                    + `Increase the effect of the button to the right by 1<br>`
-                    + `Currently: +` + formatWhole(getBuyableAmount(this.layer, this.id)) + `<br><br>`
-                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br><br>`
+                    + `Increase the effect of the button to the right by 1.<br>`
+                    + `Currently: +` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
             },
             canAfford() {
@@ -499,9 +512,9 @@ addLayer('d', {
             },
             display() {
                 return `<h3>Triple</h3><br>`
-                    + `multiply the effect of the button to the left by 3<br>`
+                    + `multiply the effect of the button to the left by 3.<br>`
                     + `Currently: ` + formatWhole(buyableEffect(this.layer, this.id)) + `x<br><br>`
-                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
             },
             canAfford() {
@@ -512,6 +525,54 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+        },
+        31: {
+            cost() {
+                return new Decimal(1e5).pow(getBuyableAmount(this.layer, this.id).add(1)).mul(1e20);
+            },
+            effect() {
+                return getBuyableAmount(this.layer, this.id);
+            },
+            display() {
+                return `<h3>Lazing</h3><br>`
+                    + `gain +1 passive number increase.<br>`
+                    + `Currently: +` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+        },
+        41: {
+            cost() {
+                return new Decimal(1e10).pow(getBuyableAmount(this.layer, this.id).add(1)).mul(1e20);
+            },
+            effect() {
+                return getBuyableAmount(this.layer, this.id).mul(10).div(100).add(1);
+            },
+            display() {
+                return `<h3>Rapid Idle</h3><br>`
+                    + `passive number increase is +10% faster.<br>`
+                    + `Currently: +` + formatWhole(getBuyableAmount(this.layer, this.id).mul(10)) + `%<br>`
+                    + `--> ` + formatTime(new Decimal(1).div(buyableEffect(this.layer, this.id))) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            purchaseLimit: 89,
         },
     },
 });
