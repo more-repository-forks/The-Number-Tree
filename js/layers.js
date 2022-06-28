@@ -409,11 +409,14 @@ addLayer('d', {
         ],
         'grid',
         'blank',
-        ['row', ['clickables', 'buyables']],
+        ['row', [['buyables', '1'], 'clickables', ['buyables', '2']]],
         'blank',
     ],
     update(diff) {
-        player.d.clickPower = new Decimal(1).add(getBuyableAmount('d', 11));
+        power = new Decimal(1);
+        if (getBuyableAmount('d', 11).gt(0)) power = power.add(getBuyableAmount('d', 11));
+        if (getBuyableAmount('d', 21).gt(0)) power = power.mul(buyableEffect('d', 21));
+        player.d.clickPower = power;
         let limit = new Decimal(2).pow(player.d.points).round().sub(1);
         if (player.d.number.gte(limit)) {
             player.d.number = limit;
@@ -473,8 +476,31 @@ addLayer('d', {
             },
             display() {
                 return `<h3>One Up</h3><br>`
-                    + `Increase the effect of the button to the left by 1<br>`
+                    + `Increase the effect of the button to the right by 1<br>`
                     + `Currently: +` + formatWhole(getBuyableAmount(this.layer, this.id)) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br><br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+        },
+        21: {
+            cost() {
+                return new Decimal(1e10).pow(getBuyableAmount(this.layer, this.id).add(1)).mul(1e5);
+            },
+            effect() {
+                return new Decimal(3).pow(getBuyableAmount(this.layer, this.id));
+            },
+            display() {
+                return `<h3>Triple</h3><br>`
+                    + `multiply the effect of the button to the left by 3<br>`
+                    + `Currently: ` + formatWhole(buyableEffect(this.layer, this.id)) + `x<br><br>`
                     + `Cost: ` + format(this.cost()) + ` arabic numerals<br><br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
             },
