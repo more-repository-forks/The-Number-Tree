@@ -352,6 +352,7 @@ addLayer('d', {
         best: new Decimal(0),
         total: new Decimal(0),
         number: new Decimal(0),
+        clickPower: new Decimal(1),
         meta: '',
         limited: false,
     }},
@@ -408,10 +409,11 @@ addLayer('d', {
         ],
         'grid',
         'blank',
-        'clickables',
+        ['row', ['clickables', 'buyables']],
         'blank',
     ],
     update(diff) {
+        player.d.clickPower = new Decimal(1).add(getBuyableAmount('d', 11));
         let limit = new Decimal(2).pow(player.d.points).round().sub(1);
         if (player.d.number.gte(limit)) {
             player.d.number = limit;
@@ -454,14 +456,36 @@ addLayer('d', {
     clickables: {
         11: {
             display() {
-                return '<h3>Make number 1 larger';
+                return '<h3>Make number ' + formatWhole(player.d.clickPower) + ' larger';
             },
             canClick() {
                 return true;
             },
             onClick() {
-                player.d.number = player.d.number.add(1);
+                player.d.number = player.d.number.add(player.d.clickPower);
             },
+        },
+    },
+    buyables: {
+        11: {
+            cost() {
+                return new Decimal(1e5).pow(getBuyableAmount(this.layer, this.id).div(5).add(1)).mul(1e10);
+            },
+            display() {
+                return `<h3>One Up</h3><br>`
+                    + `Increase the effect of the button to the left by 1<br>`
+                    + `Currently: +` + formatWhole(getBuyableAmount(this.layer, this.id)) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br><br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
         },
     },
 });
