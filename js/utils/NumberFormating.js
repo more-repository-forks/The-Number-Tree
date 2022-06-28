@@ -275,7 +275,13 @@ function numeralFormat(num) {
     let decimal = new Decimal(num);
     let layer = new Decimal(decimal.layer);
     // calculation
-    if (decimal.mag === 0) return "N";
+    if (decimal.mag === 0) {
+        if (hasUpgrade("rn", 21) && player.rn.calc) {
+            if (hasUpgrade("rn", 31) && player.rn.upCalc) return "0 (N)";
+            return "N (0)";
+        };
+        return "N";
+    };
     if (decimal.gte("e500000")) {
         decimal = decimal.layeradd10(0 - (decimal.layer - 1));
         if (decimal.gte("e500000")) {
