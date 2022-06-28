@@ -400,6 +400,7 @@ addLayer('d', {
         points: new Decimal(0),
         best: new Decimal(0),
         total: new Decimal(0),
+        max: new Decimal(99),
         number: new Decimal(0),
         clickPower: new Decimal(1),
         meta: '',
@@ -413,7 +414,7 @@ addLayer('d', {
         return player.points;
     },
     requires: new Decimal(1e10),
-    type: 'static',
+    type: 'custom',
     exponent: 1.2,
     gainMult() {
         let gain = new Decimal(1);
@@ -421,6 +422,45 @@ addLayer('d', {
     },
     gainExp() {
         return new Decimal(1);
+    },
+    prestigeButtonText() {
+        if (player.d.points.gte(player.d.max)) return '<b>MAXED';
+        let text = 'Reset for +<b>' + formatWhole(tmp.d.resetGain) + '</b> ' + tmp.d.resource + '<br><br>';
+        if (player.d.points.lt(30)) {
+            if (tmp.d.baseAmount.gte(tmp.d.nextAt) && tmp.d.canBuyMax) text += 'Next:';
+            else text += 'Req:';
+        };
+        text += ' ' + formatWhole(tmp.d.baseAmount) + ' / ';
+        if (tmp.d.roundUpCost) text += formatWhole(tmp.d.nextAtDisp);
+        else text += format(tmp.d.nextAtDisp);
+        text += ' ' + tmp.d.baseResource;
+        return text;
+    },
+    getResetGain() {
+        if (player.d.points.gte(player.d.max)) return new Decimal(0);
+        if ((!tmp.d.canBuyMax) || tmp.d.baseAmount.lt(tmp.d.requires)) return new Decimal(1);
+		let gain = tmp.d.baseAmount.div(tmp.d.requires).div(tmp.d.gainMult).max(1).log(tmp.d.base).mul(tmp.d.gainExp).pow(Decimal.pow(tmp.d.exponent, -1));
+		gain = gain.mul(tmp.d.directMult);
+        if (player.d.points.add(gain).gt(player.d.max)) return new Decimal(player.d.max).sub(player.d.points);
+		return gain.floor().sub(player.d.points).add(1).max(1);
+    },
+    getNextAt(canMax = false) {
+        if (!tmp.d.canBuyMax) canMax = false;
+		let amt = player.d.points;
+		if (canMax && tmp.d.baseAmount.gte(tmp.d.nextAt)) amt = amt.add(tmp.d.resetGain);
+        amt = amt.div(tmp.d.directMult);
+        let extraCost = Decimal.pow(tmp.d.base, amt.pow(tmp.d.exponent).div(tmp.d.gainExp)).mul(tmp.d.gainMult);
+		let cost = extraCost.mul(tmp.d.requires).max(tmp.d.requires);
+		if (tmp.d.roundUpCost) cost = cost.ceil();
+		return cost;
+    },
+    canReset() {
+        if (player.d.points.gte(player.d.max)) return false;
+        return tmp.d.baseAmount.gte(tmp.d.nextAt);
+    },
+    prestigeNotify() {
+        if (tmp.d.autoPrestige || tmp.d.passiveGeneration) return false;
+        return tmp.d.canReset;
     },
     hotkeys: [{
         key: 'd', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
