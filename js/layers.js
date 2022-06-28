@@ -384,14 +384,15 @@ addLayer('d', {
         onPress() { if (player.d.unlocked) doReset('d') },
     }],
     effect() {
-        return player.d.points.mul(0.1).add(1).mul(player.d.number.add(1).pow(0.2));
+        if (player.d.number.eq(0)) return 0;
+        return player.d.number.log2().mul(player.d.points);
     },
     layerShown() {
         return true;
     },
     tabFormat: [
         ['display-text',
-            function() { return 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which multiplies arabic numeral generation by <h2 class="layer-d">' + format(tmp.d.effect) + '</h2>x'},
+            function() { return 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral generation by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'},
         ],
         'blank',
         'prestige-button',
