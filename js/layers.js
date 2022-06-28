@@ -373,13 +373,6 @@ addLayer('d', {
     gainExp() {
         return new Decimal(1);
     },
-    prestigeButtonText() {
-        let resetGain = new Decimal(tmp.d.resetGain), text = '';
-        if (player.d.points.lt(1e3)) text = 'Reset for ';
-        text += '+<b>' + formatWhole(resetGain) + '</b> digits';
-        if (resetGain.lt(100)&&player.d.points.lt(1e3)) text += '<br><br>Next at ' + format(tmp.d.nextAt) + ' arabic numerals';
-        return text;
-    },
     hotkeys: [{
         key: 'd', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
         description: 'D: reset your arabic numerals for digits',
@@ -398,16 +391,7 @@ addLayer('d', {
         ],
         'blank',
         'prestige-button',
-        ['display-text',
-            function() {
-                let text = '';
-                if (player.d.limited) text = ' (maxed)';
-                return 'You have ' + format(player.points) + ' arabic numerals<br><br>'
-                    + 'Your best digits is ' + formatWhole(player.d.best) + '<br>'
-                    + 'You have made a total of ' + formatWhole(player.d.total) + ' digits<br><br>'
-                    + 'Your number is ' + formatWhole(player.d.number) + text;
-            },
-        ],
+        'resource-display',
         'grid',
         'blank',
         ['row', [['buyables', '1'], 'clickables', ['buyables', '2']]],
@@ -560,7 +544,7 @@ addLayer('d', {
                 return `<h3>Rapid Idle</h3><br>`
                     + `passive number increase is +10% faster.<br>`
                     + `Currently: +` + formatWhole(getBuyableAmount(this.layer, this.id).mul(10)) + `%<br>`
-                    + `--> ` + formatTime(new Decimal(1).div(buyableEffect(this.layer, this.id))) + `<br><br>`
+                    + `Increment: ` + formatTime(new Decimal(1).div(buyableEffect(this.layer, this.id))) + `<br><br>`
                     + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
             },
