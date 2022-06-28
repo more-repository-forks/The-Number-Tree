@@ -51,8 +51,13 @@ addLayer('rn', {
         ],
         'blank',
         'prestige-button',
-        'resource-display',
-        'blank',
+        ['display-text',
+            function() {
+                return 'You have ' + format(player.points) + ' arabic numerals<br><br>'
+                    + 'Your best roman numerals is ' + numeralFormat(player.rn.best) + '<br>'
+                    + 'You have made a total of ' + numeralFormat(player.rn.total) + ' roman numerals'
+            },
+        ],
         'upgrades',
         'clickables',
         'blank',
@@ -60,10 +65,12 @@ addLayer('rn', {
     upgrades: {
         11: {
             fullDisplay() {
-                return `<h3>Countings</h3><br>
+                let text = `<h3>Countings</h3><br>
                     multiply arabic numeral generation based on the amount of roman numerals you have.<br>
                     Currently: ` + format(this.effect()) + `x<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                if (player.nerdMode) text += '';
+                return text;
             },
             effect() {
                 return player.rn.points.add(1).pow(0.25);
@@ -72,10 +79,12 @@ addLayer('rn', {
         },
         12: {
             fullDisplay() {
-                return `<h3>Practice</h3><br>
+                let text = `<h3>Practice</h3><br>
                     multiply roman numeral gain based on the amount of total roman numerals you have.<br>
                     Currently: ` + format(this.effect()) + `x<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                if (player.nerdMode) text += '';
+                return text;
             },
             effect() {
                 return player.rn.total.add(1).pow(0.2);
@@ -84,10 +93,12 @@ addLayer('rn', {
         },
         13: {
             fullDisplay() {
-                return `<h3>Again</h3><br>
+                let text = `<h3>Again</h3><br>
                     multiply arabic numeral gain by 10 when you have less than 10 arabic numerals.<br>
                     Currently: ` + format(this.effect()) + `x<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                if (player.nerdMode) text += '';
+                return text;
             },
             effect() {
                 return 10;
@@ -96,10 +107,12 @@ addLayer('rn', {
         },
         14: {
             fullDisplay() {
-                return `<h3>Again, Again</h3><br>
+                let text = `<h3>Again, Again</h3><br>
                     multiply arabic numeral generation by 2 when you have less than 50 arabic numerals.<br>
                     Currently: ` + format(this.effect()) + `x<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                if (player.nerdMode) text += '';
+                return text;
             },
             effect() {
                 return 2;
@@ -108,10 +121,12 @@ addLayer('rn', {
         },
         15: {
             fullDisplay() {
-                return `<h3>Repetitive</h3><br>
+                let text = `<h3>Repetitive</h3><br>
                     multiply arabic numeral gain based on the amount of arabic numerals you have.<br>
                     Currently: ` + format(this.effect()) + `x<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                if (player.nerdMode) text += '';
+                return text;
             },
             effect() {
                 return player.points.add(1).pow(0.1);
@@ -120,11 +135,13 @@ addLayer('rn', {
         },
         21: {
             fullDisplay() {
-                return `<h3>Calculator</h3><br>
+                let text = `<h3>Calculator</h3><br>
                     shows the arabic numeral equivalent to all roman numerals alongside the normal values.<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                if (player.nerdMode) text += '';
+                return text;
             },
-            cost: new Decimal(1000),
+            cost: new Decimal(600),
         },
     },
     clickables: {
