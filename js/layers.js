@@ -150,6 +150,9 @@ addLayer('rn', {
                 return text;
             },
             cost: new Decimal(600),
+            unlocked() {
+                return player.rn.upgrades.length >= 5;
+            },
         },
         22: {
             fullDisplay() {
@@ -164,6 +167,9 @@ addLayer('rn', {
                 return player.rn.best.mul(1000).add(1).pow(0.15);
             },
             cost: new Decimal(1000),
+            unlocked() {
+                return player.rn.upgrades.length >= 5;
+            },
         },
         23: {
             fullDisplay() {
@@ -177,6 +183,9 @@ addLayer('rn', {
                 return 10;
             },
             cost: new Decimal(10000),
+            unlocked() {
+                return player.rn.upgrades.length >= 5;
+            },
         },
         24: {
             fullDisplay() {
@@ -190,6 +199,9 @@ addLayer('rn', {
                 return 5;
             },
             cost: new Decimal(30000),
+            unlocked() {
+                return player.rn.upgrades.length >= 5;
+            },
         },
         25: {
             fullDisplay() {
@@ -204,6 +216,9 @@ addLayer('rn', {
                 return player.points.div(50).add(1).pow(0.5);
             },
             cost: new Decimal(100000),
+            unlocked() {
+                return player.rn.upgrades.length >= 5;
+            },
         },
         31: {
             fullDisplay() {
@@ -213,6 +228,9 @@ addLayer('rn', {
                 return text;
             },
             cost: new Decimal(500000),
+            unlocked() {
+                return player.rn.upgrades.length >= 10;
+            },
         },
     },
     clickables: {
