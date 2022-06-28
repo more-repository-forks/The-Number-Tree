@@ -12,6 +12,7 @@ addLayer('rn', {
         best: new Decimal(0),
         total: new Decimal(0),
         calc: true,
+        upCalc: false,
     }},
     color: '#884400',
     resource: 'roman numerals',
@@ -95,8 +96,7 @@ addLayer('rn', {
         13: {
             fullDisplay() {
                 let text = `<h3>Again</h3><br>
-                    multiply arabic numeral gain by ` + format(this.effect()) + ` when you have less than ` + format(this.cap()) + ` arabic numerals.<br>
-                    Currently: ` + format(this.effect()) + `x<br><br>
+                    multiply arabic numeral gain by ` + format(this.effect()) + ` when you have less than ` + format(this.cap()) + ` arabic numerals.<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
                 if (player.nerdMode) text += '';
                 return text;
@@ -113,8 +113,7 @@ addLayer('rn', {
         14: {
             fullDisplay() {
                 let text = `<h3>Faster</h3><br>
-                    multiply arabic numeral generation by ` + format(this.effect()) + ` when you have less than 50 arabic numerals.<br>
-                    Currently: ` + format(this.effect()) + `x<br><br>
+                    multiply arabic numeral generation by ` + format(this.effect()) + ` when you have less than ` + format(this.cap()) + ` arabic numerals.<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
                 if (player.nerdMode) text += '';
                 return text;
@@ -122,6 +121,10 @@ addLayer('rn', {
             effect() {
                 if (hasUpgrade('rn', 24)) return new Decimal(2).mul(upgradeEffect('rn', 24));
                 return 2;
+            },
+            cap() {
+                if (hasUpgrade('rn', 24)) return new Decimal(50).mul(upgradeEffect('rn', 24));
+                return 50;
             },
             cost: new Decimal(100),
         },
@@ -144,7 +147,6 @@ addLayer('rn', {
                 let text = `<h3>Calculator</h3><br>
                     shows the arabic numeral equivalent to all roman numerals alongside the normal values.<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
-                if (player.nerdMode) text += '';
                 return text;
             },
             cost: new Decimal(600),
@@ -166,8 +168,7 @@ addLayer('rn', {
         23: {
             fullDisplay() {
                 let text = `<h3>Again, Again</h3><br>
-                    multiply the cap of <b>Again</b> by 10.<br>
-                    Currently: ` + format(this.effect()) + `x<br><br>
+                    multiply the cap of <b>Again</b> by ` + format(this.effect()) + `.<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
                 if (player.nerdMode) text += '';
                 return text;
@@ -180,8 +181,7 @@ addLayer('rn', {
         24: {
             fullDisplay() {
                 let text = `<h3>Faster, Faster</h3><br>
-                    multiply the effect of <b>Faster</b> by 5.<br>
-                    Currently: ` + format(this.effect()) + `x<br><br>
+                    multiply the effect and cap of <b>Faster</b> by ` + format(this.effect()) + `.<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
                 if (player.nerdMode) text += '';
                 return text;
@@ -205,6 +205,15 @@ addLayer('rn', {
             },
             cost: new Decimal(100000),
         },
+        31: {
+            fullDisplay() {
+                let text = `<h3>Priorities</h3><br>
+                    you can change the priority of calculator values.<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+                return text;
+            },
+            cost: new Decimal(500000),
+        },
     },
     clickables: {
         11: {
@@ -220,6 +229,22 @@ addLayer('rn', {
             },
             unlocked() {
                 return hasUpgrade('rn', 21);
+            },
+        },
+        12: {
+            display() {
+                if (!player.rn.calc) return '<h3>turn on calculator to access';
+                if (player.rn.upCalc) return '<h3>currently prioritizing arabic numerals';
+                return '<h3>currently prioritizing roman numerals';
+            },
+            canClick() {
+                if (player.rn.calc) return true;
+            },
+            onClick() {
+                player.rn.upCalc = !player.rn.upCalc;
+            },
+            unlocked() {
+                return hasUpgrade('rn', 31);
             },
         },
     },

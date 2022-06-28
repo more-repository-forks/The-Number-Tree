@@ -301,9 +301,9 @@ function numeralFormat(num) {
         result = romanNumerals[i][numsArray[i] - 1] + result;
     };
     // return formatted decimal
-    if (layer == 2) result = "e " + result;
-    else if (layer == 3) result = "ee " + result;
-    else if (layer >= 4) result = "eee " + result;
+    if (layer == 2) result = "e" + result;
+    else if (layer == 3) result = "ee" + result;
+    else if (layer >= 4) result = "eee" + result;
     if (new Decimal(num).gte("eeee1000")) {
         let numsArray = [...layer.toString()].reverse(), resultF = "";
         for (let i = 0; i < numsArray.length; i++) {
@@ -311,9 +311,12 @@ function numeralFormat(num) {
             if (numsArray[i] === 0) continue;
             resultF = romanNumerals[i][numsArray[i] - 1] + resultF;
         };
-        result = "eee " + resultE + " F " + resultF;
-    } else if (resultE) result += " e " + resultE;
-    if (hasUpgrade("rn", 21) && player.rn.calc) return result + " (" + formatWhole(new Decimal(num)) + ")";
+        result = "eee" + resultE + "F" + resultF;
+    } else if (resultE) result += "e" + resultE;
+    if (hasUpgrade("rn", 21) && player.rn.calc) {
+        if (hasUpgrade("rn", 31) && player.rn.upCalc) return formatWhole(new Decimal(num)) + " (" + result + ")";
+        return result + " (" + formatWhole(new Decimal(num)) + ")";
+    };
     return result;
 };
 
