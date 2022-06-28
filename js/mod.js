@@ -2,7 +2,7 @@ let modInfo = {
 	name: 'Color Factory',
 	id: 'Yrahcaz7-ModTree-TheNumberTree',
 	author: 'Yrahcaz7',
-	pointsName: 'points',
+	pointsName: 'arabic numerals',
 	initialStartPoints: new Decimal(0),
 	offlineLimit: 1, // In hours
 	allowSmall: true,

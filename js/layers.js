@@ -15,7 +15,7 @@ addLayer('rn', {
     }},
     color: '#884400',
     resource: 'roman numerals',
-    baseResource: 'points',
+    baseResource: 'arabic numerals',
     baseAmount() {
         return player.points;
     },
@@ -34,12 +34,12 @@ addLayer('rn', {
         let resetGain = new Decimal(tmp.rn.resetGain), text = '';
         if (player.rn.points.lt(1e3)) text = 'Reset for ';
         text += '+<b>' + numeralFormat(resetGain) + '</b> roman numerals';
-        if (resetGain.lt(100)&&player.rn.points.lt(1e3)) text += '<br><br>Next at ' + format(tmp.rn.nextAt) + ' points';
+        if (resetGain.lt(100)&&player.rn.points.lt(1e3)) text += '<br><br>Next at ' + format(tmp.rn.nextAt) + ' arabic numerals';
         return text;
     },
     hotkeys: [{
         key: 'r', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
-        description: 'R: reset your points for roman numerals',
+        description: 'R: reset your arabic numerals for roman numerals',
         onPress() { if (player.rn.unlocked) doReset('rn') },
     }],
     layerShown() {
@@ -60,8 +60,8 @@ addLayer('rn', {
     upgrades: {
         11: {
             fullDisplay() {
-                return `<h3>Counting</h3><br>
-                    multiply point generation based on the amount of roman numerals you have.<br>
+                return `<h3>Countings</h3><br>
+                    multiply arabic numeral generation based on the amount of roman numerals you have.<br>
                     Currently: ` + format(this.effect()) + `x<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
             },
@@ -85,7 +85,7 @@ addLayer('rn', {
         13: {
             fullDisplay() {
                 return `<h3>Again</h3><br>
-                    multiply points gain by 10 when you have less than 10 points.<br>
+                    multiply arabic numeral gain by 10 when you have less than 10 arabic numerals.<br>
                     Currently: ` + format(this.effect()) + `x<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
             },
@@ -97,7 +97,7 @@ addLayer('rn', {
         14: {
             fullDisplay() {
                 return `<h3>Again, Again</h3><br>
-                    multiply points gain by 2 when you have less than 50 points.<br>
+                    multiply arabic numeral generation by 2 when you have less than 50 arabic numerals.<br>
                     Currently: ` + format(this.effect()) + `x<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
             },
@@ -108,8 +108,8 @@ addLayer('rn', {
         },
         15: {
             fullDisplay() {
-                return `<h3>Point Scores</h3><br>
-                    multiply points gain based on the amount of points you have.<br>
+                return `<h3>Repetitive</h3><br>
+                    multiply arabic numeral gain based on the amount of arabic numerals you have.<br>
                     Currently: ` + format(this.effect()) + `x<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
             },
@@ -121,7 +121,7 @@ addLayer('rn', {
         21: {
             fullDisplay() {
                 return `<h3>Calculator</h3><br>
-                    shows the numeric equivalent to all roman numerals alongside the normal values.<br><br>
+                    shows the arabic numeral equivalent to all roman numerals alongside the normal values.<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
             },
             cost: new Decimal(1000),
