@@ -1,3 +1,45 @@
+addLayer('N', {
+    name: 'notes',
+    symbol: 'N',
+    row: 'side',
+    position: 0,
+    startData() { return {
+        unlocked: true,
+        points: new Decimal(0),
+    }},
+    color: '#cccccc',
+    resource: 'notes',
+    type: 'none',
+    layerShown() {
+        return true;
+    },
+    tabFormat: [
+        ['display-text',
+            function() { return 'You have <h2 class="layer-N">' + formatWhole(player.N.points) + '</h2> notes' },
+        ],
+        'blank',
+        ['display-text',
+            function() {
+                text = '<h3>Note #1:</h3><br><br>'
+                    + 'N ----- 0 ----- 0<br>'
+                    + 'I ----- 1 ----- 1<br>'
+                    + 'V ----- 5 ----- 5<br>'
+                    + 'X ----- 10 ----- 10<br>'
+                    + 'L ----- 50 ----- 50<br>'
+                    + 'C ----- 100 ----- 100<br>'
+                    + 'D ----- 500 ----- 500<br>'
+                    + '&#8576 (U+2180) ----- 1,000 ----- 1k<br>'
+                    + '&#8577 (U+2181) ----- 5,000 ----- 5k<br>'
+                    + '&#8578 (U+2182) ----- 10,000 ----- 10k<br>'
+                    + '&#8583 (U+2187) ----- 50,000 ----- 50k<br>'
+                    + '&#8584 (U+2188) ----- 100,000 ----- 100k<br>'
+                return text;
+            },
+        ],
+        'blank',
+    ],
+});
+
 addLayer('rn', {
     name: 'roman numerals',
     symbol: 'RN',
