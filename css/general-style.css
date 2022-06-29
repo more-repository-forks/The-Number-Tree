@@ -21,8 +21,8 @@ h1, h2, h3, b, input {
 }
 
 .layer-d {
-	color: #444;
-	text-shadow: 0 0 10px #444;
+	color: #666;
+	text-shadow: 0 0 10px #666;
 }
 
 /* These are styles for different states of components. You can make layer-specific versions with .c.locked, for example */

@@ -434,7 +434,7 @@ addLayer('d', {
         limited: false,
         timer: 0,
     }},
-    color: '#444444',
+    color: '#666666',
     resource: 'digits',
     baseResource: 'arabic numerals',
     baseAmount() {
