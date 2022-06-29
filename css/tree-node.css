@@ -14,10 +14,6 @@
 	margin: 0 10px 0 10px;
 }
 
-.noborder {
-	border: 0px transparent;
-}
-
 .nodeLabel {
 	font: inherit;
 	font-family: inherit;
@@ -38,15 +34,9 @@
 }
 
 .smallNode {
-	height: 80px;
-	width: 80px;
-	font-size: 40px;
-}
-
-.noneNode {
-	height: 0px;
-	width: 0px;
-	border: 0px transparent;
+	height: 60px;
+	width: 60px;
+	font-size: 30px;
 }
 
 .resetNotify {
