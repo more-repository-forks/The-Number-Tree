@@ -488,7 +488,10 @@ addLayer('d', {
     requires: new Decimal(1e10),
     type: 'custom',
     exponent() {
-        if (hasUpgrade('d', 11)) return 1.75;
+        if (hasUpgrade('d', 11)) {
+            if (hasUpgrade('d', 21)) return 1.7;
+            return 1.75;
+        };
         return 1.2;
     },
     gainMult() {
@@ -520,7 +523,7 @@ addLayer('d', {
         if ((!tmp.d.canBuyMax) || tmp.d.baseAmount.lt(tmp.d.requires)) return new Decimal(1);
 		let gain = tmp.d.baseAmount.div(tmp.d.requires).div(tmp.d.gainMult).max(1).log(tmp.d.base).mul(tmp.d.gainExp).pow(Decimal.pow(tmp.d.exponent, -1));
 		gain = gain.mul(tmp.d.directMult);
-        if (player.d.points.add(gain).gt(player.d.max)) return new Decimal(player.d.max).sub(player.d.points);
+        if (player.d.points.add(gain.floor().sub(player.d.points).add(1).max(1)).gt(player.d.max)) return new Decimal(player.d.max).sub(player.d.points);
 		return gain.floor().sub(player.d.points).add(1).max(1);
     },
     getNextAt(canMax = false) {
@@ -1148,6 +1151,21 @@ addLayer('d', {
                 return text;
             },
             cost: new Decimal(99),
+            unlocked() {
+                return hasMilestone('d', 15);
+            },
+        },
+        21: {
+            fullDisplay() {
+                let text = `<h3>Limit Bend</h3><br>
+                    decrease the digit cost exponent (1.75 --> 1.7)<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(111),
+            unlocked() {
+                return hasUpgrade('d', 11);
+            },
         },
     },
 });
