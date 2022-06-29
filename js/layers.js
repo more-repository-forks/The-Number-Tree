@@ -77,8 +77,8 @@ addLayer('rn', {
     gainExp() {
         return new Decimal(1);
     },
-    softcap: new Decimal("e1000"),
-    softcapPower: 0.9,
+    softcap: new Decimal("1e1000"),
+    softcapPower: 0.1,
     prestigeButtonText() {
         let resetGain = new Decimal(tmp.rn.resetGain), text = '';
         if (player.rn.points.lt(1e3)) text = 'Reset for ';
@@ -497,6 +497,10 @@ addLayer('d', {
     },
     gainExp() {
         return new Decimal(1);
+    },
+    canBuyMax() {
+        if (hasMilestone('d', 16)) return true;
+        return false;
     },
     prestigeButtonText() {
         if (player.d.points.gte(player.d.max)) return '<b>MAXED';
@@ -1122,6 +1126,16 @@ addLayer('d', {
             },
             unlocked() {
                 return hasMilestone('d', 14) || hasMilestone('d', 15);
+            },
+        },
+        16: {
+            requirementDescription: "number 1e101",
+            effectDescription: "you can buy max digits",
+            done() {
+                return player.d.number.gte(1e101);
+            },
+            unlocked() {
+                return hasMilestone('d', 15) || hasMilestone('d', 16);
             },
         },
     },
