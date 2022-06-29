@@ -5,7 +5,7 @@ addLayer('N', {
     position: 0,
     startData() { return {
         unlocked: true,
-        points: new Decimal(0),
+        points: new Decimal(1),
     }},
     color: '#cccccc',
     resource: 'notes',
