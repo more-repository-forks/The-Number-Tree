@@ -79,7 +79,10 @@ addLayer('rn', {
     },
     softcap: new Decimal("1e1000"),
     softcapPower() {
-        if (hasUpgrade('d', 22)) return 0.5;
+        if (hasUpgrade('d', 22)) {
+            if (hasUpgrade('d', 33)) return 0.75;
+            return 0.5;
+        };
         return 0.2;
     },
     prestigeButtonText() {
@@ -492,7 +495,10 @@ addLayer('d', {
     type: 'custom',
     exponent() {
         if (hasUpgrade('d', 11)) {
-            if (hasUpgrade('d', 21)) return 1.7;
+            if (hasUpgrade('d', 21)) {
+                if (hasUpgrade('d', 31)) return 1.65;
+                return 1.7;
+            };
             return 1.75;
         };
         return 1.2;
@@ -564,6 +570,7 @@ addLayer('d', {
         if (getBuyableAmount('d', 02)) logValue = logValue.div(buyableEffect('d', 02));
         let eff = player.d.number.add(1).log(logValue.add(1)).mul(player.d.points);
         if (getBuyableAmount('d', 91)) eff = eff.mul(new Decimal(2).pow(getBuyableAmount('d', 91)));
+        if (hasUpgrade('d', 32)) eff = eff.mul(upgradeEffect('d', 32));
         return eff;
     },
     layerShown() {
@@ -1035,6 +1042,7 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 4,
             unlocked() {
                 return hasMilestone('d', 17);
             },
@@ -1250,7 +1258,7 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Limit Break</h3><br>
                     double the digit limit, but increase their cost exponent (1.2 --> 1.75)<br><br>
-                    Cost: ` + numeralFormat(this.cost) + ` digits`;
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
             cost: new Decimal(99),
@@ -1262,7 +1270,7 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Digit Bend</h3><br>
                     decrease the digit cost exponent (1.75 --> 1.7)<br><br>
-                    Cost: ` + numeralFormat(this.cost) + ` digits`;
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
             cost: new Decimal(111),
@@ -1274,12 +1282,52 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Roman Numeral Bend</h3><br>
                     increase roman numeral gain after softcap (^0.2 --> ^0.5)<br><br>
-                    Cost: ` + numeralFormat(this.cost) + ` digits`;
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
             cost: new Decimal(128),
             unlocked() {
                 return hasUpgrade('d', 11);
+            },
+        },
+        31: {
+            fullDisplay() {
+                let text = `<h3>Digit Warp</h3><br>
+                    decrease the digit cost exponent (1.7 --> 1.65)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(130),
+            unlocked() {
+                return hasUpgrade('d', 21) && hasUpgrade('d', 22);
+            },
+        },
+        32: {
+            fullDisplay() {
+                let text = `<h3>Number Warp</h3><br>
+                    multiply the number effect based on the number you have<br>
+                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return player.d.number.add(1).pow(0.1);
+            },
+            cost: new Decimal(153),
+            unlocked() {
+                return hasUpgrade('d', 21) && hasUpgrade('d', 22);
+            },
+        },
+        33: {
+            fullDisplay() {
+                let text = `<h3>Roman Numeral Warp</h3><br>
+                    increase roman numeral gain after softcap (^0.5 --> ^0.75)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(151),
+            unlocked() {
+                return hasUpgrade('d', 21) && hasUpgrade('d', 22);
             },
         },
     },
