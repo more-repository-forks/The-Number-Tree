@@ -496,8 +496,7 @@ addLayer('d', {
         onPress() { if (player.d.unlocked) doReset('d') },
     }],
     effect() {
-        if (player.d.number.eq(0)) return 0;
-        eff = player.d.number.log2().mul(player.d.points);
+        eff = player.d.number.add(1).log2().mul(player.d.points);
         if (getBuyableAmount('d', 91)) eff = eff.mul(getBuyableAmount('d', 91).add(1));
         return eff;
     },
@@ -657,6 +656,9 @@ addLayer('d', {
                 if (getBuyableAmount('d', 71).gt(0)) lim = lim.add(buyableEffect('d', 71));
                 return lim;
             },
+            unlocked() {
+                return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
+            },
         },
         21: {
             cost() {
@@ -682,6 +684,9 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
+            },
         },
         31: {
             cost() {
@@ -707,6 +712,9 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
+            },
         },
         41: {
             cost() {
@@ -732,6 +740,9 @@ addLayer('d', {
             },
             style: {'width':'120px','height':'120px'},
             purchaseLimit: 89,
+            unlocked() {
+                return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
+            },
         },
         51: {
             cost() {
@@ -889,12 +900,18 @@ addLayer('d', {
             done() {
                 return player.d.points.gte(80) && player.d.number.gte(10000000);
             },
+            unlocked() {
+                return hasMilestone('d', 0) || hasMilestone('d', 1);
+            },
         },
         2: {
             requirementDescription: "90 digits and number 100,000,000",
             effectDescription: "unlocks a third new roman numeral upgrade",
             done() {
                 return player.d.points.gte(90) && player.d.number.gte(100000000);
+            },
+            unlocked() {
+                return hasMilestone('d', 1) || hasMilestone('d', 2);
             },
         },
         3: {
@@ -903,12 +920,18 @@ addLayer('d', {
             done() {
                 return player.d.number.gte(1e11);
             },
+            unlocked() {
+                return hasMilestone('d', 2) || hasMilestone('d', 3);
+            },
         },
         4: {
             requirementDescription: "number 1e15",
             effectDescription: "gain 1,000% of roman numeral gain per second",
             done() {
                 return player.d.number.gte(1e15);
+            },
+            unlocked() {
+                return hasMilestone('d', 3) || hasMilestone('d', 4);
             },
         },
         5: {
@@ -917,6 +940,9 @@ addLayer('d', {
             done() {
                 return player.d.number.gte(1e16);
             },
+            unlocked() {
+                return hasMilestone('d', 4) || hasMilestone('d', 5);
+            },
         },
         6: {
             requirementDescription: "number 1e24",
@@ -924,12 +950,18 @@ addLayer('d', {
             done() {
                 return player.d.number.gte(1e24);
             },
+            unlocked() {
+                return hasMilestone('d', 5) || hasMilestone('d', 6);
+            },
         },
         7: {
             requirementDescription: "360 One Ups",
             effectDescription: "unlock Base Up",
             done() {
                 return getBuyableAmount('d', 11).gte(360);
+            },
+            unlocked() {
+                return hasMilestone('d', 6) || hasMilestone('d', 7);
             },
         },
     },
