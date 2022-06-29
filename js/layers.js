@@ -542,7 +542,7 @@ addLayer('d', {
         if (hasMilestone('d', 1)) eff = player.d.number.add(1).log(1.2).mul(player.d.points);
         else if (hasMilestone('d', 0)) eff = player.d.number.add(1).log(1.5).mul(player.d.points);
         else eff = player.d.number.add(1).log2().mul(player.d.points);
-        if (getBuyableAmount('d', 91)) eff = eff.mul(getBuyableAmount('d', 91).add(1));
+        if (getBuyableAmount('d', 91)) eff = eff.mul(new Decimal(2).pow(getBuyableAmount('d', 91)));
         return eff;
     },
     layerShown() {
@@ -654,7 +654,7 @@ addLayer('d', {
             if (this.cols() < 25) return {'height':'50px','width':'50px','border-radius':'50%','color':color};
             if (this.cols() < 40) return {'height':'45px','width':'45px','border-radius':'50%','color':color};
             if (this.cols() < 60) return {'height':'40px','width':'40px','border-radius':'50%','color':color};
-            if (this.cols() < 84) return {'height':'35px','width':'35px','border-radius':'50%','color':color};
+            if (this.cols() < 80) return {'height':'35px','width':'35px','border-radius':'50%','color':color};
             return {'height':'30px','width':'30px','border-radius':'50%','color':color};
         },
     },
@@ -879,7 +879,7 @@ addLayer('d', {
             display() {
                 return `<h3>Cheap</h3><br>`
                     + `divide the cost of the upgrades above by 1e10.<br>`
-                    + `Currently: +` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `Currently: /` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
                     + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
             },
@@ -912,8 +912,9 @@ addLayer('d', {
             },
             display() {
                 return `<h3>Base Up</h3><br>`
-                    + `upgrade your numbers to the next base, which allows for higher numbers. also improves the number effect formula.<br>`
-                    + `Currently: base ` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `upgrade your numbers to the next base, which allows for higher numbers. also multiplies the number effect by 2.<br>`
+                    + `Currently: base ` + formatWhole(buyableEffect(this.layer, this.id)) + `<br>`
+                    + `and ` + formatWhole(new Decimal(2).pow(getBuyableAmount(this.layer, this.id))) + `x<br><br>`
                     + `Cost: number ` + format(this.cost()) + `<br><br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
             },
@@ -950,30 +951,30 @@ addLayer('d', {
             },
         },
         2: {
-            requirementDescription: "50 digits and number 1,000,000",
+            requirementDescription: "60 digits and number 1,000,000",
             effectDescription: "unlocks a new roman numeral upgrade",
             done() {
-                return player.d.points.gte(50) && player.d.number.gte(1000000);
+                return player.d.points.gte(60) && player.d.number.gte(1000000);
             },
             unlocked() {
                 return hasMilestone('d', 1) || hasMilestone('d', 2);
             },
         },
         3: {
-            requirementDescription: "70 digits and number 10,000,000",
+            requirementDescription: "80 digits and number 10,000,000",
             effectDescription: "unlocks a second new roman numeral upgrade",
             done() {
-                return player.d.points.gte(70) && player.d.number.gte(10000000);
+                return player.d.points.gte(80) && player.d.number.gte(10000000);
             },
             unlocked() {
                 return hasMilestone('d', 2) || hasMilestone('d', 3);
             },
         },
         4: {
-            requirementDescription: "90 digits and number 100,000,000",
+            requirementDescription: "99 digits and number 100,000,000",
             effectDescription: "unlocks a third new roman numeral upgrade",
             done() {
-                return player.d.points.gte(90) && player.d.number.gte(100000000);
+                return player.d.points.gte(99) && player.d.number.gte(100000000);
             },
             unlocked() {
                 return hasMilestone('d', 3) || hasMilestone('d', 4);
