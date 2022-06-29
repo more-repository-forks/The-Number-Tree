@@ -553,15 +553,16 @@ addLayer('d', {
         onPress() { if (player.d.unlocked) doReset('d') },
     }],
     effect() {
-        let eff;
-        if (hasMilestone('d', 14)) eff = player.d.number.add(1).log(1.0001).mul(player.d.points);
-        else if (hasMilestone('d', 13)) eff = player.d.number.add(1).log(1.001).mul(player.d.points);
-        else if (hasMilestone('d', 12)) eff = player.d.number.add(1).log(1.005).mul(player.d.points);
-        else if (hasMilestone('d', 11)) eff = player.d.number.add(1).log(1.02).mul(player.d.points);
-        else if (hasMilestone('d', 10)) eff = player.d.number.add(1).log(1.1).mul(player.d.points);
-        else if (hasMilestone('d', 1)) eff = player.d.number.add(1).log(1.2).mul(player.d.points);
-        else if (hasMilestone('d', 0)) eff = player.d.number.add(1).log(1.5).mul(player.d.points);
-        else eff = player.d.number.add(1).log2().mul(player.d.points);
+        let logValue = new Decimal(1);
+        if (hasMilestone('d', 14)) logValue = new Decimal(0.0001);
+        else if (hasMilestone('d', 13)) logValue = new Decimal(0.001);
+        else if (hasMilestone('d', 12)) logValue = new Decimal(0.005);
+        else if (hasMilestone('d', 11)) logValue = new Decimal(0.02);
+        else if (hasMilestone('d', 10)) logValue = new Decimal(0.1);
+        else if (hasMilestone('d', 1)) logValue = new Decimal(0.2);
+        else if (hasMilestone('d', 0)) logValue = new Decimal(0.5);
+        if (getBuyableAmount('d', 02)) logValue = logValue.div(buyableEffect('d', 02));
+        let eff = player.d.number.add(1).log(logValue.add(1)).mul(player.d.points);
         if (getBuyableAmount('d', 91)) eff = eff.mul(new Decimal(2).pow(getBuyableAmount('d', 91)));
         return eff;
     },
@@ -584,7 +585,8 @@ addLayer('d', {
                 ['row', [['buyables', '5'], ['buyables', '3'], ['buyables', '6']]],
                 ['blank', '13px'],
                 ['row', [['buyables', '7'], ['buyables', '4'], ['buyables', '8']]],
-                'blank',
+                ['blank', '5px'],
+                ['row', [['buyables', '0']]],
             ],
         },
         "Milestones": {
@@ -751,6 +753,7 @@ addLayer('d', {
             cost() {
                 let costing = new Decimal(1e10).pow(getBuyableAmount(this.layer, this.id).add(1)).mul(1e5);
                 if (getBuyableAmount('d', 81).gt(0)) costing = costing.div(buyableEffect('d', 81));
+                if (getBuyableAmount('d', 03).gt(0)) costing = costing.div(buyableEffect('d', 03));
                 return costing;
             },
             effect() {
@@ -837,14 +840,20 @@ addLayer('d', {
                 return new Decimal(1e50).pow(getBuyableAmount(this.layer, this.id).div(5).add(1)).mul(1e150);
             },
             effect() {
-                return new Decimal(2).pow(getBuyableAmount(this.layer, this.id));
+                let effBase = new Decimal(2);
+                if (getBuyableAmount('d', 01).gt(0)) effBase = effBase.mul(buyableEffect('d', 01));
+                return effBase.pow(getBuyableAmount(this.layer, this.id));
             },
             display() {
-                return `<h3>Up the Up</h3><br>`
-                    + `Multiply the effect of the upgrade directly above by 2.<br>`
+                let text = `<h3>Up the Up</h3><br>`
+                    + `Multiply the effect of the upgrade directly above by `;
+                if (getBuyableAmount('d', 01).gt(0)) text += format(buyableEffect('d', 01).mul(2));
+                else text += '2';
+                text += `.<br>`
                     + `Currently: ` + formatWhole(buyableEffect(this.layer, this.id)) + `x<br><br>`
                     + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+                return text;
             },
             canAfford() {
                 return player.points.gte(this.cost());
@@ -862,6 +871,7 @@ addLayer('d', {
             cost() {
                 let costing = new Decimal(1e50).pow(getBuyableAmount(this.layer, this.id).div(5).add(1)).mul(1e150);
                 if (getBuyableAmount('d', 81).gt(0)) costing = costing.div(buyableEffect('d', 81));
+                if (getBuyableAmount('d', 03).gt(0)) costing = costing.div(buyableEffect('d', 03));
                 return costing;
             },
             effect() {
@@ -915,7 +925,9 @@ addLayer('d', {
         },
         81: {
             cost() {
-                return new Decimal(1e20).pow(getBuyableAmount(this.layer, this.id).add(1)).mul(1e230);
+                let costing = new Decimal(1e20).pow(getBuyableAmount(this.layer, this.id).add(1)).mul(1e230);
+                if (getBuyableAmount('d', 03).gt(0)) costing = costing.div(buyableEffect('d', 03));
+                return costing;
             },
             effect() {
                 return new Decimal(1e10).pow(getBuyableAmount(this.layer, this.id));
@@ -973,6 +985,84 @@ addLayer('d', {
             purchaseLimit: 8,
             unlocked() {
                 return hasMilestone('d', 9);
+            },
+        },
+        01: {
+            cost() {
+                return new Decimal(1e250).pow(getBuyableAmount(this.layer, this.id).add(1)).mul('1e750');
+            },
+            effect() {
+                return new Decimal(1.25).pow(getBuyableAmount(this.layer, this.id));
+            },
+            display() {
+                return `<h3>Up Even More</h3><br>`
+                    + `Multiply the base effect of <b>Up the Up</b> by 1.25.<br>`
+                    + `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return hasMilestone('d', 17);
+            },
+        },
+        02: {
+            cost() {
+                return new Decimal(1e75).pow(getBuyableAmount(this.layer, this.id).add(1)).mul('1e925');
+            },
+            effect() {
+                return new Decimal(750).pow(getBuyableAmount(this.layer, this.id));
+            },
+            display() {
+                return `<h3>Weaken Chains</h3><br>`
+                    + `Divide the logarithm in the number effect formula by 750.<br>`
+                    + `Currently: /` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return hasMilestone('d', 17);
+            },
+        },
+        03: {
+            cost() {
+                return new Decimal(1e50).pow(getBuyableAmount(this.layer, this.id).add(1)).mul('1e950');
+            },
+            effect() {
+                return new Decimal(1e20).pow(getBuyableAmount(this.layer, this.id));
+            },
+            display() {
+                return `<h3>Cheapest</h3><br>`
+                    + `divide the cost of the upgrades above by 1e20.<br>`
+                    + `Currently: /` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return hasMilestone('d', 17);
             },
         },
     },
@@ -1142,6 +1232,16 @@ addLayer('d', {
             },
             unlocked() {
                 return hasMilestone('d', 15) || hasMilestone('d', 16);
+            },
+        },
+        17: {
+            requirementDescription: "number 1e110",
+            effectDescription: "unlocks three new digit number upgrades",
+            done() {
+                return player.d.number.gte(1e110);
+            },
+            unlocked() {
+                return hasMilestone('d', 16) || hasMilestone('d', 17);
             },
         },
     },
