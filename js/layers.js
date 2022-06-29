@@ -524,7 +524,7 @@ addLayer('d', {
     prestigeButtonText() {
         if (player.d.points.gte(player.d.max)) return '<b>MAXED';
         let text = 'Reset for +<b>' + formatWhole(tmp.d.resetGain) + '</b> ' + tmp.d.resource + '<br><br>';
-        if (player.d.points.lt(30)) {
+        if (player.d.points.lt(1000)) {
             if (tmp.d.baseAmount.gte(tmp.d.nextAt) && tmp.d.canBuyMax) text += 'Next:';
             else text += 'Req:';
         };
@@ -694,6 +694,7 @@ addLayer('d', {
             return 0;
         },
         getUnlocked(id) { // Default
+            if (hasUpgrade('d', 11) && id == 102) return true;
             if (buyableEffect('d', 91).gte(10) && id != 101) return false;
             return true;
         },
@@ -701,14 +702,16 @@ addLayer('d', {
             return false;
         },
         getDisplay(data, id) {
-            if (buyableEffect('d', 91).gte(10)) return "<h2>Base " + buyableEffect('d', 91) + " achieved";
+            if (buyableEffect('d', 91).gte(10) && id == 101) return "<h2>Base " + buyableEffect('d', 91) + " achieved";
+            if (hasUpgrade('d', 11) && id == 102) return "<h2>Limit broken";
             id = id - 101;
             data = player.d.meta.charAt(id);
             setGridData('d', id + 101, data);
             return '<h2>' + data;
         },
         getStyle(data, id) {
-            if (buyableEffect('d', 91).gte(10)) return {'height':'30px','width':'170px','border-radius':'0%','color':'red'};
+            if (buyableEffect('d', 91).gte(10) && id == 101) return {'height':'30px','width':'170px','border-radius':'0%','color':'red'};
+            if (hasUpgrade('d', 11) && id == 102) return {'height':'30px','width':'130px','border-radius':'0%','color':'red'};
             let color = 'black';
             if (data != '0') color = 'red';
             if (this.cols() < 25) return {'height':'50px','width':'50px','border-radius':'50%','color':color};
