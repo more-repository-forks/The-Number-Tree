@@ -496,7 +496,9 @@ addLayer('d', {
     }],
     effect() {
         if (player.d.number.eq(0)) return 0;
-        return player.d.number.log2().mul(player.d.points);
+        eff = player.d.number.log2().mul(player.d.points);
+        if (getBuyableAmount('d', 91)) eff = eff.mul(getBuyableAmount('d', 91).add(1));
+        return eff;
     },
     layerShown() {
         return true;
@@ -531,6 +533,21 @@ addLayer('d', {
                 'milestones',
             ],
         },
+        "Base Up": {
+            content: [
+                ['display-text',
+                    function() { return 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral generation by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'},
+                ],
+                'blank',
+                'prestige-button',
+                'resource-display',
+                'blank',
+                ['buyables', '9'],
+            ],
+            unlocked() {
+                return hasMilestone('d', 7);
+            },
+        },
     },
     update(diff) {
         player.d.timer += diff;
@@ -542,14 +559,20 @@ addLayer('d', {
         if (getBuyableAmount('d', 11).gt(0)) power = power.add(buyableEffect('d', 11));
         if (getBuyableAmount('d', 21).gt(0)) power = power.mul(buyableEffect('d', 21));
         player.d.clickPower = power;
-        let limit = new Decimal(2).pow(player.d.points).round().sub(1);
+        let base = 2;
+        if (getBuyableAmount('d', 91).gt(0)) base = buyableEffect('d', 91).toNumber();
+        let limit = new Decimal(base).pow(player.d.points).round().sub(1);
         if (player.d.number.gte(limit)) {
             player.d.number = limit;
             player.d.limited = true;
         } else {
             player.d.limited = false;
         };
-        player.d.meta = (player.d.number.toNumber()).toString(2);
+        if (buyableEffect('d', 91).gte(10)) {
+            player.d.meta = 'base 10 achieved';
+            return;
+        };
+        player.d.meta = (player.d.number.toNumber()).toString(base);
         let meta = player.d.meta;
         if ((tmp.d.grid.cols - meta.length) == 0) return;
         for (let i = 0; i < (tmp.d.grid.cols - meta.length); i++) {
@@ -566,19 +589,21 @@ addLayer('d', {
             return 0;
         },
         getUnlocked(id) { // Default
+            if (buyableEffect('d', 91).gte(10) && id != 101) return false;
             return true;
         },
         getCanClick(data, id) {
             return false;
         },
         getDisplay(data, id) {
-            cols = this.cols();
+            if (buyableEffect('d', 91).gte(10)) return "<h2>Base " + buyableEffect('d', 91) + " achieved";
             id = id - 101;
             data = player.d.meta.charAt(id);
             setGridData('d', id + 101, data);
             return '<h2>' + data;
         },
         getStyle(data, id) {
+            if (buyableEffect('d', 91).gte(10)) return {'height':'30px','width':'170px','border-radius':'0%','color':'red'};
             let color = 'black';
             if (data != '0') color = 'red';
             if (this.cols() < 25) return {'height':'50px','width':'50px','border-radius':'50%','color':color};
@@ -813,6 +838,41 @@ addLayer('d', {
                 return hasMilestone('d', 6);
             },
         },
+        91: {
+            cost() {
+                if (getBuyableAmount(this.layer, this.id).eq(0)) return new Decimal(6e29);
+                if (getBuyableAmount(this.layer, this.id).eq(1)) return new Decimal(1e47);
+                if (getBuyableAmount(this.layer, this.id).eq(2)) return new Decimal(4e59);
+                if (getBuyableAmount(this.layer, this.id).eq(3)) return new Decimal(1e69);
+                if (getBuyableAmount(this.layer, this.id).eq(4)) return new Decimal(1e77);
+                if (getBuyableAmount(this.layer, this.id).eq(5)) return new Decimal(4e83);
+                if (getBuyableAmount(this.layer, this.id).eq(6)) return new Decimal(2e89);
+                if (getBuyableAmount(this.layer, this.id).eq(7)) return new Decimal(2e94);
+                return new Decimal(1e99);
+            },
+            effect() {
+                return getBuyableAmount(this.layer, this.id).add(2);
+            },
+            display() {
+                return `<h3>Base Up</h3><br>`
+                    + `upgrade your numbers to the next base, which allows for higher numbers. also improves the number effect formula.<br>`
+                    + `Currently: base ` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `Cost: number ` + format(this.cost()) + `<br><br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.d.number.gte(this.cost());
+            },
+            buy() {
+                player.d.number = player.d.number.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'border-radius':'50%'},
+            purchaseLimit: 8,
+            unlocked() {
+                return hasMilestone('d', 7);
+            },
+        },
     },
     milestones: {
         0: {
@@ -866,7 +926,7 @@ addLayer('d', {
         },
         7: {
             requirementDescription: "360 One Ups",
-            effectDescription: "unlock coming soon!",
+            effectDescription: "unlock Base Up",
             done() {
                 return getBuyableAmount('d', 11).gte(360);
             },
