@@ -79,7 +79,10 @@ addLayer('rn', {
         if (hasUpgrade('d', 22)) {
             if (hasUpgrade('d', 33)) {
                 if (hasUpgrade('d', 44)) {
-                    if (hasUpgrade('d', 55)) return 0.825;
+                    if (hasUpgrade('d', 55)) {
+                        if (hasUpgrade('d', 65)) return 0.85;
+                        return 0.825;
+                    };
                     return 0.8;
                 };
                 return 0.75;
@@ -501,7 +504,13 @@ addLayer('d', {
             if (hasUpgrade('d', 21)) {
                 if (hasUpgrade('d', 31)) {
                     if (hasUpgrade('d', 41)) {
-                        if (hasUpgrade('d', 51)) return 1.575;
+                        if (hasUpgrade('d', 51)) {
+                            if (hasUpgrade('d', 61)) {
+                                if (hasUpgrade('d', 71)) return 1.5;
+                                return 1.55;
+                            };
+                            return 1.575;
+                        };
                         return 1.6;
                     };
                     return 1.65;
@@ -516,6 +525,7 @@ addLayer('d', {
         let gain = new Decimal(1);
         if (hasUpgrade('d', 42)) gain = gain.div(upgradeEffect('d', 42));
         if (hasUpgrade('d', 52)) gain = gain.div(upgradeEffect('d', 52));
+        if (hasUpgrade('d', 62)) gain = gain.div(upgradeEffect('d', 62));
         return gain;
     },
     canBuyMax() {
@@ -581,6 +591,7 @@ addLayer('d', {
         if (hasUpgrade('d', 32)) eff = eff.mul(upgradeEffect('d', 32));
         if (hasUpgrade('d', 43)) eff = eff.mul(upgradeEffect('d', 43));
         if (hasUpgrade('d', 54)) eff = eff.mul(upgradeEffect('d', 54));
+        if (hasUpgrade('d', 64)) eff = eff.mul(upgradeEffect('d', 64));
         return eff;
     },
     layerShown() {
@@ -654,9 +665,10 @@ addLayer('d', {
     },
     update(diff) {
         let cap = new Decimal(99);
-        if (hasUpgrade('d', 43)) cap = cap.add(1);
+        if (hasUpgrade('d', 52)) cap = cap.add(1);
         if (hasUpgrade('d', 11)) cap = cap.mul(2);
         if (hasUpgrade('d', 42)) cap = cap.mul(1.5);
+        if (hasUpgrade('d', 62)) cap = cap.mul(1.5);
         player.d.max = cap;
         player.d.timer += diff;
         if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
@@ -1011,7 +1023,9 @@ addLayer('d', {
         },
         01: {
             cost() {
-                return new Decimal(1e250).pow(getBuyableAmount(this.layer, this.id).add(1)).mul('1e750');
+                let costing = new Decimal(1e250).pow(getBuyableAmount(this.layer, this.id).add(1)).mul('1e750');
+                if (hasUpgrade('d', 63)) costing = costing.div(upgradeEffect('d', 63));
+                return costing;
             },
             effect() {
                 return new Decimal(1.25).pow(getBuyableAmount(this.layer, this.id));
@@ -1438,7 +1452,7 @@ addLayer('d', {
                 return text;
             },
             effect() {
-                return player.d.number.add(1).pow(0.6).div(100);
+                return player.d.number.add(1).pow(0.6);
             },
             cost: new Decimal(228),
             unlocked() {
@@ -1471,6 +1485,89 @@ addLayer('d', {
             cost: new Decimal(222),
             unlocked() {
                 return hasUpgrade('d', 41) && hasUpgrade('d', 42) && hasUpgrade('d', 43) && hasUpgrade('d', 44);
+            },
+        },
+        61: {
+            fullDisplay() {
+                let text = `<h3>Digit Space</h3><br>
+                    decrease the digit cost exponent (1.575 --> 1.55)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(231),
+            unlocked() {
+                return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
+            },
+        },
+        62: {
+            fullDisplay() {
+                let text = `<h3>Limit Space</h3><br>
+                    multiply the digit limit by 1.5, and divide digit cost requirement by 1e75<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return new Decimal(1e75);
+            },
+            cost: new Decimal(269),
+            unlocked() {
+                return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
+            },
+        },
+        63: {
+            fullDisplay() {
+                let text = `<h3>Cost Space</h3><br>
+                    divide the cost of <b>Up Even More</b> based on the number you have<br>
+                    Effect: /` + format(upgradeEffect(this.layer, this.id)) + `<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return player.d.number.add(1).pow(1.1);
+            },
+            cost: new Decimal(253),
+            unlocked() {
+                return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
+            },
+        },
+        64: {
+            fullDisplay() {
+                let text = `<h3>Number Space</h3><br>
+                    multiply the number effect based on the number you have<br>
+                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return player.d.number.add(1).pow(0.05);
+            },
+            cost: new Decimal(255),
+            unlocked() {
+                return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
+            },
+        },
+        65: {
+            fullDisplay() {
+                let text = `<h3>Roman Numeral Space</h3><br>
+                    increase roman numeral gain after softcap (^0.825 --> ^0.85)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(277),
+            unlocked() {
+                return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
+            },
+        },
+        71: {
+            fullDisplay() {
+                let text = `<h3>Digit Star</h3><br>
+                    decrease the digit cost exponent (1.55 --> 1.5)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(290),
+            unlocked() {
+                return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
             },
         },
     },
