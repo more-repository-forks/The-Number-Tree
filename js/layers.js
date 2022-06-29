@@ -80,7 +80,10 @@ addLayer('rn', {
     softcap: new Decimal("1e1000"),
     softcapPower() {
         if (hasUpgrade('d', 22)) {
-            if (hasUpgrade('d', 33)) return 0.75;
+            if (hasUpgrade('d', 33)) {
+                if (hasUpgrade('d', 44)) return 0.8;
+                return 0.75;
+            };
             return 0.5;
         };
         return 0.2;
@@ -496,7 +499,10 @@ addLayer('d', {
     exponent() {
         if (hasUpgrade('d', 11)) {
             if (hasUpgrade('d', 21)) {
-                if (hasUpgrade('d', 31)) return 1.65;
+                if (hasUpgrade('d', 31)) {
+                    if (hasUpgrade('d', 41)) return 1.6;
+                    return 1.65;
+                };
                 return 1.7;
             };
             return 1.75;
@@ -505,6 +511,7 @@ addLayer('d', {
     },
     gainMult() {
         let gain = new Decimal(1);
+        if (hasUpgrade('d', 42)) gain = gain.div(upgradeEffect('d', 42));
         return gain;
     },
     gainExp() {
@@ -571,6 +578,7 @@ addLayer('d', {
         let eff = player.d.number.add(1).log(logValue.add(1)).mul(player.d.points);
         if (getBuyableAmount('d', 91)) eff = eff.mul(new Decimal(2).pow(getBuyableAmount('d', 91)));
         if (hasUpgrade('d', 32)) eff = eff.mul(upgradeEffect('d', 32));
+        if (hasUpgrade('d', 43)) eff = eff.mul(upgradeEffect('d', 43));
         return eff;
     },
     layerShown() {
@@ -645,6 +653,7 @@ addLayer('d', {
     update(diff) {
         let cap = new Decimal(99);
         if (hasUpgrade('d', 11)) cap = cap.mul(2);
+        if (hasUpgrade('d', 42)) cap = cap.mul(1.5);
         player.d.max = cap;
         player.d.timer += diff;
         if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
@@ -1306,7 +1315,7 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Number Warp</h3><br>
                     multiply the number effect based on the number you have<br>
-                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `<br><br>
+                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
@@ -1328,6 +1337,61 @@ addLayer('d', {
             cost: new Decimal(151),
             unlocked() {
                 return hasUpgrade('d', 21) && hasUpgrade('d', 22);
+            },
+        },
+        41: {
+            fullDisplay() {
+                let text = `<h3>Digit Hole</h3><br>
+                    decrease the digit cost exponent (1.65 --> 1.6)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(164),
+            unlocked() {
+                return hasUpgrade('d', 31) && hasUpgrade('d', 32) && hasUpgrade('d', 33);
+            },
+        },
+        42: {
+            fullDisplay() {
+                let text = `<h3>Limit Hole</h3><br>
+                    multiply the digit limit by 1.5, and divide digit cost requirement by 1e20<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return new Decimal(1e20);
+            },
+            cost: new Decimal(197),
+            unlocked() {
+                return hasUpgrade('d', 31) && hasUpgrade('d', 32) && hasUpgrade('d', 33);
+            },
+        },
+        43: {
+            fullDisplay() {
+                let text = `<h3>Number Hole</h3><br>
+                    multiply the number effect based on the number you have<br>
+                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return player.d.number.add(1).pow(0.025);
+            },
+            cost: new Decimal(162),
+            unlocked() {
+                return hasUpgrade('d', 31) && hasUpgrade('d', 32) && hasUpgrade('d', 33);
+            },
+        },
+        44: {
+            fullDisplay() {
+                let text = `<h3>Roman Numeral Hole</h3><br>
+                    increase roman numeral gain after softcap (^0.75 --> ^0.8)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(193),
+            unlocked() {
+                return hasUpgrade('d', 31) && hasUpgrade('d', 32) && hasUpgrade('d', 33);
             },
         },
     },
