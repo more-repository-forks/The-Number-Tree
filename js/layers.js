@@ -539,8 +539,8 @@ addLayer('d', {
     }],
     effect() {
         let eff;
-        if (hasMilestone('d', 1)) eff = player.d.number.add(1).log(1.1).mul(player.d.points);
-        else if (hasMilestone('d', 0)) eff = player.d.number.add(1).log(1.4).mul(player.d.points);
+        if (hasMilestone('d', 1)) eff = player.d.number.add(1).log(1.2).mul(player.d.points);
+        else if (hasMilestone('d', 0)) eff = player.d.number.add(1).log(1.5).mul(player.d.points);
         else eff = player.d.number.add(1).log2().mul(player.d.points);
         if (getBuyableAmount('d', 91)) eff = eff.mul(getBuyableAmount('d', 91).add(1));
         return eff;
@@ -934,14 +934,14 @@ addLayer('d', {
     milestones: {
         0: {
             requirementDescription: "30 digits and number 100,000",
-            effectDescription: "improves the number effect formula<br>log2 --> log1.4",
+            effectDescription: "improves the number effect formula<br>log2 --> log1.5",
             done() {
                 return player.d.points.gte(30) && player.d.number.gte(100000);
             },
         },
         1: {
             requirementDescription: "36 digits and number 300,000",
-            effectDescription: "improves the number effect formula<br>log1.4 --> log1.1",
+            effectDescription: "improves the number effect formula<br>log1.5 --> log1.2",
             done() {
                 return player.d.points.gte(36) && player.d.number.gte(300000);
             },
