@@ -77,6 +77,8 @@ addLayer('rn', {
     gainExp() {
         return new Decimal(1);
     },
+    softcap: new Decimal("e1000"),
+    softcapPower: 0.9,
     prestigeButtonText() {
         let resetGain = new Decimal(tmp.rn.resetGain), text = '';
         if (player.rn.points.lt(1e3)) text = 'Reset for ';
@@ -485,7 +487,10 @@ addLayer('d', {
     },
     requires: new Decimal(1e10),
     type: 'custom',
-    exponent: 1.2,
+    exponent() {
+        if (hasUpgrade('d', 11)) return 1.75;
+        return 1.2;
+    },
     gainMult() {
         let gain = new Decimal(1);
         return gain;
@@ -539,7 +544,12 @@ addLayer('d', {
     }],
     effect() {
         let eff;
-        if (hasMilestone('d', 1)) eff = player.d.number.add(1).log(1.2).mul(player.d.points);
+        if (hasMilestone('d', 14)) eff = player.d.number.add(1).log(1.0001).mul(player.d.points);
+        else if (hasMilestone('d', 13)) eff = player.d.number.add(1).log(1.001).mul(player.d.points);
+        else if (hasMilestone('d', 12)) eff = player.d.number.add(1).log(1.005).mul(player.d.points);
+        else if (hasMilestone('d', 11)) eff = player.d.number.add(1).log(1.02).mul(player.d.points);
+        else if (hasMilestone('d', 10)) eff = player.d.number.add(1).log(1.1).mul(player.d.points);
+        else if (hasMilestone('d', 1)) eff = player.d.number.add(1).log(1.2).mul(player.d.points);
         else if (hasMilestone('d', 0)) eff = player.d.number.add(1).log(1.5).mul(player.d.points);
         else eff = player.d.number.add(1).log2().mul(player.d.points);
         if (getBuyableAmount('d', 91)) eff = eff.mul(new Decimal(2).pow(getBuyableAmount('d', 91)));
@@ -593,8 +603,30 @@ addLayer('d', {
                 return hasMilestone('d', 9);
             },
         },
+        "Limit Break": {
+            content: [
+                ['display-text',
+                    function() { return 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral generation by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'},
+                ],
+                'blank',
+                'prestige-button',
+                'resource-display',
+                'blank',
+                ['display-text',
+                    function() { return 'Your digit limit is <h2 class="layer-d">' + formatWhole(player.d.max) + '</h2>'},
+                ],
+                'blank',
+                'upgrades',
+            ],
+            unlocked() {
+                return hasMilestone('d', 15);
+            },
+        },
     },
     update(diff) {
+        let cap = new Decimal(99);
+        if (hasUpgrade('d', 11)) cap = cap.mul(2);
+        player.d.max = cap;
         player.d.timer += diff;
         if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
             player.d.number = player.d.number.add(buyableEffect('d', 31));
@@ -757,6 +789,7 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 200,
             unlocked() {
                 return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
             },
@@ -865,6 +898,7 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 20,
             unlocked() {
                 return hasMilestone('d', 8);
             },
@@ -1029,6 +1063,77 @@ addLayer('d', {
             unlocked() {
                 return hasMilestone('d', 8) || hasMilestone('d', 9);
             },
+        },
+        10: {
+            requirementDescription: "number 1e35",
+            effectDescription: "improves the number effect formula<br>log1.2 --> log1.1",
+            done() {
+                return player.d.number.gte(1e35);
+            },
+            unlocked() {
+                return hasMilestone('d', 9) || hasMilestone('d', 10);
+            },
+        },
+        11: {
+            requirementDescription: "number 1e36",
+            effectDescription: "improves the number effect formula<br>log1.1 --> log1.02",
+            done() {
+                return player.d.number.gte(1e36);
+            },
+            unlocked() {
+                return hasMilestone('d', 10) || hasMilestone('d', 11);
+            },
+        },
+        12: {
+            requirementDescription: "number 1e40",
+            effectDescription: "improves the number effect formula<br>log1.02 --> log1.005",
+            done() {
+                return player.d.number.gte(1e40);
+            },
+            unlocked() {
+                return hasMilestone('d', 11) || hasMilestone('d', 12);
+            },
+        },
+        13: {
+            requirementDescription: "number 1e45",
+            effectDescription: "improves the number effect formula<br>log1.005 --> log1.001",
+            done() {
+                return player.d.number.gte(1e45);
+            },
+            unlocked() {
+                return hasMilestone('d', 12) || hasMilestone('d', 13);
+            },
+        },
+        14: {
+            requirementDescription: "number 1e66",
+            effectDescription: "improves the number effect formula<br>log1.001 --> log1.0001",
+            done() {
+                return player.d.number.gte(1e66);
+            },
+            unlocked() {
+                return hasMilestone('d', 13) || hasMilestone('d', 14);
+            },
+        },
+        15: {
+            requirementDescription: "number 1e99",
+            effectDescription: "unlocks Limit Break",
+            done() {
+                return player.d.number.gte(1e99);
+            },
+            unlocked() {
+                return hasMilestone('d', 14) || hasMilestone('d', 15);
+            },
+        },
+    },
+    upgrades: {
+        11: {
+            fullDisplay() {
+                let text = `<h3>Limit Break</h3><br>
+                    double the digit limit, but increase their cost exponent (1.2 --> 1.75)<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(99),
         },
     },
 });
