@@ -85,10 +85,10 @@ addLayer('rn', {
         return text;
     },
     resetsNothing() {
-        return hasMilestone('d', 3);
+        return hasMilestone('d', 4);
     },
     passiveGeneration() {
-        if (hasMilestone('d', 4)) return 10;
+        if (hasMilestone('d', 5)) return 10;
     },
     hotkeys: [{
         key: 'r', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
@@ -368,7 +368,7 @@ addLayer('rn', {
             },
             cost: new Decimal(1e50),
             unlocked() {
-                return hasMilestone('d', 0);
+                return hasMilestone('d', 1);
             },
         },
         42: {
@@ -386,7 +386,7 @@ addLayer('rn', {
             },
             cost: new Decimal(1e66),
             unlocked() {
-                return hasMilestone('d', 1);
+                return hasMilestone('d', 2);
             },
         },
         43: {
@@ -401,7 +401,7 @@ addLayer('rn', {
             },
             cost: new Decimal(1e80),
             unlocked() {
-                return hasMilestone('d', 2);
+                return hasMilestone('d', 3);
             },
         },
     },
@@ -538,7 +538,8 @@ addLayer('d', {
         onPress() { if (player.d.unlocked) doReset('d') },
     }],
     effect() {
-        eff = player.d.number.add(1).log2().mul(player.d.points);
+        let eff = player.d.number.add(1).log2().mul(player.d.points);
+        if (hasMilestone('d', 0)) eff = player.d.number.add(1).log(1.5).mul(player.d.points);
         if (getBuyableAmount('d', 91)) eff = eff.mul(getBuyableAmount('d', 91).add(1));
         return eff;
     },
@@ -587,7 +588,7 @@ addLayer('d', {
                 ['buyables', '9'],
             ],
             unlocked() {
-                return hasMilestone('d', 7);
+                return hasMilestone('d', 8);
             },
         },
     },
@@ -809,7 +810,7 @@ addLayer('d', {
             },
             style: {'width':'120px','height':'120px'},
             unlocked() {
-                return hasMilestone('d', 5);
+                return hasMilestone('d', 6);
             },
         },
         61: {
@@ -837,7 +838,7 @@ addLayer('d', {
             },
             style: {'width':'120px','height':'120px'},
             unlocked() {
-                return hasMilestone('d', 5);
+                return hasMilestone('d', 6);
             },
         },
         71: {
@@ -863,7 +864,7 @@ addLayer('d', {
             },
             style: {'width':'120px','height':'120px'},
             unlocked() {
-                return hasMilestone('d', 6);
+                return hasMilestone('d', 7);
             },
         },
         81: {
@@ -889,7 +890,7 @@ addLayer('d', {
             },
             style: {'width':'120px','height':'120px'},
             unlocked() {
-                return hasMilestone('d', 6);
+                return hasMilestone('d', 7);
             },
         },
         91: {
@@ -924,86 +925,96 @@ addLayer('d', {
             style: {'border-radius':'50%'},
             purchaseLimit: 8,
             unlocked() {
-                return hasMilestone('d', 7);
+                return hasMilestone('d', 8);
             },
         },
     },
     milestones: {
         0: {
+            requirementDescription: "30 digits and number 100,000",
+            effectDescription: "improves the number effect formula<br>log2 --> log1.5",
+            done() {
+                return player.d.points.gte(30) && player.d.number.gte(100000);
+            },
+        },
+        1: {
             requirementDescription: "70 digits and number 1,000,000",
             effectDescription: "unlocks a new roman numeral upgrade",
             done() {
                 return player.d.points.gte(70) && player.d.number.gte(1000000);
-            },
-        },
-        1: {
-            requirementDescription: "80 digits and number 10,000,000",
-            effectDescription: "unlocks a second new roman numeral upgrade",
-            done() {
-                return player.d.points.gte(80) && player.d.number.gte(10000000);
             },
             unlocked() {
                 return hasMilestone('d', 0) || hasMilestone('d', 1);
             },
         },
         2: {
-            requirementDescription: "90 digits and number 100,000,000",
-            effectDescription: "unlocks a third new roman numeral upgrade",
+            requirementDescription: "80 digits and number 10,000,000",
+            effectDescription: "unlocks a second new roman numeral upgrade",
             done() {
-                return player.d.points.gte(90) && player.d.number.gte(100000000);
+                return player.d.points.gte(80) && player.d.number.gte(10000000);
             },
             unlocked() {
                 return hasMilestone('d', 1) || hasMilestone('d', 2);
             },
         },
         3: {
-            requirementDescription: "number 1e11",
-            effectDescription: "roman numerals reset nothing",
+            requirementDescription: "90 digits and number 100,000,000",
+            effectDescription: "unlocks a third new roman numeral upgrade",
             done() {
-                return player.d.number.gte(1e11);
+                return player.d.points.gte(90) && player.d.number.gte(100000000);
             },
             unlocked() {
                 return hasMilestone('d', 2) || hasMilestone('d', 3);
             },
         },
         4: {
-            requirementDescription: "number 1e15",
-            effectDescription: "gain 1,000% of roman numeral gain per second",
+            requirementDescription: "number 1e11",
+            effectDescription: "roman numerals reset nothing",
             done() {
-                return player.d.number.gte(1e15);
+                return player.d.number.gte(1e11);
             },
             unlocked() {
                 return hasMilestone('d', 3) || hasMilestone('d', 4);
             },
         },
         5: {
-            requirementDescription: "number 1e16",
-            effectDescription: "unlocks two new digit number upgrades",
+            requirementDescription: "number 1e15",
+            effectDescription: "gain 1,000% of roman numeral gain per second",
             done() {
-                return player.d.number.gte(1e16);
+                return player.d.number.gte(1e15);
             },
             unlocked() {
                 return hasMilestone('d', 4) || hasMilestone('d', 5);
             },
         },
         6: {
-            requirementDescription: "number 1e24",
+            requirementDescription: "number 1e16",
             effectDescription: "unlocks two new digit number upgrades",
             done() {
-                return player.d.number.gte(1e24);
+                return player.d.number.gte(1e16);
             },
             unlocked() {
                 return hasMilestone('d', 5) || hasMilestone('d', 6);
             },
         },
         7: {
+            requirementDescription: "number 1e24",
+            effectDescription: "unlocks two new digit number upgrades",
+            done() {
+                return player.d.number.gte(1e24);
+            },
+            unlocked() {
+                return hasMilestone('d', 6) || hasMilestone('d', 7);
+            },
+        },
+        8: {
             requirementDescription: "360 One Ups",
             effectDescription: "unlock Base Up",
             done() {
                 return getBuyableAmount('d', 11).gte(360);
             },
             unlocked() {
-                return hasMilestone('d', 6) || hasMilestone('d', 7);
+                return hasMilestone('d', 7) || hasMilestone('d', 8);
             },
         },
     },
