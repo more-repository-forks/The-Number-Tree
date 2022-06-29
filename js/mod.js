@@ -36,7 +36,7 @@ function getPointGen() {
 	if (hasUpgrade('rn', 15)) gain = gain.mul(upgradeEffect('rn', 15));
 	if (hasUpgrade('rn', 25)) gain = gain.mul(upgradeEffect('rn', 25));
 	if (hasUpgrade('rn', 35)) gain = gain.mul(upgradeEffect('rn', 35));
-	if (tmp.d.unlocked) gain = gain.mul(tmp.d.effect.div(100).add(1));
+	if (player.d.unlocked) gain = gain.mul(tmp.d.effect.div(100).add(1));
 	return gain;
 };
 
