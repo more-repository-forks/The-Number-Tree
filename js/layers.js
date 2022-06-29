@@ -78,12 +78,15 @@ addLayer('rn', {
         return new Decimal(1);
     },
     softcap: new Decimal("1e1000"),
-    softcapPower: 0.1,
+    softcapPower() {
+        if (hasUpgrade('d', 22)) return 0.5;
+        return 0.2;
+    },
     prestigeButtonText() {
         let resetGain = new Decimal(tmp.rn.resetGain), text = '';
         if (player.rn.points.lt(1e3)) text = 'Reset for ';
         text += '+<b>' + numeralFormat(resetGain) + '</b> roman numerals';
-        if (resetGain.lt(100)&&player.rn.points.lt(1e3)) text += '<br><br>Next at ' + format(tmp.rn.nextAt) + ' arabic numerals';
+        if (resetGain.lt(100) && player.rn.points.lt(1e3)) text += '<br><br>Next at ' + format(tmp.rn.nextAt) + ' arabic numerals';
         return text;
     },
     resetsNothing() {
@@ -1157,12 +1160,24 @@ addLayer('d', {
         },
         21: {
             fullDisplay() {
-                let text = `<h3>Limit Bend</h3><br>
+                let text = `<h3>Digit Bend</h3><br>
                     decrease the digit cost exponent (1.75 --> 1.7)<br><br>
                     Cost: ` + numeralFormat(this.cost) + ` digits`;
                 return text;
             },
             cost: new Decimal(111),
+            unlocked() {
+                return hasUpgrade('d', 11);
+            },
+        },
+        22: {
+            fullDisplay() {
+                let text = `<h3>Roman Numeral Bend</h3><br>
+                    increase roman numeral gain after softcap (^0.2 --> ^0.5)<br><br>
+                    Cost: ` + numeralFormat(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(128),
             unlocked() {
                 return hasUpgrade('d', 11);
             },
