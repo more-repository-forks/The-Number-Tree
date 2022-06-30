@@ -716,6 +716,11 @@ addLayer('d', {
                     setBuyableAmount('d', upgrade, getBuyableAmount('d', upgrade).add(1));
                 };
             };
+        } else if (player.d.baseUpAuto) {
+            if (tmp.d.buyables[91].unlocked && tmp.d.buyables[91].canBuy) {
+                player.points = player.points.sub(tmp.d.buyables[91].cost);
+                setBuyableAmount('d', 91, getBuyableAmount('d', 91).add(1));
+            };
         };
     },
     grid: {
