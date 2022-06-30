@@ -1475,7 +1475,7 @@ addLayer('d', {
             },
             cost: new Decimal(228),
             unlocked() {
-                return hasUpgrade('d', 31) && hasUpgrade('d', 32) && hasUpgrade('d', 33);
+                return hasUpgrade('d', 41) && hasUpgrade('d', 42) && hasUpgrade('d', 43) && hasUpgrade('d', 44);
             },
         },
         54: {
@@ -1491,7 +1491,7 @@ addLayer('d', {
             },
             cost: new Decimal(224),
             unlocked() {
-                return hasUpgrade('d', 31) && hasUpgrade('d', 32) && hasUpgrade('d', 33);
+                return hasUpgrade('d', 41) && hasUpgrade('d', 42) && hasUpgrade('d', 43) && hasUpgrade('d', 44);
             },
         },
         55: {
