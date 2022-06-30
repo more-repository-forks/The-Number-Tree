@@ -15,9 +15,14 @@ h1, h2, h3, b, input {
 }
 
 /* Layer Text */
+.layer-N {
+	color: #ccc;
+	text-shadow: 0 0 10px #ccc;
+}
+
 .layer-rn {
-	color: #884400;
-	text-shadow: 0 0 10px #884400;
+	color: #840;
+	text-shadow: 0 0 10px #840;
 }
 
 .layer-d {
@@ -25,9 +30,9 @@ h1, h2, h3, b, input {
 	text-shadow: 0 0 10px #666;
 }
 
-.layer-N {
-	color: #ccc;
-	text-shadow: 0 0 10px #ccc;
+.layer-i {
+	color: #cf4;
+	text-shadow: 0 0 10px #cf4;
 }
 
 /* These are styles for different states of components. You can make layer-specific versions with .c.locked, for example */

@@ -9,8 +9,8 @@ let modInfo = {
 };
 
 let VERSION = {
-	num: '1.4',
-	name: 'Limit Break',
+	num: '2.0',
+	name: 'Intelligence',
 };
 
 let winText = '<h3>You won the game!</h3><br>However, it isn\'t the end yet...<br>Wait for more updates for further content.';
@@ -29,6 +29,7 @@ function canGenPoints() {
 
 // Calculate points/sec!
 function getPointGen() {
+	if (player.points.lt(0)) player.points = new Decimal(0);
 	let gain = new Decimal(1);
 	if (hasUpgrade('rn', 11)) gain = gain.mul(upgradeEffect('rn', 11));
 	if (hasUpgrade('rn', 13) && player.points.lt(getUpgradeCap('rn', 13))) gain = gain.mul(upgradeEffect('rn', 13));
@@ -37,6 +38,7 @@ function getPointGen() {
 	if (hasUpgrade('rn', 25)) gain = gain.mul(upgradeEffect('rn', 25));
 	if (hasUpgrade('rn', 35)) gain = gain.mul(upgradeEffect('rn', 35));
 	if (player.d.unlocked) gain = gain.mul(tmp.d.effect.div(100).add(1));
+	if (player.i.unlocked) gain = gain.mul(tmp.i.effect);
 	return gain;
 };
 

@@ -80,7 +80,10 @@ addLayer('rn', {
             if (hasUpgrade('d', 33)) {
                 if (hasUpgrade('d', 44)) {
                     if (hasUpgrade('d', 55)) {
-                        if (hasUpgrade('d', 65)) return 0.85;
+                        if (hasUpgrade('d', 65)) {
+                            if (hasUpgrade('d', 75)) return 0.875;
+                            return 0.85;
+                        };
                         return 0.825;
                     };
                     return 0.8;
@@ -476,9 +479,7 @@ addLayer('d', {
     symbol: 'D',
     row: 0,
     position: 1,
-    tooltip() {
-        return formatWhole(player.d.points) + ' digits';
-    },
+    branches: ['i'],
     startData() { return {
         unlocked: false,
         points: new Decimal(0),
@@ -490,6 +491,8 @@ addLayer('d', {
         meta: '',
         limited: false,
         timer: 0,
+        numberUpgradeAuto: false,
+        baseUpAuto: false,
     }},
     color: '#666666',
     resource: 'digits',
@@ -526,6 +529,9 @@ addLayer('d', {
         if (hasUpgrade('d', 42)) gain = gain.div(upgradeEffect('d', 42));
         if (hasUpgrade('d', 52)) gain = gain.div(upgradeEffect('d', 52));
         if (hasUpgrade('d', 62)) gain = gain.div(upgradeEffect('d', 62));
+        if (hasUpgrade('d', 72)) gain = gain.div(upgradeEffect('d', 72));
+        if (hasUpgrade('d', 73)) gain = gain.div(upgradeEffect('d', 73));
+        if (player.i.unlocked) gain = gain.div(tmp.i.effect);
         return gain;
     },
     canBuyMax() {
@@ -592,13 +598,14 @@ addLayer('d', {
         if (hasUpgrade('d', 43)) eff = eff.mul(upgradeEffect('d', 43));
         if (hasUpgrade('d', 54)) eff = eff.mul(upgradeEffect('d', 54));
         if (hasUpgrade('d', 64)) eff = eff.mul(upgradeEffect('d', 64));
+        if (hasUpgrade('d', 74)) eff = eff.mul(upgradeEffect('d', 74));
         return eff;
     },
     layerShown() {
         return true;
     },
     tabFormat: {
-        "Numbers": {
+        "Number": {
             content: [
                 ['display-text',
                     function() {return 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral generation by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'},
@@ -669,6 +676,7 @@ addLayer('d', {
         if (hasUpgrade('d', 11)) cap = cap.mul(2);
         if (hasUpgrade('d', 42)) cap = cap.mul(1.5);
         if (hasUpgrade('d', 62)) cap = cap.mul(1.5);
+        if (hasUpgrade('d', 72)) cap = cap.mul(4);
         player.d.max = cap;
         player.d.timer += diff;
         if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
@@ -697,6 +705,17 @@ addLayer('d', {
         if ((tmp.d.grid.cols - meta.length) == 0) return;
         for (let i = 0; i < (tmp.d.grid.cols - meta.length); i++) {
             player.d.meta = '0' + player.d.meta;
+        };
+    },
+    automate() {
+        if (player.d.numberUpgradeAuto) {
+            for (upgrade in tmp.d.buyables) {
+                if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols" || (upgrade == "91" && !player.d.baseUpAuto)) continue;
+                if (tmp.d.buyables[upgrade].unlocked && tmp.d.buyables[upgrade].canBuy) {
+                    player.points = player.points.sub(tmp.d.buyables[upgrade].cost);
+                    setBuyableAmount('d', upgrade, getBuyableAmount('d', upgrade).add(1));
+                };
+            };
         };
     },
     grid: {
@@ -1568,6 +1587,136 @@ addLayer('d', {
             cost: new Decimal(290),
             unlocked() {
                 return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
+            },
+        },
+        72: {
+            fullDisplay() {
+                let text = `<h3>Limit Star</h3><br>
+                    multiply the digit limit by 4, and divide digit cost requirement by 1e800<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return new Decimal('1e800');
+            },
+            cost: new Decimal(420),
+            unlocked() {
+                return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
+            },
+        },
+        73: {
+            fullDisplay() {
+                let text = `<h3>Cost Star</h3><br>
+                    divide digit cost requirement by 1e700<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return new Decimal('1e700');
+            },
+            cost: new Decimal(515),
+            unlocked() {
+                return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
+            },
+        },
+        74: {
+            fullDisplay() {
+                let text = `<h3>Number Star</h3><br>
+                    multiply the number effect based on the number you have<br>
+                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return player.d.number.add(1).pow(0.02);
+            },
+            cost: new Decimal(353),
+            unlocked() {
+                return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
+            },
+        },
+        75: {
+            fullDisplay() {
+                let text = `<h3>Roman Numeral Star</h3><br>
+                    increase roman numeral gain after softcap (^0.85 --> ^0.875)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(370),
+            unlocked() {
+                return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
+            },
+        },
+    },
+});
+
+addLayer('i', {
+    name: 'intelligence',
+    symbol: 'I',
+    row: 1,
+    position: 0,
+    startData() { return {
+        unlocked: false,
+        points: new Decimal(0),
+        best: new Decimal(0),
+        total: new Decimal(0),
+    }},
+    color: '#ccff44',
+    resource: 'intelligence',
+    baseResource: 'digits',
+    baseAmount() {
+        return player.d.points;
+    },
+    requires: new Decimal(600),
+    type: 'static',
+    exponent: 1,
+    gainMult() {
+        let gain = new Decimal(1);
+        return gain;
+    },
+    canBuyMax() {
+        return false;
+    },
+    hotkeys: [{
+        key: 'i', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
+        description: 'I: reset all previous progress for intelligence',
+        onPress() { if (player.d.unlocked) doReset('i') },
+    }],
+    effect() {
+        return player.i.points.mul(2).add(1).pow(1.5);
+    },
+    effectDescription() {
+        return 'which multiplies arabic numeral generation and divides digit cost requirement by <h2 class="layer-i">' + format(tmp.i.effect) + '</h2>x';
+    },
+    layerShown() {
+        if (player.d.unlocked) return true;
+        return false;
+    },
+    tabFormat: {
+        "Milestones": {
+            content: [
+                'main-display',
+                'prestige-button',
+                'resource-display',
+                'milestones',
+            ],
+        },
+    },
+    milestones: {
+        0: {
+            requirementDescription: "1 intelligence",
+            effectDescription: "unlock digit number upgrade autobuyer",
+            toggles: [["d", "numberUpgradeAuto"]],
+            done() {
+                return player.i.points.gte(1);
+            },
+        },
+        1: {
+            requirementDescription: "2 intelligence",
+            effectDescription: "unlock base up autobuyer",
+            toggles: [["d", "baseUpAuto"]],
+            done() {
+                return player.i.points.gte(2);
             },
         },
     },
