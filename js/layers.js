@@ -721,6 +721,8 @@ addLayer('d', {
     grid: {
         rows: 1,
         cols() {
+            if (hasUpgrade('d', 11)) return 2;
+            if (buyableEffect('d', 91).gte(10)) return 1;
             return player.d.points.toNumber();
         },
         maxCols: 99,
@@ -728,8 +730,6 @@ addLayer('d', {
             return 0;
         },
         getUnlocked(id) { // Default
-            if (hasUpgrade('d', 11) && id == 102) return true;
-            if (buyableEffect('d', 91).gte(10) && id != 101) return false;
             return true;
         },
         getCanClick(data, id) {
