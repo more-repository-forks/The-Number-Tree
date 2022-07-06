@@ -117,14 +117,17 @@ addLayer('rn', {
     },
     tabFormat: [
         ['display-text',
-            function() { return 'You have <h2 class="layer-rn">' + numeralFormat(player.rn.points) + '</h2> roman numerals' },
+            function() {
+                if (player.rn.points.gte('1e1000')) return '<h2 class="layer-rn">' + numeralFormat(player.rn.points) + '</h2> roman numerals';
+                return 'You have <h2 class="layer-rn">' + numeralFormat(player.rn.points) + '</h2> roman numerals';
+            },
         ],
         'blank',
         'prestige-button',
         ['display-text',
             function() {
                 text = 'You have ' + format(player.points) + ' arabic numerals<br>';
-                if (hasMilestone('d', 6)) text += 'You are gaining ' +  numeralFormat(tmp.rn.resetGain.mul(10)) + ' roman numerals per second<br>';
+                if (tmp.rn.passiveGeneration) text += 'You are gaining ' + numeralFormat(tmp.rn.resetGain.mul(tmp.rn.passiveGeneration)) + ' roman numerals per second<br>';
                 text += '<br>Your best roman numerals is ' + numeralFormat(player.rn.best) + '<br>';
                 text += 'You have made a total of ' + numeralFormat(player.rn.total) + ' roman numerals';
                 return text;
@@ -1521,7 +1524,7 @@ addLayer('d', {
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
-            cost: new Decimal(231),
+            cost: new Decimal(229),
             unlocked() {
                 return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
             },
@@ -1552,7 +1555,7 @@ addLayer('d', {
             effect() {
                 return player.d.number.add(1).pow(1.1);
             },
-            cost: new Decimal(253),
+            cost: new Decimal(251),
             unlocked() {
                 return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
             },
@@ -1568,7 +1571,7 @@ addLayer('d', {
             effect() {
                 return player.d.number.add(1).pow(0.05);
             },
-            cost: new Decimal(255),
+            cost: new Decimal(252),
             unlocked() {
                 return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
             },
@@ -1638,7 +1641,7 @@ addLayer('d', {
             effect() {
                 return player.d.number.add(1).pow(0.02);
             },
-            cost: new Decimal(353),
+            cost: new Decimal(352),
             unlocked() {
                 return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
             },
