@@ -1301,10 +1301,10 @@ addLayer('d', {
             },
         },
         17: {
-            requirementDescription: "number 1e110",
+            requirementDescription: "number 1e111",
             effectDescription: "unlocks three new digit number upgrades",
             done() {
-                return player.d.number.gte(1e110);
+                return player.d.number.gte(1e111);
             },
             unlocked() {
                 return hasMilestone('d', 16) || hasMilestone('d', 17);
@@ -1331,7 +1331,7 @@ addLayer('d', {
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
-            cost: new Decimal(111),
+            cost: new Decimal(109),
             unlocked() {
                 return hasUpgrade('d', 11);
             },
@@ -1343,7 +1343,7 @@ addLayer('d', {
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
-            cost: new Decimal(128),
+            cost: new Decimal(126),
             unlocked() {
                 return hasUpgrade('d', 11);
             },
@@ -1355,7 +1355,7 @@ addLayer('d', {
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
-            cost: new Decimal(130),
+            cost: new Decimal(127),
             unlocked() {
                 return hasUpgrade('d', 21) && hasUpgrade('d', 22);
             },
@@ -1371,7 +1371,7 @@ addLayer('d', {
             effect() {
                 return player.d.number.add(1).pow(0.1);
             },
-            cost: new Decimal(153),
+            cost: new Decimal(148),
             unlocked() {
                 return hasUpgrade('d', 21) && hasUpgrade('d', 22);
             },
@@ -1383,7 +1383,7 @@ addLayer('d', {
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
-            cost: new Decimal(151),
+            cost: new Decimal(147),
             unlocked() {
                 return hasUpgrade('d', 21) && hasUpgrade('d', 22);
             },
