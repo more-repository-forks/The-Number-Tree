@@ -683,6 +683,7 @@ addLayer('d', {
         if (hasUpgrade('d', 42)) cap = cap.mul(1.5);
         if (hasUpgrade('d', 62)) cap = cap.mul(1.5);
         if (hasUpgrade('d', 72)) cap = cap.mul(4);
+        if (hasMilestone('d', 19)) cap = cap.mul(2);
         player.d.max = cap;
         player.d.timer += diff;
         if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
@@ -840,6 +841,7 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 1000,
             unlocked() {
                 return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
             },
@@ -929,6 +931,7 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 500,
             unlocked() {
                 return hasMilestone('d', 7);
             },
@@ -1077,6 +1080,7 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 25,
             unlocked() {
                 return hasMilestone('d', 17);
             },
@@ -1132,6 +1136,7 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 50,
             unlocked() {
                 return hasMilestone('d', 17);
             },
@@ -1324,6 +1329,16 @@ addLayer('d', {
             },
             unlocked() {
                 return hasMilestone('d', 17) || hasMilestone('d', 18);
+            },
+        },
+        19: {
+            requirementDescription: "number 1e1750",
+            effectDescription: "double the digit limit",
+            done() {
+                return player.d.number.gte('1e1750');
+            },
+            unlocked() {
+                return hasMilestone('d', 18) || hasMilestone('d', 19);
             },
         },
     },
@@ -1736,6 +1751,8 @@ addLayer('i', {
                 ],
                 'blank',
                 ['row', [['buyables', '1'], 'clickables', ['buyables', '2']]],
+                ['blank', '13px'],
+                ['buyables', '3'],
             ],
             unlocked() {
                 return player.i.unlocked;
@@ -1745,6 +1762,7 @@ addLayer('i', {
     update(diff) {
         let power = new Decimal(0.25);
         if (getBuyableAmount('i', 21).gt(0)) power = power.add(buyableEffect('i', 21));
+        if (getBuyableAmount('i', 33).gt(0)) power = power.add(buyableEffect('i', 33));
         player.i.unitEffect = player.i.units.add(1).pow(power);
     },
     milestones: {
@@ -1776,8 +1794,10 @@ addLayer('i', {
                 return false;
             },
             onClick() {
+                let power = new Decimal(2);
+                if (getBuyableAmount('i', 31).gt(0)) power = power.mul(buyableEffect('i', 31));
                 for (let num = 0; num < buyableEffect('i', 11).toNumber(); num++) {
-                    player.i.units = player.i.units.mul(2);
+                    player.i.units = player.i.units.mul(power);
                 };
             },
         },
@@ -1806,7 +1826,7 @@ addLayer('i', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
-            purchaseLimit: 10,
+            purchaseLimit: 5,
             unlocked() {
                 return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
             },
@@ -1822,6 +1842,61 @@ addLayer('i', {
             display() {
                 return `<h3>More Effective</h3><br>`
                     + `Increase the effect scaling of the unit effect by 0.075.<br>`
+                    + `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            purchaseLimit: 20,
+            unlocked() {
+                return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
+            },
+        },
+        31: {
+            cost() {
+                return new Decimal('1e500').pow(getBuyableAmount(this.layer, this.id)).mul('1e2500');
+            },
+            effect() {
+                let eff = new Decimal(1.1).pow(getBuyableAmount(this.layer, this.id));
+                return eff;
+            },
+            display() {
+                return `<h3>Power</h3><br>`
+                    + `Multiply replication power by 1.1.<br>`
+                    + `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
+            },
+        },
+        33: {
+            cost() {
+                return new Decimal('1e250').pow(getBuyableAmount(this.layer, this.id)).mul('1e3000');
+            },
+            effect() {
+                let eff = getBuyableAmount(this.layer, this.id).mul(0.25);
+                return eff;
+            },
+            display() {
+                return `<h3>Efficiency</h3><br>`
+                    + `Increase the effect scaling of the unit effect by 0.25.<br>`
                     + `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
                     + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
