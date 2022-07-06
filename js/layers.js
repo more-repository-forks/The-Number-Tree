@@ -499,6 +499,7 @@ addLayer('d', {
         numberUpgradeAuto: false,
         baseUpAuto: false,
         numberButtonAuto: false,
+        digitAuto: false,
     }},
     color: '#666666',
     resource: 'digits',
@@ -541,8 +542,7 @@ addLayer('d', {
         return gain;
     },
     canBuyMax() {
-        if (hasMilestone('d', 16)) return true;
-        return false;
+        return hasMilestone('d', 16);
     },
     prestigeButtonText() {
         if (player.d.points.gte(player.d.max)) return '<b>MAXED';
@@ -582,6 +582,9 @@ addLayer('d', {
     prestigeNotify() {
         if (tmp.d.autoPrestige || tmp.d.passiveGeneration) return false;
         return tmp.d.canReset;
+    },
+    autoPrestige() {
+        return player.d.digitAuto;
     },
     hotkeys: [{
         key: 'd', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
@@ -1780,6 +1783,14 @@ addLayer('i', {
             toggles: [["d", "baseUpAuto"]],
             done() {
                 return player.i.points.gte(2);
+            },
+        },
+        2: {
+            requirementDescription: "3 intelligence",
+            effectDescription: "unlock digit autobuyer",
+            toggles: [["d", "digitAuto"]],
+            done() {
+                return player.i.points.gte(3);
             },
         },
     },
