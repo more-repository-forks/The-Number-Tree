@@ -123,9 +123,11 @@ addLayer('rn', {
         'prestige-button',
         ['display-text',
             function() {
-                return 'You have ' + format(player.points) + ' arabic numerals<br><br>'
-                    + 'Your best roman numerals is ' + numeralFormat(player.rn.best) + '<br>'
-                    + 'You have made a total of ' + numeralFormat(player.rn.total) + ' roman numerals'
+                text = 'You have ' + format(player.points) + ' arabic numerals<br>';
+                if (hasMilestone('d', 6)) text += 'You are gaining ' +  numeralFormat(tmp.rn.resetGain.mul(10)) + ' roman numerals per second<br>';
+                text += '<br>Your best roman numerals is ' + numeralFormat(player.rn.best) + '<br>';
+                text += 'You have made a total of ' + numeralFormat(player.rn.total) + ' roman numerals';
+                return text;
             },
         ],
         'upgrades',
@@ -842,13 +844,13 @@ addLayer('d', {
                 return new Decimal(1e5).pow(getBuyableAmount(this.layer, this.id).add(1)).mul(1e20);
             },
             effect() {
-                let eff = getBuyableAmount(this.layer, this.id);
+                let eff = getBuyableAmount(this.layer, this.id).mul(1.5).floor();
                 if (getBuyableAmount('d', 61).gt(0)) eff = eff.mul(buyableEffect('d', 61));
                 return eff;
             },
             display() {
                 return `<h3>Lazing</h3><br>`
-                    + `gain +1 passive number increase.<br>`
+                    + `gain +1.5 passive number increase, rounded down.<br>`
                     + `Currently: +` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
                     + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -1697,8 +1699,7 @@ addLayer('i', {
         return 'which multiplies arabic numeral generation and divides digit cost requirement by <h2 class="layer-i">' + format(tmp.i.effect) + '</h2>x';
     },
     layerShown() {
-        if (player.d.unlocked) return true;
-        return false;
+        return hasMilestone('d', 15) || player.i.unlocked;
     },
     tabFormat: {
         "Milestones": {
@@ -1723,7 +1724,8 @@ addLayer('i', {
         },
     },
     update(diff) {
-        player.i.unitEffect = player.i.units.add(1).pow(0.2);
+        let power = new Decimal(0.25);
+        player.i.unitEffect = player.i.units.add(1).pow(power);
     },
     milestones: {
         0: {
@@ -1784,7 +1786,7 @@ addLayer('i', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
-            purchaseLimit: 20,
+            purchaseLimit: 10,
             unlocked() {
                 return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
             },
