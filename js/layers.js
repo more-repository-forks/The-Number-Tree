@@ -746,8 +746,9 @@ addLayer('d', {
             return false;
         },
         getDisplay(data, id) {
-            if (buyableEffect('d', 91).gte(10) && id == 101) return "<h2>Base " + buyableEffect('d', 91) + " achieved";
-            if (hasUpgrade('d', 11) && id == 102) return "<h2>Limit broken";
+            if (buyableEffect('d', 91).gte(10) && id == 101) return '<h2>Base ' + formatWhole(buyableEffect('d', 91)) + ' achieved';
+            if (hasUpgrade('d', 11) && id == 102) return '<h2>Limit broken';
+            if (player.d.limited) return '<h2>' + formatWhole(buyableEffect('d', 91).sub(1));
             id = id - 101;
             data = player.d.meta.charAt(id);
             setGridData('d', id + 101, data);
@@ -757,7 +758,7 @@ addLayer('d', {
             if (buyableEffect('d', 91).gte(10) && id == 101) return {'height':'30px','width':'170px','border-radius':'0%','color':'red'};
             if (hasUpgrade('d', 11) && id == 102) return {'height':'30px','width':'130px','border-radius':'0%','color':'red'};
             let color = 'black';
-            if (data != '0') color = 'red';
+            if (data != '0' || player.d.limited) color = 'red';
             if (this.cols() < 25) return {'height':'50px','width':'50px','border-radius':'50%','color':color};
             if (this.cols() < 40) return {'height':'45px','width':'45px','border-radius':'50%','color':color};
             if (this.cols() < 60) return {'height':'40px','width':'40px','border-radius':'50%','color':color};
@@ -1695,7 +1696,7 @@ addLayer('i', {
         onPress() { if (player.d.unlocked) doReset('i') },
     }],
     effect() {
-        return player.i.points.mul(2).add(1).pow(1.5);
+        return new Decimal(10).pow(player.i.points);
     },
     effectDescription() {
         return 'which multiplies arabic numeral generation by <h2 class="layer-i">' + format(tmp.i.effect) + '</h2>x';
