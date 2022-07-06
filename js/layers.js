@@ -498,6 +498,7 @@ addLayer('d', {
         timer: 0,
         numberUpgradeAuto: false,
         baseUpAuto: false,
+        numberButtonAuto: false,
     }},
     color: '#666666',
     resource: 'digits',
@@ -686,6 +687,7 @@ addLayer('d', {
         player.d.timer += diff;
         if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
             player.d.number = player.d.number.add(buyableEffect('d', 31));
+            if (player.d.numberButtonAuto) player.d.number = player.d.number.add(player.d.clickPower).round();
             player.d.timer = 0;
         };
         power = new Decimal(1);
@@ -1313,6 +1315,17 @@ addLayer('d', {
                 return hasMilestone('d', 16) || hasMilestone('d', 17);
             },
         },
+        18: {
+            requirementDescription: "number 1e630",
+            effectDescription: "unlock auto press 'make number larger'",
+            toggles: [["d", "numberButtonAuto"]],
+            done() {
+                return player.d.number.gte('1e630');
+            },
+            unlocked() {
+                return hasMilestone('d', 17) || hasMilestone('d', 18);
+            },
+        },
     },
     upgrades: {
         11: {
@@ -1803,12 +1816,12 @@ addLayer('i', {
                 return new Decimal('1e200').pow(getBuyableAmount(this.layer, this.id)).mul('1e2000');
             },
             effect() {
-                let eff = getBuyableAmount(this.layer, this.id).mul(0.05);
+                let eff = getBuyableAmount(this.layer, this.id).mul(0.075);
                 return eff;
             },
             display() {
                 return `<h3>More Effective</h3><br>`
-                    + `Increase the effect scaling of the unit effect by 0.05.<br>`
+                    + `Increase the effect scaling of the unit effect by 0.075.<br>`
                     + `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
                     + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
