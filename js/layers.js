@@ -532,6 +532,7 @@ addLayer('d', {
         if (hasUpgrade('d', 72)) gain = gain.div(upgradeEffect('d', 72));
         if (hasUpgrade('d', 73)) gain = gain.div(upgradeEffect('d', 73));
         if (player.i.unlocked) gain = gain.div(tmp.i.effect);
+        if (player.i.unlocked) gain = gain.div(player.i.unitEffect);
         return gain;
     },
     canBuyMax() {
@@ -1665,6 +1666,8 @@ addLayer('i', {
         points: new Decimal(0),
         best: new Decimal(0),
         total: new Decimal(0),
+        units: new Decimal(1),
+        unitEffect: new Decimal(1),
     }},
     color: '#ccff44',
     resource: 'intelligence',
@@ -1706,6 +1709,21 @@ addLayer('i', {
                 'milestones',
             ],
         },
+        "Replicator": {
+            content: [
+                'main-display',
+                'prestige-button',
+                'resource-display',
+                ['display-text',
+                    function() {return 'You have <h2 class="layer-i">' + formatWhole(player.i.units) + '</h2> units, which divides the digit cost requirement by <h2 class="layer-i">' + format(player.i.unitEffect) + '</h2>'},
+                ],
+                'blank',
+                ['row', [['buyables', '1'], 'clickables']],
+            ],
+        },
+    },
+    update(diff) {
+        player.i.unitEffect = player.i.units.add(1).pow(0.2);
     },
     milestones: {
         0: {
@@ -1722,6 +1740,53 @@ addLayer('i', {
             toggles: [["d", "baseUpAuto"]],
             done() {
                 return player.i.points.gte(2);
+            },
+        },
+    },
+    clickables: {
+        11: {
+            display() {
+                if (getBuyableAmount('i', 11).gt(0)) return "<h2>replicate your units " + formatWhole(buyableEffect('i', 11)) + " times";
+                return "<h2>replicate your units";
+            },
+            canClick() {
+                if (player.i.unlocked) return true;
+                return false;
+            },
+            onClick() {
+                for (let num = 0; num < buyableEffect('i', 11).toNumber(); num++) {
+                    player.i.units = player.i.units.mul(2);
+                };
+            },
+        },
+    },
+    buyables: {
+        11: {
+            cost() {
+                return new Decimal('1e1000').pow(getBuyableAmount(this.layer, this.id)).mul('1e2000');
+            },
+            effect() {
+                let eff = new Decimal(2).pow(getBuyableAmount(this.layer, this.id));
+                return eff;
+            },
+            display() {
+                return `<h3>Again</h3><br>`
+                    + `Multiply the effect of the button to the right by 2.<br>`
+                    + `Currently: ` + formatWhole(buyableEffect(this.layer, this.id)) + `x<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            purchaseLimit: 20,
+            unlocked() {
+                return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
             },
         },
     },
