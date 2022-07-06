@@ -81,7 +81,10 @@ addLayer('rn', {
                 if (hasUpgrade('d', 44)) {
                     if (hasUpgrade('d', 55)) {
                         if (hasUpgrade('d', 65)) {
-                            if (hasUpgrade('d', 75)) return 0.875;
+                            if (hasUpgrade('d', 75)) {
+                                if (hasUpgrade('d', 85)) return 0.88;
+                                return 0.875;
+                            };
                             return 0.85;
                         };
                         return 0.825;
@@ -516,7 +519,10 @@ addLayer('d', {
                     if (hasUpgrade('d', 41)) {
                         if (hasUpgrade('d', 51)) {
                             if (hasUpgrade('d', 61)) {
-                                if (hasUpgrade('d', 71)) return 1.5;
+                                if (hasUpgrade('d', 71)) {
+                                    if (hasUpgrade('d', 81)) return 1.49;
+                                    return 1.5;
+                                };
                                 return 1.55;
                             };
                             return 1.575;
@@ -538,6 +544,7 @@ addLayer('d', {
         if (hasUpgrade('d', 62)) gain = gain.div(upgradeEffect('d', 62));
         if (hasUpgrade('d', 72)) gain = gain.div(upgradeEffect('d', 72));
         if (hasUpgrade('d', 73)) gain = gain.div(upgradeEffect('d', 73));
+        if (hasUpgrade('d', 83)) gain = gain.div(upgradeEffect('d', 83));
         if (player.i.unlocked) gain = gain.div(player.i.unitEffect);
         return gain;
     },
@@ -608,6 +615,7 @@ addLayer('d', {
         if (hasUpgrade('d', 54)) eff = eff.mul(upgradeEffect('d', 54));
         if (hasUpgrade('d', 64)) eff = eff.mul(upgradeEffect('d', 64));
         if (hasUpgrade('d', 74)) eff = eff.mul(upgradeEffect('d', 74));
+        if (hasUpgrade('d', 84)) eff = eff.mul(upgradeEffect('d', 84));
         return eff;
     },
     layerShown() {
@@ -687,6 +695,7 @@ addLayer('d', {
         if (hasUpgrade('d', 62)) cap = cap.mul(1.5);
         if (hasUpgrade('d', 72)) cap = cap.mul(4);
         if (hasMilestone('d', 19)) cap = cap.mul(2);
+        if (hasUpgrade('d', 82)) cap = cap.mul(5);
         player.d.max = cap;
         player.d.timer += diff;
         if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
@@ -1689,6 +1698,73 @@ addLayer('d', {
                 return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
             },
         },
+        81: {
+            fullDisplay() {
+                let text = `<h3>Digit Galaxy</h3><br>
+                    decrease the digit cost exponent (1.5 --> 1.49)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(5000),
+            unlocked() {
+                return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
+            },
+        },
+        82: {
+            fullDisplay() {
+                let text = `<h3>Limit Galaxy</h3><br>
+                    multiply the digit limit by 5<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(3600),
+            unlocked() {
+                return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
+            },
+        },
+        83: {
+            fullDisplay() {
+                let text = `<h3>Cost Galaxy</h3><br>
+                    divide digit cost requirement by 1e20,000<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return new Decimal('1e20000');
+            },
+            cost: new Decimal(5500),
+            unlocked() {
+                return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
+            },
+        },
+        84: {
+            fullDisplay() {
+                let text = `<h3>Number Galaxy</h3><br>
+                    multiply the number effect based on the number you have<br>
+                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return player.d.number.add(1).pow(0.0025);
+            },
+            cost: new Decimal(4750),
+            unlocked() {
+                return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
+            },
+        },
+        85: {
+            fullDisplay() {
+                let text = `<h3>Roman Numeral Galaxy</h3><br>
+                    increase roman numeral gain after softcap (^0.875 --> ^0.88)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(3900),
+            unlocked() {
+                return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
+            },
+        },
     },
 });
 
@@ -1893,6 +1969,33 @@ addLayer('i', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
+            },
+        },
+        32: {
+            cost() {
+                return new Decimal('1e5900');
+            },
+            effect() {
+                let eff = new Decimal(1.1).pow(getBuyableAmount(this.layer, this.id));
+                return eff;
+            },
+            display() {
+                return `<h3>Galaxies</h3><br>`
+                    + `unlock 5 more Limit Break upgrades.<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            purchaseLimit: 1,
             unlocked() {
                 return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
             },
