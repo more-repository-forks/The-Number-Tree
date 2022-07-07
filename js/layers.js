@@ -590,6 +590,9 @@ addLayer('d', {
         if (tmp.d.autoPrestige || tmp.d.passiveGeneration) return false;
         return tmp.d.canReset;
     },
+    resetsNothing() {
+        return hasMilestone('i', 3);
+    },
     autoPrestige() {
         return player.d.digitAuto;
     },
@@ -1867,6 +1870,13 @@ addLayer('i', {
             toggles: [["d", "digitAuto"]],
             done() {
                 return player.i.points.gte(3);
+            },
+        },
+        3: {
+            requirementDescription: "4 intelligence",
+            effectDescription: "digits reset nothing",
+            done() {
+                return player.i.points.gte(4);
             },
         },
     },
