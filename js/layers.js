@@ -1080,6 +1080,7 @@ addLayer('d', {
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
             },
             canAfford() {
+                if (inChallenge('i', 11)) return false;
                 return player.d.number.gte(this.cost());
             },
             buy() {
@@ -1116,7 +1117,11 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
-            purchaseLimit: 25,
+            purchaseLimit() {
+                let limit = new Decimal(25);
+                if (hasChallenge('i', 11)) limit = limit.add(challengeEffect('i', 11));
+                return limit;
+            },
             unlocked() {
                 return hasMilestone('d', 17);
             },
@@ -1981,6 +1986,24 @@ addLayer('i', {
                 return hasMilestone('i', 5);
             },
         },
+        "Feats": {
+            content: [
+                'main-display',
+                'prestige-button',
+                'resource-display',
+                'blank',
+                ['display-text',
+                    function() {
+                        return 'Feats are runs with restriction(s). when you enter a Feat, everything will reset like an intelligence reset. reach the goal to complete the Feat and get a reward, or exit it and try it another time.';
+                    },
+                ],
+                'challenges',
+                'blank',
+            ],
+            unlocked() {
+                return hasMilestone('i', 9);
+            },
+        },
     },
     update(diff) {
         // replication
@@ -2156,6 +2179,16 @@ addLayer('i', {
             },
             unlocked() {
                 return hasMilestone('i', 7) || hasMilestone('i', 8);
+            },
+        },
+        9: {
+            requirementDescription: "8 intelligence and 20,000 digits",
+            effectDescription: "unlocks Feats",
+            done() {
+                return player.i.points.gte(8) && player.d.points.gte(20000);
+            },
+            unlocked() {
+                return hasMilestone('i', 8) || hasMilestone('i', 9);
             },
         },
     },
@@ -2834,6 +2867,28 @@ addLayer('i', {
             style: {'width':'120px','height':'120px'},
             unlocked() {
                 return hasMilestone('i', 7);
+            },
+        },
+    },
+    challenges: {
+        11: {
+            name: 'Feat of Binary',
+            fullDisplay() {
+                return 'Restriction: you cannot buy Base Ups<br>' + 'Goal: ' + format(new Decimal('1e1000').pow(new Decimal(challengeCompletions(this.layer, this.id)).mul(0.1).add(1))) + ' arabic numerals<br>Reward: increase <b>Up Even More</b>\'s cap by 1<br>Currently: +' + formatWhole(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/5';
+            },
+            rewardEffect() {
+                return challengeCompletions(this.layer, this.id);
+            },
+            canComplete() {
+                return player.points.gte(new Decimal('1e1000').pow(new Decimal(challengeCompletions(this.layer, this.id)).mul(0.1).add(1)));
+            },
+            onEnter() {
+                doReset('i', true);
+            },
+            style: {'width':'500px','height':'200px','border-radius':'20px'},
+            completionLimit: 5,
+            unlocked() {
+                return hasMilestone('i', 9);
             },
         },
     },
