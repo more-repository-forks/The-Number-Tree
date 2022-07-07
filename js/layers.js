@@ -1792,6 +1792,18 @@ addLayer('i', {
         total: new Decimal(0),
         units: new Decimal(1),
         unitEffect: new Decimal(1),
+        raw: new Decimal(0),
+        raw_power: new Decimal(0.1),
+        processed: new Decimal(0),
+        process_power: new Decimal(2),
+        products: new Decimal(0),
+        craft_power: new Decimal(15),
+        craft_eff: new Decimal(1),
+        money: new Decimal(0),
+        sell_power: new Decimal(1),
+        sell_eff: new Decimal(2.75),
+        timerPtime: new Decimal(0),
+        timerP: new Decimal(10),
     }},
     color: '#ccff44',
     resource: 'intelligence',
@@ -1841,7 +1853,7 @@ addLayer('i', {
                     function() {return 'You have <h2 class="layer-i">' + formatWhole(player.i.units) + '</h2> units, which divides the digit cost requirement by <h2 class="layer-i">' + format(player.i.unitEffect) + '</h2>'},
                 ],
                 'blank',
-                ['row', [['buyables', '1'], 'clickables', ['buyables', '2']]],
+                ['row', [['buyables', '1'], ['clickables', '1'], ['buyables', '2']]],
                 ['blank', '13px'],
                 ['buyables', '3'],
             ],
@@ -1849,12 +1861,51 @@ addLayer('i', {
                 return player.i.unlocked;
             },
         },
+        "Simulation": {
+            content: [
+                'main-display',
+                'prestige-button',
+                'resource-display',
+                'blank',
+                ['display-text',
+                    function() {return 'You have <h2 class="layer-i">' + format(player.i.raw) + '</h2> raw materials.<br>You have <h2 class="layer-i">' + format(player.i.processed) + '</h2> processed materials.<br>You have <h2 class="layer-i">' + formatWhole(player.i.products) + '</h2> products.<br>You have <h2 class="layer-i">' + format(player.i.money) + '</h2> money.'},
+                ],
+                'blank',
+                ['clickables', '2'],
+                ['blank', '13px'],
+                ['buyables', '4'],
+            ],
+            unlocked() {
+                return hasMilestone('i', 5);
+            },
+        },
     },
     update(diff) {
+        player.i.timerPtime = player.i.timerPtime.add(diff);
+        if (player.i.timerPtime.gte(player.i.timerP) && player.i.raw.gte(player.i.process_power)) {
+            player.i.timerPtime = new Decimal(0);
+            player.i.raw = player.i.raw.sub(player.i.process_power).mul(1000).round().div(1000);
+            player.i.processed = player.i.processed.add(player.i.process_power).mul(1000).round().div(1000);
+        };
         let power = new Decimal(0.25);
         if (getBuyableAmount('i', 21).gt(0)) power = power.add(buyableEffect('i', 21));
         if (getBuyableAmount('i', 33).gt(0)) power = power.add(buyableEffect('i', 33));
         player.i.unitEffect = player.i.units.add(1).pow(power);
+        let earnings = [new Decimal(0.1), new Decimal(2), new Decimal(15), new Decimal(1), new Decimal(1), new Decimal(2.75)];
+        if (getBuyableAmount('i', 41).gt(0)) earnings[0] = earnings[0].add(buyableEffect('i', 41));
+        player.i.raw_power = earnings[0];
+        player.i.process_power = earnings[1];
+        if (getBuyableAmount('i', 43).gt(0)) earnings[2] = earnings[2].add(buyableEffect('i', 43));
+        player.i.craft_power = earnings[2];
+        if (getBuyableAmount('i', 43).gt(0)) earnings[3] = earnings[3].mul(buyableEffect('i', 43).mul(0.01).add(1));
+        player.i.craft_eff = earnings[3];
+        if (getBuyableAmount('i', 44).gt(0)) earnings[4] = earnings[4].add(buyableEffect('i', 44));
+        player.i.sell_power = earnings[4];
+        if (getBuyableAmount('i', 44).gt(0)) earnings[5] = earnings[5].mul(buyableEffect('i', 44).mul(0.02).add(1));
+        player.i.sell_eff = earnings[5];
+        let time = [new Decimal(10)];
+        if (getBuyableAmount('i', 42).gt(0)) time[0] = time[0].div(buyableEffect('i', 42));
+        player.i.timerP = time[0];
     },
     milestones: {
         0: {
@@ -1872,6 +1923,9 @@ addLayer('i', {
             done() {
                 return player.i.points.gte(2);
             },
+            unlocked() {
+                return hasMilestone('d', 0) || hasMilestone('d', 1);
+            },
         },
         2: {
             requirementDescription: "3 intelligence",
@@ -1880,12 +1934,18 @@ addLayer('i', {
             done() {
                 return player.i.points.gte(3);
             },
+            unlocked() {
+                return hasMilestone('d', 1) || hasMilestone('d', 2);
+            },
         },
         3: {
             requirementDescription: "4 intelligence",
             effectDescription: "digits reset nothing",
             done() {
                 return player.i.points.gte(4);
+            },
+            unlocked() {
+                return hasMilestone('d', 2) || hasMilestone('d', 3);
             },
         },
         4: {
@@ -1894,6 +1954,19 @@ addLayer('i', {
             toggles: [["d", "limitBreakAuto"]],
             done() {
                 return player.i.points.gte(5);
+            },
+            unlocked() {
+                return hasMilestone('d', 3) || hasMilestone('d', 4);
+            },
+        },
+        5: {
+            requirementDescription: "5 intelligence and 11,111 digits",
+            effectDescription: "unlocks Simulation",
+            done() {
+                return player.i.points.gte(5) && player.d.points.gte(11111);
+            },
+            unlocked() {
+                return hasMilestone('d', 4) || hasMilestone('d', 5);
             },
         },
     },
@@ -1913,6 +1986,68 @@ addLayer('i', {
                 for (let num = 0; num < buyableEffect('i', 11).toNumber(); num++) {
                     player.i.units = player.i.units.mul(power);
                 };
+            },
+        },
+        21: {
+            display() {
+                return "<h2>mine " + format(player.i.raw_power) + " raw materials";
+            },
+            canClick() {
+                return true;
+            },
+            onClick() {
+                player.i.raw = player.i.raw.add(player.i.raw_power).mul(1000).round().div(1000);
+            },
+            unlocked() {
+                return hasMilestone('i', 5);
+            },
+        },
+        22: {
+            display() {
+                return "<h2>process " + format(player.i.process_power) + " materials";
+            },
+            canClick() {
+                if (player.i.raw.gte(player.i.process_power)) return true;
+                return false;
+            },
+            onClick() {
+                player.i.raw = player.i.raw.sub(player.i.process_power).mul(1000).round().div(1000);
+                player.i.processed = player.i.processed.add(player.i.process_power).mul(1000).round().div(1000);
+            },
+            unlocked() {
+                return hasMilestone('i', 5);
+            },
+        },
+        23: {
+            display() {
+                return "<h3>craft " + format(player.i.craft_power) + " processed materials into " + formatWhole(player.i.craft_power.mul(player.i.craft_eff).div(5)) + " products";
+            },
+            canClick() {
+                if (player.i.processed.gte(player.i.craft_power)) return true;
+                return false;
+            },
+            onClick() {
+                player.i.processed = player.i.processed.sub(player.i.craft_power).mul(1000).round().div(1000);
+                player.i.products = player.i.products.add(player.i.craft_power.mul(player.i.craft_eff).div(5)).round();
+            },
+            unlocked() {
+                return hasMilestone('i', 5);
+            },
+        },
+        24: {
+            display() {
+                return "<h3>sell " + formatWhole(player.i.sell_power) + " products for " + format(player.i.sell_power.mul(player.i.sell_eff)) + " money";
+            },
+            canClick() {
+                if (player.i.products.gte(player.i.sell_power)) return true;
+                return false;
+            },
+            onClick() {
+                player.i.products = player.i.products.sub(player.i.sell_power).mul(1000).round().div(1000);
+                player.i.money = player.i.money.add(player.i.sell_power.mul(player.i.sell_eff)).mul(1000).round().div(1000);
+            },
+            unlocked() {
+                return hasMilestone('i', 5);
             },
         },
     },
@@ -2052,6 +2187,115 @@ addLayer('i', {
             style: {'width':'120px','height':'120px'},
             unlocked() {
                 return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
+            },
+        },
+        41: {
+            cost() {
+                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5));
+            },
+            effect() {
+                let eff = getBuyableAmount(this.layer, this.id).mul(0.1);
+                return eff;
+            },
+            display() {
+                return `<h3>Pickaxe Upgrade</h3><br>`
+                    + `Increase the effect of the button above by 0.1.<br>`
+                    + `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` money<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.i.money.gte(this.cost());
+            },
+            buy() {
+                player.i.money = player.i.money.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return hasMilestone('i', 5) && (this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0));
+            },
+        },
+        42: {
+            cost() {
+                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5));
+            },
+            effect() {
+                let eff = new Decimal(1.5).pow(getBuyableAmount(this.layer, this.id));
+                return eff;
+            },
+            display() {
+                return `<h3>Hire Blacksmith</h3><br>`
+                    + `Divide the auto increment of the button above by 1.5.<br>`
+                    + `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
+                    + `Increment: ` + formatTime(player.i.timerP) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` money<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.i.money.gte(this.cost());
+            },
+            buy() {
+                player.i.money = player.i.money.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return hasMilestone('i', 5) && (this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0));
+            },
+        },
+        43: {
+            cost() {
+                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5));
+            },
+            effect() {
+                let eff = getBuyableAmount(this.layer, this.id).mul(4.5);
+                return eff;
+            },
+            display() {
+                return `<h3>Bulk Crafting</h3><br>`
+                    + `Increase the capacity of the button above by 4.5 (and increase eff slightly.)<br>`
+                    + `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` money<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.i.money.gte(this.cost());
+            },
+            buy() {
+                player.i.money = player.i.money.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return hasMilestone('i', 5) && (this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0));
+            },
+        },
+        44: {
+            cost() {
+                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5));
+            },
+            effect() {
+                let eff = getBuyableAmount(this.layer, this.id);
+                return eff;
+            },
+            display() {
+                return `<h3>Marketing</h3><br>`
+                    + `Increase the capacity of the button above by 1 (and increase eff slightly.)<br>`
+                    + `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` money<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.i.money.gte(this.cost());
+            },
+            buy() {
+                player.i.money = player.i.money.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return hasMilestone('i', 5) && (this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0));
             },
         },
     },
