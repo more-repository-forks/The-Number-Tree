@@ -503,6 +503,7 @@ addLayer('d', {
         baseUpAuto: false,
         numberButtonAuto: false,
         digitAuto: false,
+        limitBreakAuto: false,
     }},
     color: '#666666',
     resource: 'digits',
@@ -731,6 +732,14 @@ addLayer('d', {
         };
     },
     automate() {
+        if (player.d.limitBreakAuto) {
+            for (upgrade in tmp.d.upgrades) {
+                if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols") continue;
+                if (tmp.d.upgrades[upgrade].unlocked) {
+                    buyUpgrade('d', upgrade);
+                };
+            };
+        };
         if (player.d.numberUpgradeAuto) {
             for (upgrade in tmp.d.buyables) {
                 if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols" || (upgrade == "91" && !player.d.baseUpAuto)) continue;
@@ -1247,7 +1256,7 @@ addLayer('d', {
         },
         9: {
             requirementDescription: "360 One Ups",
-            effectDescription: "unlock Base Up",
+            effectDescription: "unlocks Base Up",
             done() {
                 return getBuyableAmount('d', 11).gte(360);
             },
@@ -1728,14 +1737,14 @@ addLayer('d', {
         83: {
             fullDisplay() {
                 let text = `<h3>Cost Galaxy</h3><br>
-                    divide digit cost requirement by 1e20,000<br><br>
+                    divide digit cost requirement by 1e75,000<br><br>
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
             effect() {
-                return new Decimal('1e20000');
+                return new Decimal('1e75000');
             },
-            cost: new Decimal(5500),
+            cost: new Decimal(7500),
             unlocked() {
                 return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
             },
@@ -1850,7 +1859,7 @@ addLayer('i', {
     milestones: {
         0: {
             requirementDescription: "1 intelligence",
-            effectDescription: "unlock digit number upgrade autobuyer",
+            effectDescription: "unlocks digit number upgrade autobuyer",
             toggles: [["d", "numberUpgradeAuto"]],
             done() {
                 return player.i.points.gte(1);
@@ -1858,7 +1867,7 @@ addLayer('i', {
         },
         1: {
             requirementDescription: "2 intelligence",
-            effectDescription: "unlock base up autobuyer",
+            effectDescription: "unlocks Base Up autobuyer",
             toggles: [["d", "baseUpAuto"]],
             done() {
                 return player.i.points.gte(2);
@@ -1866,7 +1875,7 @@ addLayer('i', {
         },
         2: {
             requirementDescription: "3 intelligence",
-            effectDescription: "unlock digit autobuyer",
+            effectDescription: "unlocks digit autobuyer",
             toggles: [["d", "digitAuto"]],
             done() {
                 return player.i.points.gte(3);
@@ -1877,6 +1886,14 @@ addLayer('i', {
             effectDescription: "digits reset nothing",
             done() {
                 return player.i.points.gte(4);
+            },
+        },
+        4: {
+            requirementDescription: "5 intelligence",
+            effectDescription: "unlocks Limit Break autobuyer",
+            toggles: [["d", "limitBreakAuto"]],
+            done() {
+                return player.i.points.gte(5);
             },
         },
     },
