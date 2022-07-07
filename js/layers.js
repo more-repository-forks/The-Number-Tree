@@ -1802,8 +1802,15 @@ addLayer('i', {
         money: new Decimal(0),
         sell_power: new Decimal(1),
         sell_eff: new Decimal(2.75),
-        timerPtime: new Decimal(0),
+        timerM: new Decimal(5),
+        timerMtime: new Decimal(0),
         timerP: new Decimal(10),
+        timerPtime: new Decimal(0),
+        timerC: new Decimal(30),
+        timerCtime: new Decimal(0),
+        timerS: new Decimal(20),
+        timerStime: new Decimal(0),
+        simAuto: false,
     }},
     color: '#ccff44',
     resource: 'intelligence',
@@ -1874,6 +1881,8 @@ addLayer('i', {
                 ['clickables', '2'],
                 ['blank', '13px'],
                 ['buyables', '4'],
+                ['blank', '13px'],
+                ['buyables', '5'],
             ],
             unlocked() {
                 return hasMilestone('i', 5);
@@ -1881,11 +1890,28 @@ addLayer('i', {
         },
     },
     update(diff) {
+        if (getBuyableAmount('i', 51).gt(0)) player.i.timerMtime = player.i.timerMtime.add(diff);
         player.i.timerPtime = player.i.timerPtime.add(diff);
+        if (getBuyableAmount('i', 53).gt(0)) player.i.timerCtime = player.i.timerCtime.add(diff);
+        if (getBuyableAmount('i', 54).gt(0)) player.i.timerStime = player.i.timerStime.add(diff);
+        if (player.i.timerMtime.gte(player.i.timerM)) {
+            player.i.timerMtime = new Decimal(0);
+            player.i.raw = player.i.raw.add(player.i.raw_power).mul(1000).round().div(1000);
+        };
         if (player.i.timerPtime.gte(player.i.timerP) && player.i.raw.gte(player.i.process_power)) {
             player.i.timerPtime = new Decimal(0);
             player.i.raw = player.i.raw.sub(player.i.process_power).mul(1000).round().div(1000);
             player.i.processed = player.i.processed.add(player.i.process_power).mul(1000).round().div(1000);
+        };
+        if (player.i.timerCtime.gte(player.i.timerC) && player.i.processed.gte(player.i.craft_power)) {
+            player.i.timerCtime = new Decimal(0);
+            player.i.processed = player.i.processed.sub(player.i.craft_power).mul(1000).round().div(1000);
+            player.i.products = player.i.products.add(player.i.craft_power.mul(player.i.craft_eff).div(5)).round();
+        };
+        if (player.i.timerStime.gte(player.i.timerS) && player.i.products.gte(player.i.sell_power)) {
+            player.i.timerStime = new Decimal(0);
+            player.i.products = player.i.products.sub(player.i.sell_power).round();
+            player.i.money = player.i.money.add(player.i.sell_power.mul(player.i.sell_eff)).mul(1000).round().div(1000);
         };
         let power = new Decimal(0.25);
         if (getBuyableAmount('i', 21).gt(0)) power = power.add(buyableEffect('i', 21));
@@ -1894,6 +1920,7 @@ addLayer('i', {
         let earnings = [new Decimal(0.1), new Decimal(2), new Decimal(15), new Decimal(1), new Decimal(1), new Decimal(2.75)];
         if (getBuyableAmount('i', 41).gt(0)) earnings[0] = earnings[0].add(buyableEffect('i', 41));
         player.i.raw_power = earnings[0];
+        if (getBuyableAmount('i', 52).gt(0)) earnings[1] = earnings[1].add(buyableEffect('i', 52));
         player.i.process_power = earnings[1];
         if (getBuyableAmount('i', 43).gt(0)) earnings[2] = earnings[2].add(buyableEffect('i', 43));
         player.i.craft_power = earnings[2];
@@ -1901,11 +1928,29 @@ addLayer('i', {
         player.i.craft_eff = earnings[3];
         if (getBuyableAmount('i', 44).gt(0)) earnings[4] = earnings[4].add(buyableEffect('i', 44));
         player.i.sell_power = earnings[4];
-        if (getBuyableAmount('i', 44).gt(0)) earnings[5] = earnings[5].mul(buyableEffect('i', 44).mul(0.02).add(1));
+        if (getBuyableAmount('i', 44).gt(0)) earnings[5] = earnings[5].mul(buyableEffect('i', 44).mul(0.01).add(1));
         player.i.sell_eff = earnings[5];
-        let time = [new Decimal(10)];
-        if (getBuyableAmount('i', 42).gt(0)) time[0] = time[0].div(buyableEffect('i', 42));
-        player.i.timerP = time[0];
+        let time = [new Decimal(5), new Decimal(10), new Decimal(30), new Decimal(20)];
+        if (getBuyableAmount('i', 51).gt(0)) time[0] = time[0].div(buyableEffect('i', 51));
+        player.i.timerM = time[0];
+        if (getBuyableAmount('i', 42).gt(0)) time[1] = time[1].div(buyableEffect('i', 42));
+        player.i.timerP = time[1];
+        if (getBuyableAmount('i', 53).gt(0)) time[2] = time[2].div(buyableEffect('i', 53));
+        player.i.timerC = time[2];
+        if (getBuyableAmount('i', 54).gt(0)) time[3] = time[3].div(buyableEffect('i', 54));
+        player.i.timerS = time[3];
+    },
+    automate() {
+        if (player.i.simAuto) {
+            for (upgrade in tmp.i.buyables) {
+                if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols") continue;
+                if (tmp.i.buyables[upgrade].unlocked && tmp.i.buyables[upgrade].canBuy) {
+                    player.i.money = player.i.money.sub(tmp.i.buyables[upgrade].cost);
+                    setBuyableAmount('i', upgrade, getBuyableAmount('i', upgrade).add(1));
+                };
+            };
+        };
+        if (player.i.money.lt(0)) player.i.money = new Decimal(0);
     },
     milestones: {
         0: {
@@ -1967,6 +2012,17 @@ addLayer('i', {
             },
             unlocked() {
                 return hasMilestone('d', 4) || hasMilestone('d', 5);
+            },
+        },
+        6: {
+            requirementDescription: "1,000,000 money",
+            effectDescription: "unlocks Simulation autobuyer",
+            toggles: [["i", "simAuto"]],
+            done() {
+                return player.i.money.gte(1000000);
+            },
+            unlocked() {
+                return hasMilestone('d', 5) || hasMilestone('d', 6);
             },
         },
     },
@@ -2043,7 +2099,7 @@ addLayer('i', {
                 return false;
             },
             onClick() {
-                player.i.products = player.i.products.sub(player.i.sell_power).mul(1000).round().div(1000);
+                player.i.products = player.i.products.sub(player.i.sell_power).round();
                 player.i.money = player.i.money.add(player.i.sell_power.mul(player.i.sell_eff)).mul(1000).round().div(1000);
             },
             unlocked() {
@@ -2191,7 +2247,9 @@ addLayer('i', {
         },
         41: {
             cost() {
-                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5));
+                let mult = new Decimal(1);
+                if (getBuyableAmount(this.layer, this.id).gte(1000)) mult = getBuyableAmount(this.layer, this.id).div(250).pow(1.5);
+                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5)).mul(mult);
             },
             effect() {
                 let eff = getBuyableAmount(this.layer, this.id).mul(0.1);
@@ -2213,12 +2271,14 @@ addLayer('i', {
             },
             style: {'width':'120px','height':'120px'},
             unlocked() {
-                return hasMilestone('i', 5) && (this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0));
+                return hasMilestone('i', 5);
             },
         },
         42: {
             cost() {
-                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5));
+                let mult = new Decimal(1);
+                if (getBuyableAmount(this.layer, this.id).gte(1000)) mult = getBuyableAmount(this.layer, this.id).div(250).pow(1.5);
+                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5)).mul(mult);
             },
             effect() {
                 let eff = new Decimal(1.5).pow(getBuyableAmount(this.layer, this.id));
@@ -2240,13 +2300,16 @@ addLayer('i', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 28,
             unlocked() {
-                return hasMilestone('i', 5) && (this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0));
+                return hasMilestone('i', 5);
             },
         },
         43: {
             cost() {
-                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5));
+                let mult = new Decimal(1);
+                if (getBuyableAmount(this.layer, this.id).gte(1000)) mult = getBuyableAmount(this.layer, this.id).div(250).pow(1.5);
+                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5)).mul(mult);
             },
             effect() {
                 let eff = getBuyableAmount(this.layer, this.id).mul(4.5);
@@ -2268,20 +2331,22 @@ addLayer('i', {
             },
             style: {'width':'120px','height':'120px'},
             unlocked() {
-                return hasMilestone('i', 5) && (this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0));
+                return hasMilestone('i', 5);
             },
         },
         44: {
             cost() {
-                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5));
+                let mult = new Decimal(1);
+                if (getBuyableAmount(this.layer, this.id).gte(1000)) mult = getBuyableAmount(this.layer, this.id).div(250).pow(1.5);
+                return new Decimal(7.5).add(getBuyableAmount(this.layer, this.id).mul(2.5)).mul(mult);
             },
             effect() {
-                let eff = getBuyableAmount(this.layer, this.id);
+                let eff = getBuyableAmount(this.layer, this.id).mul(1.2).floor();
                 return eff;
             },
             display() {
                 return `<h3>Marketing</h3><br>`
-                    + `Increase the capacity of the button above by 1 (and increase eff slightly.)<br>`
+                    + `Increase the capacity of the button above by 1.2 (and increase eff slightly.)<br>`
                     + `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
                     + `Cost: ` + format(this.cost()) + ` money<br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2295,7 +2360,153 @@ addLayer('i', {
             },
             style: {'width':'120px','height':'120px'},
             unlocked() {
-                return hasMilestone('i', 5) && (this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0));
+                return hasMilestone('i', 5);
+            },
+        },
+        51: {
+            cost() {
+                let mult = new Decimal(1);
+                if (getBuyableAmount(this.layer, this.id).gte(1000)) mult = getBuyableAmount(this.layer, this.id).div(250).pow(1.5);
+                return new Decimal(50).add(getBuyableAmount(this.layer, this.id).mul(10)).mul(mult);
+            },
+            effect() {
+                let eff = new Decimal(1.5).pow(getBuyableAmount(this.layer, this.id));
+                return eff;
+            },
+            display() {
+                if (getBuyableAmount(this.layer, this.id).eq(0)) {
+                    return `<h3>Buy Excavator</h3><br>`
+                        + `Unlock auto for the button above.<br>`
+                        + `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
+                        + `Increment: ` + formatTime(player.i.timerM) + `<br><br>`
+                        + `Cost: ` + format(this.cost()) + ` money<br>`
+                        + `Amount: 0`;
+                };
+                return `<h3>Buy Excavator</h3><br>`
+                    + `Divide the auto increment of the button above by 1.5.<br>`
+                    + `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
+                    + `Increment: ` + formatTime(player.i.timerM) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` money<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.i.money.gte(this.cost());
+            },
+            buy() {
+                player.i.money = player.i.money.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            purchaseLimit: 26,
+            unlocked() {
+                return hasMilestone('i', 5);
+            },
+        },
+        52: {
+            cost() {
+                let mult = new Decimal(1);
+                if (getBuyableAmount(this.layer, this.id).gte(1000)) mult = getBuyableAmount(this.layer, this.id).div(250).pow(1.5);
+                return new Decimal(50).add(getBuyableAmount(this.layer, this.id).mul(10)).mul(mult);
+            },
+            effect() {
+                let eff = getBuyableAmount(this.layer, this.id).mul(0.2);
+                return eff;
+            },
+            display() {
+                return `<h3>Hotter Forges</h3><br>`
+                    + `Increase the effect of the button above by 0.2.<br>`
+                    + `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` money<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.i.money.gte(this.cost());
+            },
+            buy() {
+                player.i.money = player.i.money.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return hasMilestone('i', 5);
+            },
+        },
+        53: {
+            cost() {
+                let mult = new Decimal(1);
+                if (getBuyableAmount(this.layer, this.id).gte(1000)) mult = getBuyableAmount(this.layer, this.id).div(250).pow(1.5);
+                return new Decimal(50).add(getBuyableAmount(this.layer, this.id).mul(10)).mul(mult);
+            },
+            effect() {
+                let eff = new Decimal(1.5).pow(getBuyableAmount(this.layer, this.id));
+                return eff;
+            },
+            display() {
+                if (getBuyableAmount(this.layer, this.id).eq(0)) {
+                    return `<h3>Buy Robot V2.0</h3><br>`
+                        + `Unlock auto for the button above.<br>`
+                        + `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
+                        + `Increment: ` + formatTime(player.i.timerC) + `<br><br>`
+                        + `Cost: ` + format(this.cost()) + ` money<br>`
+                        + `Amount: 0`;
+                };
+                return `<h3>Buy Robot V2.0</h3><br>`
+                    + `Divide the auto increment of the button above by 1.5.<br>`
+                    + `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
+                    + `Increment: ` + formatTime(player.i.timerC) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` money<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.i.money.gte(this.cost());
+            },
+            buy() {
+                player.i.money = player.i.money.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            purchaseLimit: 31,
+            unlocked() {
+                return hasMilestone('i', 5);
+            },
+        },
+        54: {
+            cost() {
+                let mult = new Decimal(1);
+                if (getBuyableAmount(this.layer, this.id).gte(1000)) mult = getBuyableAmount(this.layer, this.id).div(250).pow(1.5);
+                return new Decimal(50).add(getBuyableAmount(this.layer, this.id).mul(10)).mul(mult);
+            },
+            effect() {
+                let eff = new Decimal(1.5).pow(getBuyableAmount(this.layer, this.id));
+                return eff;
+            },
+            display() {
+                if (getBuyableAmount(this.layer, this.id).eq(0)) {
+                    return `<h3>Hire Merchant</h3><br>`
+                        + `Unlock auto for the button above.<br>`
+                        + `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
+                        + `Increment: ` + formatTime(player.i.timerS) + `<br><br>`
+                        + `Cost: ` + format(this.cost()) + ` money<br>`
+                        + `Amount: 0`;
+                };
+                return `<h3>Hire Merchant</h3><br>`
+                    + `Divide the auto increment of the button above by 1.5.<br>`
+                    + `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
+                    + `Increment: ` + formatTime(player.i.timerS) + `<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` money<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.i.money.gte(this.cost());
+            },
+            buy() {
+                player.i.money = player.i.money.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            purchaseLimit: 30,
+            unlocked() {
+                return hasMilestone('i', 5);
             },
         },
     },
