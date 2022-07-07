@@ -82,7 +82,10 @@ addLayer('rn', {
                     if (hasUpgrade('d', 55)) {
                         if (hasUpgrade('d', 65)) {
                             if (hasUpgrade('d', 75)) {
-                                if (hasUpgrade('d', 85)) return 0.88;
+                                if (hasUpgrade('d', 85)) {
+                                    if (hasUpgrade('d', 95)) return 0.888;
+                                    return 0.88;
+                                };
                                 return 0.875;
                             };
                             return 0.85;
@@ -521,7 +524,10 @@ addLayer('d', {
                         if (hasUpgrade('d', 51)) {
                             if (hasUpgrade('d', 61)) {
                                 if (hasUpgrade('d', 71)) {
-                                    if (hasUpgrade('d', 81)) return 1.49;
+                                    if (hasUpgrade('d', 81)) {
+                                        if (hasUpgrade('d', 91)) return 1.484;
+                                        return 1.49;
+                                    };
                                     return 1.5;
                                 };
                                 return 1.55;
@@ -597,6 +603,10 @@ addLayer('d', {
     autoPrestige() {
         return player.d.digitAuto;
     },
+    doReset(resettingLayer) {
+        let keep = ["numberUpgradeAuto", "baseUpAuto", "digitAuto", "limitBreakAuto"];
+        if (layers[resettingLayer].row > this.row) layerDataReset('d', keep);
+    },
     hotkeys: [{
         key: 'd', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
         description: 'D: reset your arabic numerals for digits',
@@ -620,6 +630,7 @@ addLayer('d', {
         if (hasUpgrade('d', 64)) eff = eff.mul(upgradeEffect('d', 64));
         if (hasUpgrade('d', 74)) eff = eff.mul(upgradeEffect('d', 74));
         if (hasUpgrade('d', 84)) eff = eff.mul(upgradeEffect('d', 84));
+        if (hasUpgrade('d', 94)) eff = eff.mul(upgradeEffect('d', 94));
         return eff;
     },
     layerShown() {
@@ -700,6 +711,7 @@ addLayer('d', {
         if (hasUpgrade('d', 72)) cap = cap.mul(4);
         if (hasMilestone('d', 19)) cap = cap.mul(2);
         if (hasUpgrade('d', 82)) cap = cap.mul(5);
+        if (hasUpgrade('d', 92)) cap = cap.mul(10);
         player.d.max = cap;
         player.d.timer += diff;
         if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
@@ -1419,7 +1431,7 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Number Warp</h3><br>
                     multiply the number effect based on the number you have<br>
-                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Currently: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
@@ -1474,7 +1486,7 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Number Hole</h3><br>
                     multiply the number effect based on the number you have<br>
-                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Currently: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
@@ -1529,7 +1541,7 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Cost Void</h3><br>
                     multiply the effect of <b>Cheapest</b> based on the number you have<br>
-                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Currently: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
@@ -1545,7 +1557,7 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Number Void</h3><br>
                     multiply the number effect based on the number you have<br>
-                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Currently: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
@@ -1600,7 +1612,7 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Cost Space</h3><br>
                     divide the cost of <b>Up Even More</b> based on the number you have<br>
-                    Effect: /` + format(upgradeEffect(this.layer, this.id)) + `<br><br>
+                    Currently: /` + format(upgradeEffect(this.layer, this.id)) + `<br><br>
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
@@ -1616,7 +1628,7 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Number Space</h3><br>
                     multiply the number effect based on the number you have<br>
-                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Currently: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
@@ -1686,7 +1698,7 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Number Star</h3><br>
                     multiply the number effect based on the number you have<br>
-                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Currently: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
@@ -1753,7 +1765,7 @@ addLayer('d', {
             fullDisplay() {
                 let text = `<h3>Number Galaxy</h3><br>
                     multiply the number effect based on the number you have<br>
-                    Effect: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Currently: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
                     Cost: ` + formatWhole(this.cost) + ` digits`;
                 return text;
             },
@@ -1777,6 +1789,74 @@ addLayer('d', {
                 return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
             },
         },
+        91: {
+            fullDisplay() {
+                let text = `<h3>Digit Dimension</h3><br>
+                    decrease the digit cost exponent (1.49 --> 1.484)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(17000),
+            unlocked() {
+                return hasUpgrade('d', 81) && hasUpgrade('d', 82) && hasUpgrade('d', 83) && hasUpgrade('d', 84) && hasUpgrade('d', 85) && getBuyableAmount('i', 72).gte(1);
+            },
+        },
+        92: {
+            fullDisplay() {
+                let text = `<h3>Limit Dimension</h3><br>
+                    multiply the digit limit by 10<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(18000),
+            unlocked() {
+                return hasUpgrade('d', 81) && hasUpgrade('d', 82) && hasUpgrade('d', 83) && hasUpgrade('d', 84) && hasUpgrade('d', 85) && getBuyableAmount('i', 72).gte(1);
+            },
+        },
+        93: {
+            fullDisplay() {
+                let text = `<h3>Cost Dimension</h3><br>
+                    divide intelligence cost requirement based on the number you have<br>
+                    Currently: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return player.d.number.add(1).log10().add(1).pow(0.02);
+            },
+            cost: new Decimal(19000),
+            unlocked() {
+                return hasUpgrade('d', 81) && hasUpgrade('d', 82) && hasUpgrade('d', 83) && hasUpgrade('d', 84) && hasUpgrade('d', 85) && getBuyableAmount('i', 72).gte(1);
+            },
+        },
+        94: {
+            fullDisplay() {
+                let text = `<h3>Number Dimension</h3><br>
+                    multiply the number effect based on the number you have<br>
+                    Currently: ` + format(upgradeEffect(this.layer, this.id)) + `x<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            effect() {
+                return player.d.number.add(1).pow(0.002);
+            },
+            cost: new Decimal(16000),
+            unlocked() {
+                return hasUpgrade('d', 81) && hasUpgrade('d', 82) && hasUpgrade('d', 83) && hasUpgrade('d', 84) && hasUpgrade('d', 85) && getBuyableAmount('i', 72).gte(1);
+            },
+        },
+        95: {
+            fullDisplay() {
+                let text = `<h3>Roman Numeral Dimension</h3><br>
+                    increase roman numeral gain after softcap (^0.88 --> ^0.888)<br><br>
+                    Cost: ` + formatWhole(this.cost) + ` digits`;
+                return text;
+            },
+            cost: new Decimal(15000),
+            unlocked() {
+                return hasUpgrade('d', 81) && hasUpgrade('d', 82) && hasUpgrade('d', 83) && hasUpgrade('d', 84) && hasUpgrade('d', 85) && getBuyableAmount('i', 72).gte(1);
+            },
+        },
     },
 });
 
@@ -1791,7 +1871,8 @@ addLayer('i', {
         best: new Decimal(0),
         total: new Decimal(0),
         units: new Decimal(1),
-        unitEffect: new Decimal(1),
+        unitCurrently: new Decimal(1),
+        replicateTime: new Decimal(0),
         raw: new Decimal(0),
         raw_power: new Decimal(0.1),
         processed: new Decimal(0),
@@ -1826,6 +1907,7 @@ addLayer('i', {
     gainMult() {
         let gain = new Decimal(1);
         if (player.i.score.gte(1)) gain = gain.div(player.i.scoreEff);
+        if (hasUpgrade('d', 93)) gain = gain.div(upgradeEffect('d', 93));
         return gain;
     },
     canBuyMax() {
@@ -1834,7 +1916,7 @@ addLayer('i', {
     hotkeys: [{
         key: 'i', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
         description: 'I: reset all previous progress for intelligence',
-        onPress() { if (player.d.unlocked) doReset('i') },
+        onPress() { if (player.i.unlocked) doReset('i') },
     }],
     effect() {
         return new Decimal(10).pow(player.i.points);
@@ -1866,6 +1948,8 @@ addLayer('i', {
                 ['row', [['buyables', '1'], ['clickables', '1'], ['buyables', '2']]],
                 ['blank', '13px'],
                 ['buyables', '3'],
+                ['blank', '13px'],
+                ['buyables', '7'],
             ],
             unlocked() {
                 return player.i.unlocked;
@@ -1899,6 +1983,14 @@ addLayer('i', {
         },
     },
     update(diff) {
+        // replication
+        // timers
+        player.i.replicateTime = player.i.replicateTime.add(diff);
+        if (player.i.replicateTime.gte(1) && getBuyableAmount('i', 73).gt(0)) {
+            player.i.replicateTime = new Decimal(0);
+            player.i.units = player.i.units.add(player.i.units.mul(buyableEffect('i', 73)));
+        };
+        // simulation
         // timers
         if (getBuyableAmount('i', 51).gt(0)) player.i.timerMtime = player.i.timerMtime.add(diff);
         player.i.timerPtime = player.i.timerPtime.add(diff);
@@ -1964,7 +2056,7 @@ addLayer('i', {
     automate() {
         if (player.i.simAuto) {
             for (upgrade in tmp.i.buyables) {
-                if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols" || upgrade < 40) continue;
+                if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols" || upgrade < 40 || upgrade > 70) continue;
                 if (tmp.i.buyables[upgrade].unlocked && tmp.i.buyables[upgrade].canBuy) {
                     player.i.money = player.i.money.sub(tmp.i.buyables[upgrade].cost);
                     setBuyableAmount('i', upgrade, getBuyableAmount('i', upgrade).add(1));
@@ -2056,6 +2148,16 @@ addLayer('i', {
                 return hasMilestone('i', 6) || hasMilestone('i', 7);
             },
         },
+        8: {
+            requirementDescription: "7 intelligence",
+            effectDescription: "unlocks 3 new Replicator upgrades",
+            done() {
+                return player.i.points.gte(7);
+            },
+            unlocked() {
+                return hasMilestone('i', 7) || hasMilestone('i', 8);
+            },
+        },
     },
     clickables: {
         11: {
@@ -2070,6 +2172,7 @@ addLayer('i', {
             onClick() {
                 let power = new Decimal(2);
                 if (getBuyableAmount('i', 31).gt(0)) power = power.mul(buyableEffect('i', 31));
+                if (getBuyableAmount('i', 71).gt(0)) power = power.mul(buyableEffect('i', 71));
                 for (let num = 0; num < buyableEffect('i', 11).toNumber(); num++) {
                     player.i.units = player.i.units.mul(power);
                 };
@@ -2630,12 +2733,12 @@ addLayer('i', {
                 return new Decimal(10).pow(getBuyableAmount(this.layer, this.id)).mul(1000000);
             },
             effect() {
-                let eff = new Decimal(2.5).pow(getBuyableAmount(this.layer, this.id));
+                let eff = new Decimal(2).pow(getBuyableAmount(this.layer, this.id));
                 return eff;
             },
             display() {
                 return `<h3>Advertising</h3><br>`
-                    + `Multiply the capacity of the button above by 2.5.<br>`
+                    + `Multiply the capacity of the button above by 2.<br>`
                     + `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
                     + `Cost: ` + format(this.cost()) + ` money<br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2645,6 +2748,87 @@ addLayer('i', {
             },
             buy() {
                 player.i.money = player.i.money.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return hasMilestone('i', 7);
+            },
+        },
+        71: {
+            cost() {
+                return new Decimal('1e1000').pow(getBuyableAmount(this.layer, this.id)).mul('1e5000');
+            },
+            effect() {
+                let eff = new Decimal(1.5).pow(getBuyableAmount(this.layer, this.id));
+                return eff;
+            },
+            display() {
+                return `<h3>Exponential</h3><br>`
+                    + `Multiply replication power by 1.5.<br>`
+                    + `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            unlocked() {
+                return hasMilestone('i', 7);
+            },
+        },
+        72: {
+            cost() {
+                return new Decimal('1e6200');
+            },
+            effect() {
+                let eff = new Decimal(1.1).pow(getBuyableAmount(this.layer, this.id));
+                return eff;
+            },
+            display() {
+                return `<h3>Dimensions</h3><br>`
+                    + `unlock 5 more Limit Break upgrades.<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            style: {'width':'120px','height':'120px'},
+            purchaseLimit: 1,
+            unlocked() {
+                return hasMilestone('i', 7);
+            },
+        },
+        73: {
+            cost() {
+                return new Decimal('1e250').pow(getBuyableAmount(this.layer, this.id)).mul('1e5000');
+            },
+            effect() {
+                let eff = new Decimal(10).pow(getBuyableAmount(this.layer, this.id));
+                return eff;
+            },
+            display() {
+                return `<h3>Passivity</h3><br>`
+                    + `gain 10x your current units every second.<br>`
+                    + `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
+                    + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+                    + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+            },
+            canAfford() {
+                return player.points.gte(this.cost());
+            },
+            buy() {
+                player.points = player.points.sub(this.cost());
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
