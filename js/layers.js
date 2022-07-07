@@ -967,7 +967,11 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
-            purchaseLimit: 500,
+            purchaseLimit() {
+                let limit = new Decimal(500);
+                if (hasChallenge('i', 12)) limit = limit.add(challengeEffect('i', 12));
+                return limit;
+            },
             unlocked() {
                 return hasMilestone('d', 7);
             },
@@ -1080,7 +1084,6 @@ addLayer('d', {
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
             },
             canAfford() {
-                if (inChallenge('i', 11)) return false;
                 return player.d.number.gte(this.cost());
             },
             buy() {
@@ -1090,6 +1093,7 @@ addLayer('d', {
             style: {'border-radius':'50%'},
             purchaseLimit: 8,
             unlocked() {
+                if (inChallenge('i', 11)) return false;
                 return hasMilestone('d', 9);
             },
         },
@@ -1405,6 +1409,7 @@ addLayer('d', {
             },
             cost: new Decimal(109),
             unlocked() {
+                if (inChallenge('i', 12)) return false;
                 return hasUpgrade('d', 11);
             },
         },
@@ -1417,6 +1422,7 @@ addLayer('d', {
             },
             cost: new Decimal(126),
             unlocked() {
+                if (inChallenge('i', 12)) return false;
                 return hasUpgrade('d', 11);
             },
         },
@@ -1998,7 +2004,6 @@ addLayer('i', {
                     },
                 ],
                 'challenges',
-                'blank',
             ],
             unlocked() {
                 return hasMilestone('i', 9);
@@ -2703,6 +2708,7 @@ addLayer('i', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 10,
             unlocked() {
                 return hasMilestone('i', 7);
             },
@@ -2730,6 +2736,7 @@ addLayer('i', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 10,
             unlocked() {
                 return hasMilestone('i', 7);
             },
@@ -2757,6 +2764,7 @@ addLayer('i', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 10,
             unlocked() {
                 return hasMilestone('i', 7);
             },
@@ -2766,12 +2774,12 @@ addLayer('i', {
                 return new Decimal(10).pow(getBuyableAmount(this.layer, this.id)).mul(1000000);
             },
             effect() {
-                let eff = new Decimal(2).pow(getBuyableAmount(this.layer, this.id));
+                let eff = new Decimal(2.2).pow(getBuyableAmount(this.layer, this.id));
                 return eff;
             },
             display() {
                 return `<h3>Advertising</h3><br>`
-                    + `Multiply the capacity of the button above by 2.<br>`
+                    + `Multiply the capacity of the button above by 2.2.<br>`
                     + `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
                     + `Cost: ` + format(this.cost()) + ` money<br>`
                     + `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2784,6 +2792,7 @@ addLayer('i', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
+            purchaseLimit: 10,
             unlocked() {
                 return hasMilestone('i', 7);
             },
@@ -2874,13 +2883,33 @@ addLayer('i', {
         11: {
             name: 'Feat of Binary',
             fullDisplay() {
-                return 'Restriction: you cannot buy Base Ups<br>' + 'Goal: ' + format(new Decimal('1e1000').pow(new Decimal(challengeCompletions(this.layer, this.id)).mul(0.1).add(1))) + ' arabic numerals<br>Reward: increase <b>Up Even More</b>\'s cap by 1<br>Currently: +' + formatWhole(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/5';
+                return 'Restriction: you cannot buy Base Ups<br>' + 'Goal: ' + format(new Decimal('1e100').pow(challengeCompletions(this.layer, this.id)).mul('1e1000')) + ' arabic numerals<br>Reward: increase <b>Up Even More</b>\'s cap by 1<br>Currently: +' + formatWhole(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/5';
             },
             rewardEffect() {
                 return challengeCompletions(this.layer, this.id);
             },
             canComplete() {
-                return player.points.gte(new Decimal('1e1000').pow(new Decimal(challengeCompletions(this.layer, this.id)).mul(0.1).add(1)));
+                return player.points.gte(new Decimal('1e100').pow(challengeCompletions(this.layer, this.id)).mul('1e1000'));
+            },
+            onEnter() {
+                doReset('i', true);
+            },
+            style: {'width':'500px','height':'200px','border-radius':'20px'},
+            completionLimit: 5,
+            unlocked() {
+                return hasMilestone('i', 9);
+            },
+        },
+        12: {
+            name: 'Feat of Limits',
+            fullDisplay() {
+                return 'Restriction: you can only buy the first Limit Break upgrade<br>' + 'Goal: ' + format(new Decimal('1e100').pow(challengeCompletions(this.layer, this.id)).mul('1e1100')) + ' arabic numerals<br>Reward: increase <b>Up the Up</b>\'s cap by 25<br>Currently: +' + formatWhole(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/5';
+            },
+            rewardEffect() {
+                return new Decimal(challengeCompletions(this.layer, this.id)).mul(25);
+            },
+            canComplete() {
+                return player.points.gte(new Decimal('1e100').pow(challengeCompletions(this.layer, this.id)).mul('1e1100'));
             },
             onEnter() {
                 doReset('i', true);
