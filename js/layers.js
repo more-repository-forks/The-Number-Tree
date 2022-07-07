@@ -1810,6 +1810,8 @@ addLayer('i', {
         timerCtime: new Decimal(0),
         timerS: new Decimal(20),
         timerStime: new Decimal(0),
+        score: new Decimal(0),
+        scoreEff: new Decimal(1),
         simAuto: false,
     }},
     color: '#ccff44',
@@ -1823,6 +1825,7 @@ addLayer('i', {
     exponent: 1,
     gainMult() {
         let gain = new Decimal(1);
+        if (player.i.score.gte(1)) gain = gain.div(player.i.scoreEff);
         return gain;
     },
     canBuyMax() {
@@ -1875,7 +1878,11 @@ addLayer('i', {
                 'resource-display',
                 'blank',
                 ['display-text',
-                    function() {return 'You have <h2 class="layer-i">' + format(player.i.raw) + '</h2> raw materials.<br>You have <h2 class="layer-i">' + format(player.i.processed) + '</h2> processed materials.<br>You have <h2 class="layer-i">' + formatWhole(player.i.products) + '</h2> products.<br>You have <h2 class="layer-i">' + format(player.i.money) + '</h2> money.'},
+                    function() {
+                        let text = 'You have <h2 class="layer-i">' + format(player.i.raw) + '</h2> raw materials,<br><h2 class="layer-i">' + format(player.i.processed) + '</h2> processed materials,<br><h2 class="layer-i">' + formatWhole(player.i.products) + '</h2> products,<br>and <h2 class="layer-i">' + format(player.i.money) + '</h2> money.';
+                        if (player.i.score.gte(1)) text += '<br>which totals to <h2 class="layer-i">' + format(player.i.score) + '</h2> score, which divides the intelligence cost requirement by <h2 class="layer-i">' + format(player.i.scoreEff);
+                        return text;
+                    },
                 ],
                 'blank',
                 ['clickables', '2'],
@@ -1890,6 +1897,7 @@ addLayer('i', {
         },
     },
     update(diff) {
+        // timers
         if (getBuyableAmount('i', 51).gt(0)) player.i.timerMtime = player.i.timerMtime.add(diff);
         player.i.timerPtime = player.i.timerPtime.add(diff);
         if (getBuyableAmount('i', 53).gt(0)) player.i.timerCtime = player.i.timerCtime.add(diff);
@@ -1913,6 +1921,7 @@ addLayer('i', {
             player.i.products = player.i.products.sub(player.i.sell_power).round();
             player.i.money = player.i.money.add(player.i.sell_power.mul(player.i.sell_eff)).mul(1000).round().div(1000);
         };
+        // power
         let power = new Decimal(0.25);
         if (getBuyableAmount('i', 21).gt(0)) power = power.add(buyableEffect('i', 21));
         if (getBuyableAmount('i', 33).gt(0)) power = power.add(buyableEffect('i', 33));
@@ -1930,6 +1939,7 @@ addLayer('i', {
         player.i.sell_power = earnings[4];
         if (getBuyableAmount('i', 44).gt(0)) earnings[5] = earnings[5].mul(buyableEffect('i', 44).mul(0.01).add(1));
         player.i.sell_eff = earnings[5];
+        // auto timer
         let time = [new Decimal(5), new Decimal(10), new Decimal(30), new Decimal(20)];
         if (getBuyableAmount('i', 51).gt(0)) time[0] = time[0].div(buyableEffect('i', 51));
         player.i.timerM = time[0];
@@ -1939,6 +1949,9 @@ addLayer('i', {
         player.i.timerC = time[2];
         if (getBuyableAmount('i', 54).gt(0)) time[3] = time[3].div(buyableEffect('i', 54));
         player.i.timerS = time[3];
+        // eff
+        player.i.score = player.i.raw.add(player.i.processed.mul(2)).add(player.i.products.mul(50)).add(player.i.money.div(5)).div(1e9).add(getBuyableAmount('i', 41).add(getBuyableAmount('i', 42)).add(getBuyableAmount('i', 43)).add(getBuyableAmount('i', 44)).add(getBuyableAmount('i', 51)).add(getBuyableAmount('i', 52)).add(getBuyableAmount('i', 53)).add(getBuyableAmount('i', 54)).div(1000));
+        player.i.scoreEff = player.i.score.add(1).pow(0.1);
     },
     automate() {
         if (player.i.simAuto) {
@@ -1969,7 +1982,7 @@ addLayer('i', {
                 return player.i.points.gte(2);
             },
             unlocked() {
-                return hasMilestone('d', 0) || hasMilestone('d', 1);
+                return hasMilestone('i', 0) || hasMilestone('i', 1);
             },
         },
         2: {
@@ -1980,7 +1993,7 @@ addLayer('i', {
                 return player.i.points.gte(3);
             },
             unlocked() {
-                return hasMilestone('d', 1) || hasMilestone('d', 2);
+                return hasMilestone('i', 1) || hasMilestone('i', 2);
             },
         },
         3: {
@@ -1990,7 +2003,7 @@ addLayer('i', {
                 return player.i.points.gte(4);
             },
             unlocked() {
-                return hasMilestone('d', 2) || hasMilestone('d', 3);
+                return hasMilestone('i', 2) || hasMilestone('i', 3);
             },
         },
         4: {
@@ -2001,7 +2014,7 @@ addLayer('i', {
                 return player.i.points.gte(5);
             },
             unlocked() {
-                return hasMilestone('d', 3) || hasMilestone('d', 4);
+                return hasMilestone('i', 3) || hasMilestone('i', 4);
             },
         },
         5: {
@@ -2011,7 +2024,7 @@ addLayer('i', {
                 return player.i.points.gte(5) && player.d.points.gte(11111);
             },
             unlocked() {
-                return hasMilestone('d', 4) || hasMilestone('d', 5);
+                return hasMilestone('i', 4) || hasMilestone('i', 5);
             },
         },
         6: {
@@ -2022,7 +2035,7 @@ addLayer('i', {
                 return player.i.money.gte(1000000);
             },
             unlocked() {
-                return hasMilestone('d', 5) || hasMilestone('d', 6);
+                return hasMilestone('i', 5) || hasMilestone('i', 6);
             },
         },
     },
