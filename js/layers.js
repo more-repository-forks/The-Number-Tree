@@ -904,11 +904,11 @@ addLayer('d', {
                 return new Decimal(1e10).pow(getBuyableAmount(this.layer, this.id).add(1)).mul(1e20);
             },
             effect() {
-                return getBuyableAmount(this.layer, this.id).mul(10).div(100).add(1);
+                return getBuyableAmount(this.layer, this.id).mul(20).div(100).add(1);
             },
             display() {
                 return `<h3>Rapid Idle</h3><br>`
-                    + `passive number increase is +10% faster.<br>`
+                    + `passive number increase is +20% faster.<br>`
                     + `Currently: +` + formatWhole(getBuyableAmount(this.layer, this.id).mul(10)) + `%<br>`
                     + `Increment: ` + formatTime(new Decimal(1).div(buyableEffect(this.layer, this.id))) + `<br><br>`
                     + `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
@@ -922,7 +922,7 @@ addLayer('d', {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
             style: {'width':'120px','height':'120px'},
-            purchaseLimit: 89,
+            purchaseLimit: 33333,
             unlocked() {
                 return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
             },
