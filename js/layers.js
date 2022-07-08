@@ -734,7 +734,7 @@ addLayer('d', {
 		if (hasMilestone('d', 19)) cap = cap.mul(2);
 		if (hasUpgrade('d', 82)) cap = cap.mul(5);
 		if (hasUpgrade('d', 92)) cap = cap.mul(10);
-		if (hasUpgrade('gn', 12)) cap = cap.mul(upgradeEffect('gn', 12));
+		if (hasUpgrade('gn', 12) && !inChallenge('i', 32)) cap = cap.mul(upgradeEffect('gn', 12));
 		player.d.max = cap.round();
 		player.d.timer += diff;
 		if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
@@ -1946,6 +1946,7 @@ addLayer('i', {
 		if (player.i.score.gte(1)) gain = gain.div(player.i.scoreEff);
 		if (hasUpgrade('d', 93)) gain = gain.div(upgradeEffect('d', 93));
 		if (hasChallenge('i', 31)) gain = gain.div(challengeEffect('i', 31));
+		if (hasChallenge('i', 32)) gain = gain.div(challengeEffect('i', 32));
 		return gain;
 	},
 	canBuyMax() {
@@ -3108,6 +3109,27 @@ addLayer('i', {
 				return hasMilestone('i', 9) && hasMilestone('i', 12);
 			},
 		},
+		32: {
+			name: 'Feat of Forgotten History',
+			fullDisplay() {
+				return 'Restrictions: Feat of History\'s restriction and Studies are useless<br>' + 'Goal: ' + format(new Decimal(1e5).pow(challengeCompletions(this.layer, this.id)).mul(1e50)) + ' arabic numerals<br>Reward: divide the intelligence cost requirement by 2<br>Currently: /' + format(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/10';
+			},
+			rewardEffect() {
+				return new Decimal(2).pow(challengeCompletions(this.layer, this.id));
+			},
+			canComplete() {
+				return player.points.gte(new Decimal(1e5).pow(challengeCompletions(this.layer, this.id)).mul(1e50));
+			},
+			onEnter() {
+				doReset('i', true);
+			},
+			countsAs: [21],
+			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			completionLimit: 10,
+			unlocked() {
+				return hasMilestone('i', 9) && hasMilestone('gn', 4);
+			},
+		},
 	},
 });
 
@@ -3137,8 +3159,8 @@ addLayer('gn', {
 	exponent: 0.04,
 	directMult() {
 		let gain = new Decimal(1);
-		if (hasUpgrade('gn', 13)) gain = gain.mul(upgradeEffect('gn', 13));
-		if (hasUpgrade('gn', 14)) gain = gain.mul(upgradeEffect('gn', 14));
+		if (hasUpgrade('gn', 13) && !inChallenge('i', 32)) gain = gain.mul(upgradeEffect('gn', 13));
+		if (hasUpgrade('gn', 14) && !inChallenge('i', 32)) gain = gain.mul(upgradeEffect('gn', 14));
 		return gain;
 	},
 	softcap: new Decimal(100),
@@ -3246,6 +3268,15 @@ addLayer('gn', {
 			effectDescription: "retain the 19th digit milestone on greek numeral resets",
 			done() {
 				return player.gn.points.gte(1000) && player.gn.bestOnce.gte(200);
+			},
+		},
+		4: {
+			requirementDescription() {
+				return greekNumeralFormat(2000) + " greek numerals and " + greekNumeralFormat(220) + " greek numerals in one reset";
+			},
+			effectDescription: "unlock a new Feat",
+			done() {
+				return player.gn.points.gte(2000) && player.gn.bestOnce.gte(220);
 			},
 		},
 	},
