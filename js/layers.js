@@ -2225,10 +2225,10 @@ addLayer('i', {
 			},
 		},
 		12: {
-			requirementDescription: "11 intelligence",
+			requirementDescription: "11 intelligence and<br>3 Feat of History completions",
 			effectDescription: "coming soon!",
 			done() {
-				return player.i.points.gte(11);
+				return player.i.points.gte(11) && challengeCompletions('i', 21) >= 3;
 			},
 			unlocked() {
 				return hasMilestone('i', 11) || hasMilestone('i', 12);
