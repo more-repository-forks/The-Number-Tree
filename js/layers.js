@@ -1936,6 +1936,7 @@ addLayer('i', {
 		onPress() { if (player.i.unlocked) doReset('i') },
 	}],
 	effect() {
+		if (hasMilestone('i', 14)) return new Decimal(1000).pow(player.i.points);
 		if (hasMilestone('i', 13)) return new Decimal(100).pow(player.i.points);
 		return new Decimal(10).pow(player.i.points);
 	},
@@ -2247,6 +2248,16 @@ addLayer('i', {
 			},
 			unlocked() {
 				return hasMilestone('i', 12) || hasMilestone('i', 13);
+			},
+		},
+		14: {
+			requirementDescription: "13 intelligence and<br>9 Feat of History completions",
+			effectDescription: "improve intelligence effect formula<br>100^x --> 1,000^x",
+			done() {
+				return player.i.points.gte(13) && challengeCompletions('i', 21) >= 9;
+			},
+			unlocked() {
+				return hasMilestone('i', 13) || hasMilestone('i', 14);
 			},
 		},
 	},
@@ -2997,7 +3008,7 @@ addLayer('i', {
 		21: {
 			name: 'Feat of History',
 			fullDisplay() {
-				return 'Restriction: you cannot gain roman numerals, but arabic numeral gain 750x<br>' + 'Goal: ' + format(new Decimal(200).pow(challengeCompletions(this.layer, this.id)).mul(1e13)) + ' arabic numerals<br>Reward: multiply roman numeral gain by 10,000<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/10';
+				return 'Restriction: you cannot gain roman numerals, but arabic numeral gain 750x<br>' + 'Goal: ' + format(new Decimal(200).pow(challengeCompletions(this.layer, this.id)).mul(1e13)) + ' arabic numerals<br>Reward: multiply roman numeral gain by 10,000<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/20';
 			},
 			rewardEffect() {
 				return new Decimal(10000).pow(challengeCompletions(this.layer, this.id));
@@ -3009,7 +3020,7 @@ addLayer('i', {
 				doReset('i', true);
 			},
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
-			completionLimit: 10,
+			completionLimit: 20,
 			unlocked() {
 				return hasMilestone('i', 9);
 			},
