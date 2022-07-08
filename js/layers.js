@@ -611,6 +611,7 @@ addLayer('d', {
 		let keep = ["numberUpgradeAuto", "baseUpAuto", "digitAuto", "limitBreakAuto"];
 		let keepUpg = [];
 		if (hasMilestone('i', 10) && resettingLayer == 'i') keepUpg.push('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+		if (hasMilestone('gn', 0) && resettingLayer == 'gn') keepUpg.push('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 		if (layers[resettingLayer].row > this.row) layerDataReset('d', keep);
 		player[this.layer].milestones = keepUpg;
 	},
@@ -3149,8 +3150,20 @@ addLayer('gn', {
 						return text;
 					},
 				],
+				'milestones',
 				'upgrades',
 			],
+		},
+	},
+	milestones: {
+		0: {
+			requirementDescription() {
+				return greekNumeralFormat(200) + " greek numerals";
+			},
+			effectDescription: "retain the first 10 digit milestones<br>on greek numeral resets",
+			done() {
+				return player.gn.points.gte(200);
+			},
 		},
 	},
 	upgrades: {
