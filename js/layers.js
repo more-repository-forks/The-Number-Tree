@@ -1924,6 +1924,7 @@ addLayer('i', {
 		let gain = new Decimal(1);
 		if (player.i.score.gte(1)) gain = gain.div(player.i.scoreEff);
 		if (hasUpgrade('d', 93)) gain = gain.div(upgradeEffect('d', 93));
+		if (hasChallenge('i', 31)) gain = gain.div(challengeEffect('i', 31));
 		return gain;
 	},
 	canBuyMax() {
@@ -2011,6 +2012,7 @@ addLayer('i', {
 				['challenges', '1'],
 				['challenges', '2'],
 				['clickables', '3'],
+				['challenges', '3'],
 			],
 			unlocked() {
 				return hasMilestone('i', 9);
@@ -2218,7 +2220,7 @@ addLayer('i', {
 		},
 		11: {
 			requirementDescription: "9 intelligence and 30,000 digits",
-			effectDescription: "unlocks an new Feat",
+			effectDescription: "unlocks a new Feat",
 			done() {
 				return player.i.points.gte(9) && player.d.points.gte(30000);
 			},
@@ -2228,7 +2230,7 @@ addLayer('i', {
 		},
 		12: {
 			requirementDescription: "11 intelligence and<br>3 Feat of History completions",
-			effectDescription: "coming soon!",
+			effectDescription: "unlocks a new Feat",
 			done() {
 				return player.i.points.gte(11) && challengeCompletions('i', 21) >= 3;
 			},
@@ -3019,6 +3021,27 @@ addLayer('i', {
 			completionLimit: 3,
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('i', 11);
+			},
+		},
+		31: {
+			name: 'Feat of Dimensions',
+			fullDisplay() {
+				return 'Restrictions: Feat of Limits and Feat of Space\'s restrictions<br>' + 'Goal: ' + format(new Decimal('1e50').pow(challengeCompletions(this.layer, this.id)).mul('1e1200')) + ' arabic numerals<br>Reward: divide the intelligence cost requirement by 1.6<br>Currently: /' + format(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/10';
+			},
+			rewardEffect() {
+				return new Decimal(1.6).pow(challengeCompletions(this.layer, this.id));
+			},
+			canComplete() {
+				return player.points.gte(new Decimal('1e50').pow(challengeCompletions(this.layer, this.id)).mul('1e1200'));
+			},
+			onEnter() {
+				doReset('i', true);
+			},
+			countsAs: [12, 22],
+			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			completionLimit: 10,
+			unlocked() {
+				return hasMilestone('i', 9) && hasMilestone('i', 12);
 			},
 		},
 	},
