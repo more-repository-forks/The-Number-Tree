@@ -607,7 +607,10 @@ addLayer('d', {
 	},
 	doReset(resettingLayer) {
 		let keep = ["numberUpgradeAuto", "baseUpAuto", "digitAuto", "limitBreakAuto"];
+		let keepUpg = [];
+		if (hasMilestone('i', 10)) keepUpg.push('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 		if (layers[resettingLayer].row > this.row) layerDataReset('d', keep);
+		player[this.layer].milestones = keepUpg;
 	},
 	hotkeys: [{
 		key: 'd', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
@@ -2198,6 +2201,16 @@ addLayer('i', {
 				return hasMilestone('i', 8) || hasMilestone('i', 9);
 			},
 		},
+		10: {
+			requirementDescription: "9 intelligence",
+			effectDescription: "retain the first 10 digit milestones<br>on intelligence resets",
+			done() {
+				return player.i.points.gte(9);
+			},
+			unlocked() {
+				return hasMilestone('i', 9) || hasMilestone('i', 10);
+			},
+		},
 	},
 	clickables: {
 		11: {
@@ -2925,13 +2938,13 @@ addLayer('i', {
 		21: {
 			name: 'Feat of History',
 			fullDisplay() {
-				return 'Restriction: you cannot gain roman numerals, but arabic numeral gain 100x<br>' + 'Goal: ' + format(new Decimal(1e8).pow(challengeCompletions(this.layer, this.id)).mul(1e12)) + ' arabic numerals<br>Reward: multiply roman numeral gain by 10,000<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/5';
+				return 'Restriction: you cannot gain roman numerals, but arabic numeral gain 750x<br>' + 'Goal: ' + format(new Decimal(200).pow(challengeCompletions(this.layer, this.id)).mul(1e13)) + ' arabic numerals<br>Reward: multiply roman numeral gain by 10,000<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/5';
 			},
 			rewardEffect() {
 				return new Decimal(10000).pow(challengeCompletions(this.layer, this.id));
 			},
 			canComplete() {
-				return player.points.gte(new Decimal(1e8).pow(challengeCompletions(this.layer, this.id)).mul(1e12));
+				return player.points.gte(new Decimal(200).pow(challengeCompletions(this.layer, this.id)).mul(1e13));
 			},
 			onEnter() {
 				doReset('i', true);
