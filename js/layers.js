@@ -133,6 +133,7 @@ addLayer('rn', {
 		],
 		'blank',
 		'prestige-button',
+		['blank', '3px'],
 		['display-text',
 			function() {
 				text = 'You have ' + format(player.points) + ' arabic numerals<br>';
@@ -3103,7 +3104,7 @@ addLayer('gn', {
 	},
 	requires: new Decimal('1e6600'),
 	type: 'normal',
-	exponent: 0.02,
+	exponent: 0.05,
 	gainMult() {
 		let gain = new Decimal(1);
 		return gain;
@@ -3134,6 +3135,7 @@ addLayer('gn', {
 				],
 				'blank',
 				'prestige-button',
+				['blank', '3px'],
 				['display-text',
 					function() {
 						text = 'You have ' + romanNumeralFormat(player.rn.points) + ' roman numerals<br>';
@@ -3143,7 +3145,24 @@ addLayer('gn', {
 						return text;
 					},
 				],
+				'upgrades',
 			],
+		},
+	},
+	upgrades: {
+		11: {
+			fullDisplay() {
+				let text = `<h3>Greek Know-How</h3><br>
+					multiply arabic numeral generation based on the amount of greek numerals you have.<br>
+					Currently: ` + format(this.effect()) + `x<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			effect() {
+				return new Decimal(10).pow(player.gn.points.add(1).pow(0.5));
+			},
+			cost: new Decimal(1),
 		},
 	},
 });
