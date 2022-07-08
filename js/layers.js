@@ -784,7 +784,7 @@ addLayer('d', {
 		rows: 1,
 		cols() {
 			if (hasUpgrade('d', 11)) return 2;
-			if (buyableEffect('d', 91).gte(10)) return 1;
+			if (buyableEffect('d', 91).gte(10) || player.d.points.gt(99)) return 1;
 			return player.d.points.toNumber();
 		},
 		maxCols: 99,
@@ -800,6 +800,7 @@ addLayer('d', {
 		getDisplay(data, id) {
 			if (buyableEffect('d', 91).gte(10) && id == 101) return '<h2>Base ' + formatWhole(buyableEffect('d', 91)) + ' achieved';
 			if (hasUpgrade('d', 11) && id == 102) return '<h2>Limit broken';
+			if (player.d.points.gt(99) && id == 101) return '<h2>Limit bent';
 			if (player.d.limited) return '<h2>' + formatWhole(buyableEffect('d', 91).sub(1));
 			id = id - 101;
 			data = player.d.meta.charAt(id);
@@ -809,6 +810,7 @@ addLayer('d', {
 		getStyle(data, id) {
 			if (buyableEffect('d', 91).gte(10) && id == 101) return {'height':'30px','width':'170px','border-radius':'0%','color':'red'};
 			if (hasUpgrade('d', 11) && id == 102) return {'height':'30px','width':'130px','border-radius':'0%','color':'red'};
+			if (player.d.points.gt(99) && id == 101) return {'height':'30px','width':'120px','border-radius':'0%','color':'red'};
 			let color = 'black';
 			if (data != '0' || player.d.limited) color = 'red';
 			if (this.cols() < 25) return {'height':'50px','width':'50px','border-radius':'50%','color':color};
