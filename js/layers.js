@@ -609,11 +609,15 @@ addLayer('d', {
 	},
 	doReset(resettingLayer) {
 		let keep = ["numberUpgradeAuto", "baseUpAuto", "digitAuto", "limitBreakAuto"];
-		let keepUpg = [];
-		if (hasMilestone('i', 10) && resettingLayer == 'i') keepUpg.push('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-		if (hasMilestone('gn', 0) && resettingLayer == 'gn') keepUpg.push('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+		let keepMile = [];
+		if (hasMilestone('i', 10) && resettingLayer == 'i') keepMile.push('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+		if (hasMilestone('i', 16) && resettingLayer == 'i') {
+			keep.push("numberButtonAuto");
+			keepMile.push('18');
+		};
+		if (hasMilestone('gn', 0) && resettingLayer == 'gn') keepMile.push('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 		if (layers[resettingLayer].row > this.row) layerDataReset('d', keep);
-		player[this.layer].milestones = keepUpg;
+		player[this.layer].milestones = keepMile;
 	},
 	hotkeys: [{
 		key: 'd', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
@@ -720,7 +724,8 @@ addLayer('d', {
 		if (hasMilestone('d', 19)) cap = cap.mul(2);
 		if (hasUpgrade('d', 82)) cap = cap.mul(5);
 		if (hasUpgrade('d', 92)) cap = cap.mul(10);
-		player.d.max = cap;
+		if (hasUpgrade('gn', 12)) cap = cap.mul(upgradeEffect('gn', 12));
+		player.d.max = cap.round();
 		player.d.timer += diff;
 		if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
 			player.d.number = player.d.number.add(buyableEffect('d', 31));
@@ -1917,6 +1922,7 @@ addLayer('i', {
 	color: '#ccff44',
 	resource: 'intelligence',
 	baseResource: 'digits',
+	roundUpCost: true,
 	baseAmount() {
 		return player.d.points;
 	},
@@ -2272,6 +2278,16 @@ addLayer('i', {
 			},
 			unlocked() {
 				return hasMilestone('i', 14) || hasMilestone('i', 15);
+			},
+		},
+		16: {
+			requirementDescription: "15 intelligence",
+			effectDescription: "retain the 19th digit milestone<br>on intelligence resets",
+			done() {
+				return player.i.points.gte(15);
+			},
+			unlocked() {
+				return hasMilestone('i', 15) || hasMilestone('i', 16);
 			},
 		},
 	},
@@ -3095,6 +3111,7 @@ addLayer('gn', {
 		unlocked: false,
 		points: new Decimal(0),
 		best: new Decimal(0),
+		bestOnce: new Decimal(0),
 		total: new Decimal(0),
 	}},
 	color: '#ff9922',
@@ -3106,13 +3123,17 @@ addLayer('gn', {
 	requires: new Decimal('1e6600'),
 	type: 'normal',
 	exponent: 0.04,
-	gainMult() {
+	directMult() {
 		let gain = new Decimal(1);
+		if (hasUpgrade('gn', 13)) gain = gain.mul(upgradeEffect('gn', 13));
 		return gain;
 	},
 	softcap: new Decimal(100),
 	softcapPower() {
 		return 0.001;
+	},
+	onPrestige(gain) {
+		if (gain.gt(player.gn.bestOnce)) player.gn.bestOnce = gain;
 	},
 	prestigeButtonText() {
 		let resetGain = new Decimal(tmp.gn.resetGain), text = '';
@@ -3146,6 +3167,7 @@ addLayer('gn', {
 						text = 'You have ' + romanNumeralFormat(player.rn.points) + ' roman numerals<br>';
 						if (tmp.gn.passiveGeneration) text += 'You are gaining ' + greekNumeralFormat(tmp.gn.resetGain.mul(tmp.gn.passiveGeneration)) + ' greek numerals per second<br>';
 						text += '<br>Your best greek numerals is ' + greekNumeralFormat(player.gn.best) + '<br>';
+						text += 'Your best greek numerals in one reset is ' + greekNumeralFormat(player.gn.bestOnce) + '<br>';
 						text += 'You have made a total of ' + greekNumeralFormat(player.gn.total) + ' greek numerals';
 						return text;
 					},
@@ -3180,6 +3202,34 @@ addLayer('gn', {
 				return new Decimal(10).pow(player.gn.points.add(1).pow(0.5));
 			},
 			cost: new Decimal(1),
+		},
+		12: {
+			fullDisplay() {
+				let text = `<h3>Greek Places</h3><br>
+					multiply the digit limit based on the amount of greek numerals you have.<br>
+					Currently: ` + format(this.effect()) + `x<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			effect() {
+				return player.gn.points.add(1).pow(0.05);
+			},
+			cost: new Decimal(250),
+		},
+		13: {
+			fullDisplay() {
+				let text = `<h3>Greek Geek</h3><br>
+					multiply greek numeral gain based on the amount of intelligence you have.<br>
+					Currently: ` + format(this.effect()) + `x<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			effect() {
+				return player.i.points.add(1).pow(0.1);
+			},
+			cost: new Decimal(500),
 		},
 	},
 });
