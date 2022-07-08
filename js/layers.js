@@ -68,10 +68,12 @@ addLayer('rn', {
 	type: 'normal',
 	exponent: 0.5,
 	gainMult() {
+		if (inChallenge('i', 21)) return new Decimal(0);
 		let gain = new Decimal(1);
 		if (hasUpgrade('rn', 12)) gain = gain.mul(upgradeEffect('rn', 12));
 		if (hasUpgrade('rn', 22)) gain = gain.mul(upgradeEffect('rn', 22));
 		if (hasUpgrade('rn', 32)) gain = gain.mul(upgradeEffect('rn', 32));
+		if (hasChallenge('i', 21)) gain = gain.mul(challengeEffect('i', 21));
 		return gain;
 	},
 	softcap: new Decimal("1e1000"),
@@ -2894,7 +2896,7 @@ addLayer('i', {
 			onEnter() {
 				doReset('i', true);
 			},
-			style: {'width':'500px','height':'200px','border-radius':'20px'},
+			style: {'width':'300px','height':'230px','border-radius':'20px'},
 			completionLimit: 5,
 			unlocked() {
 				return hasMilestone('i', 9);
@@ -2914,7 +2916,27 @@ addLayer('i', {
 			onEnter() {
 				doReset('i', true);
 			},
-			style: {'width':'500px','height':'200px','border-radius':'20px'},
+			style: {'width':'300px','height':'230px','border-radius':'20px'},
+			completionLimit: 5,
+			unlocked() {
+				return hasMilestone('i', 9);
+			},
+		},
+		21: {
+			name: 'Feat of History',
+			fullDisplay() {
+				return 'Restriction: you cannot gain roman numerals, but arabic numeral gain 100x<br>' + 'Goal: ' + format(new Decimal(1e8).pow(challengeCompletions(this.layer, this.id)).mul(1e12)) + ' arabic numerals<br>Reward: multiply roman numeral gain by 10,000<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/5';
+			},
+			rewardEffect() {
+				return new Decimal(10000).pow(challengeCompletions(this.layer, this.id));
+			},
+			canComplete() {
+				return player.points.gte(new Decimal(1e8).pow(challengeCompletions(this.layer, this.id)).mul(1e12));
+			},
+			onEnter() {
+				doReset('i', true);
+			},
+			style: {'width':'300px','height':'230px','border-radius':'20px'},
 			completionLimit: 5,
 			unlocked() {
 				return hasMilestone('i', 9);
