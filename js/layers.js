@@ -1887,7 +1887,7 @@ addLayer('i', {
 		best: new Decimal(0),
 		total: new Decimal(0),
 		units: new Decimal(1),
-		unitCurrently: new Decimal(1),
+		unitEffect: new Decimal(1),
 		replicateTime: new Decimal(0),
 		raw: new Decimal(0),
 		raw_power: new Decimal(0.1),
@@ -2023,6 +2023,13 @@ addLayer('i', {
 			player.i.replicateTime = new Decimal(0);
 			player.i.units = player.i.units.add(player.i.units.mul(buyableEffect('i', 73)));
 		};
+		// effect
+		let power = new Decimal(0.25);
+		if (getBuyableAmount('i', 21).gt(0)) power = power.add(buyableEffect('i', 21));
+		if (getBuyableAmount('i', 33).gt(0)) power = power.add(buyableEffect('i', 33));
+		if (hasChallenge('i', 22)) power = power.mul(challengeEffect('i', 22));
+		player.i.unitEffect = player.i.units.add(1).pow(power);
+		if (inChallenge('i', 22)) player.i.unitEffect = new Decimal(1);
 		// simulation
 		// timers
 		if (getBuyableAmount('i', 51).gt(0)) player.i.timerMtime = player.i.timerMtime.add(diff);
@@ -2048,11 +2055,7 @@ addLayer('i', {
 			player.i.products = player.i.products.sub(player.i.sell_power).round();
 			player.i.money = player.i.money.add(player.i.sell_power.mul(player.i.sell_eff)).mul(1000).round().div(1000);
 		};
-		// power
-		let power = new Decimal(0.25);
-		if (getBuyableAmount('i', 21).gt(0)) power = power.add(buyableEffect('i', 21));
-		if (getBuyableAmount('i', 33).gt(0)) power = power.add(buyableEffect('i', 33));
-		player.i.unitEffect = player.i.units.add(1).pow(power);
+		// earnings
 		let earnings = [new Decimal(0.1), new Decimal(2), new Decimal(15), new Decimal(1), new Decimal(1), new Decimal(2.75)];
 		if (getBuyableAmount('i', 41).gt(0)) earnings[0] = earnings[0].add(buyableEffect('i', 41));
 		if (getBuyableAmount('i', 61).gt(0)) earnings[0] = earnings[0].mul(buyableEffect('i', 61));
@@ -2209,6 +2212,26 @@ addLayer('i', {
 			},
 			unlocked() {
 				return hasMilestone('i', 9) || hasMilestone('i', 10);
+			},
+		},
+		11: {
+			requirementDescription: "9 intelligence and 30,000 digits",
+			effectDescription: "unlocks an new Feat",
+			done() {
+				return player.i.points.gte(9) && player.d.points.gte(30000);
+			},
+			unlocked() {
+				return hasMilestone('i', 10) || hasMilestone('i', 11);
+			},
+		},
+		12: {
+			requirementDescription: "11 intelligence",
+			effectDescription: "coming soon!",
+			done() {
+				return player.i.points.gte(11);
+			},
+			unlocked() {
+				return hasMilestone('i', 11) || hasMilestone('i', 12);
 			},
 		},
 	},
@@ -2953,6 +2976,26 @@ addLayer('i', {
 			completionLimit: 5,
 			unlocked() {
 				return hasMilestone('i', 9);
+			},
+		},
+		22: {
+			name: 'Feat of Space',
+			fullDisplay() {
+				return 'Restriction: unit\'s effect is disabled<br>' + 'Goal: ' + format(new Decimal('1e1000').pow(challengeCompletions(this.layer, this.id)).mul('1e4000')) + ' arabic numerals<br>Reward: multiply the unit effect\'s exponent by 2<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/3';
+			},
+			rewardEffect() {
+				return new Decimal(2).pow(challengeCompletions(this.layer, this.id));
+			},
+			canComplete() {
+				return player.points.gte(new Decimal('1e1000').pow(challengeCompletions(this.layer, this.id)).mul('1e4000'));
+			},
+			onEnter() {
+				doReset('i', true);
+			},
+			style: {'width':'300px','height':'230px','border-radius':'20px'},
+			completionLimit: 3,
+			unlocked() {
+				return hasMilestone('i', 9) && hasMilestone('i', 11);
 			},
 		},
 	},
