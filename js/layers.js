@@ -116,6 +116,12 @@ addLayer('rn', {
 	passiveGeneration() {
 		if (hasMilestone('d', 6)) return 10;
 	},
+	doReset(resettingLayer) {
+		let keep = [];
+		if (hasMilestone('gn', 1) && resettingLayer == 'gn') keep.push('upgrades');
+		if (hasMilestone('gn', 2) && resettingLayer == 'gn') keep.push('calc', 'upCalc', 'overCalc');
+		if (layers[resettingLayer].row > this.row) layerDataReset('rn', keep);
+	},
 	hotkeys: [{
 		key: 'r', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
 		description: 'R: reset for roman numerals',
@@ -616,6 +622,10 @@ addLayer('d', {
 			keepMile.push('18');
 		};
 		if (hasMilestone('gn', 0) && resettingLayer == 'gn') keepMile.push('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+		if (hasMilestone('gn', 3) && resettingLayer == 'gn') {
+			keep.push("numberButtonAuto");
+			keepMile.push('18');
+		};
 		if (layers[resettingLayer].row > this.row) layerDataReset('d', keep);
 		player[this.layer].milestones = keepMile;
 	},
@@ -3128,12 +3138,11 @@ addLayer('gn', {
 	directMult() {
 		let gain = new Decimal(1);
 		if (hasUpgrade('gn', 13)) gain = gain.mul(upgradeEffect('gn', 13));
+		if (hasUpgrade('gn', 14)) gain = gain.mul(upgradeEffect('gn', 14));
 		return gain;
 	},
 	softcap: new Decimal(100),
-	softcapPower() {
-		return 0.001;
-	},
+	softcapPower: 0.001,
 	onPrestige(gain) {
 		if (gain.gt(player.gn.bestOnce)) player.gn.bestOnce = gain;
 	},
@@ -3153,7 +3162,7 @@ addLayer('gn', {
 		return hasMilestone('i', 9) || player.gn.unlocked;
 	},
 	tabFormat: {
-		"Main": {
+		"Milestones": {
 			content: [
 				['display-text',
 					function() {
@@ -3175,6 +3184,29 @@ addLayer('gn', {
 					},
 				],
 				'milestones',
+			],
+		},
+		"Studies": {
+			content: [
+				['display-text',
+					function() {
+						if (player.gn.points.gte('1e1000')) return '<h2 class="layer-gn">' + greekNumeralFormat(player.rn.points) + '</h2> greek numerals';
+						return 'You have <h2 class="layer-gn">' + greekNumeralFormat(player.gn.points) + '</h2> greek numerals';
+					},
+				],
+				'blank',
+				'prestige-button',
+				['blank', '3px'],
+				['display-text',
+					function() {
+						text = 'You have ' + romanNumeralFormat(player.rn.points) + ' roman numerals<br>';
+						if (tmp.gn.passiveGeneration) text += 'You are gaining ' + greekNumeralFormat(tmp.gn.resetGain.mul(tmp.gn.passiveGeneration)) + ' greek numerals per second<br>';
+						text += '<br>Your best greek numerals is ' + greekNumeralFormat(player.gn.best) + '<br>';
+						text += 'Your best greek numerals in one reset is ' + greekNumeralFormat(player.gn.bestOnce) + '<br>';
+						text += 'You have made a total of ' + greekNumeralFormat(player.gn.total) + ' greek numerals';
+						return text;
+					},
+				],
 				'upgrades',
 			],
 		},
@@ -3184,9 +3216,36 @@ addLayer('gn', {
 			requirementDescription() {
 				return greekNumeralFormat(200) + " greek numerals";
 			},
-			effectDescription: "retain the first 10 digit milestones<br>on greek numeral resets",
+			effectDescription: "retain the first 10 digit milestones on greek numeral resets",
 			done() {
 				return player.gn.points.gte(200);
+			},
+		},
+		1: {
+			requirementDescription() {
+				return greekNumeralFormat(500) + " greek numerals and " + greekNumeralFormat(136) + " greek numerals in one reset";
+			},
+			effectDescription: "retain roman numeral upgrades on greek numeral resets",
+			done() {
+				return player.gn.points.gte(500) && player.gn.bestOnce.gte(136);
+			},
+		},
+		2: {
+			requirementDescription() {
+				return greekNumeralFormat(750) + " greek numerals and " + greekNumeralFormat(140) + " greek numerals in one reset";
+			},
+			effectDescription: "retain calculator prefrences on greek numeral resets",
+			done() {
+				return player.gn.points.gte(750) && player.gn.bestOnce.gte(140);
+			},
+		},
+		3: {
+			requirementDescription() {
+				return greekNumeralFormat(1000) + " greek numerals and " + greekNumeralFormat(200) + " greek numerals in one reset";
+			},
+			effectDescription: "retain the 19th digit milestone on greek numeral resets",
+			done() {
+				return player.gn.points.gte(1000) && player.gn.bestOnce.gte(200);
 			},
 		},
 	},
@@ -3207,7 +3266,7 @@ addLayer('gn', {
 		},
 		12: {
 			fullDisplay() {
-				let text = `<h3>Greek Places</h3><br>
+				let text = `<h3>Greek Digits</h3><br>
 					multiply the digit limit based on the amount of greek numerals you have.<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
@@ -3221,7 +3280,7 @@ addLayer('gn', {
 		},
 		13: {
 			fullDisplay() {
-				let text = `<h3>Greek Geek</h3><br>
+				let text = `<h3>Greek IQ</h3><br>
 					multiply greek numeral gain based on the amount of intelligence you have.<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
@@ -3232,6 +3291,20 @@ addLayer('gn', {
 				return player.i.points.add(1).pow(0.1);
 			},
 			cost: new Decimal(500),
+		},
+		14: {
+			fullDisplay() {
+				let text = `<h3>Greek Diplomacy</h3><br>
+					multiply greek numeral gain based on your best roman numerals.<br>
+					Currently: ` + format(this.effect()) + `x<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			effect() {
+				return player.rn.best.add(1).log10().add(1).pow(0.05);
+			},
+			cost: new Decimal(1000),
 		},
 	},
 });
