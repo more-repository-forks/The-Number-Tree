@@ -3104,10 +3104,14 @@ addLayer('gn', {
 	},
 	requires: new Decimal('1e6600'),
 	type: 'normal',
-	exponent: 0.05,
+	exponent: 0.04,
 	gainMult() {
 		let gain = new Decimal(1);
 		return gain;
+	},
+	softcap: new Decimal(100),
+	softcapPower() {
+		return 0.001;
 	},
 	prestigeButtonText() {
 		let resetGain = new Decimal(tmp.gn.resetGain), text = '';
