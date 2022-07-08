@@ -2008,7 +2008,9 @@ addLayer('i', {
 						return 'Feats are runs with restriction(s). when you enter a Feat, everything will reset like an intelligence reset. reach the goal to complete the Feat and get a reward, or exit it and try it another time.';
 					},
 				],
-				'challenges',
+				['challenges', '1'],
+				['challenges', '2'],
+				['clickables', '3'],
 			],
 			unlocked() {
 				return hasMilestone('i', 9);
@@ -2027,7 +2029,7 @@ addLayer('i', {
 		let power = new Decimal(0.25);
 		if (getBuyableAmount('i', 21).gt(0)) power = power.add(buyableEffect('i', 21));
 		if (getBuyableAmount('i', 33).gt(0)) power = power.add(buyableEffect('i', 33));
-		if (hasChallenge('i', 22)) power = power.mul(challengeEffect('i', 22));
+		if (hasChallenge('i', 22) && !getClickableState('i', 31)) power = power.mul(challengeEffect('i', 22));
 		player.i.unitEffect = player.i.units.add(1).pow(power);
 		if (inChallenge('i', 22)) player.i.unitEffect = new Decimal(1);
 		// simulation
@@ -2314,6 +2316,27 @@ addLayer('i', {
 			},
 			unlocked() {
 				return hasMilestone('i', 5);
+			},
+		},
+		31: {
+			display() {
+				if (!getClickableState(this.layer, this.id)) return "<h2>Feat of Space's effect is ON";
+				return "<h2>Feat of Space's effect is OFF";
+			},
+			canClick() {
+				return true;
+			},
+			onClick() {
+				if (getClickableState(this.layer, this.id)) setClickableState(this.layer, this.id, false);
+				else setClickableState(this.layer, this.id, true);
+			},
+			style() {
+				let color = '#77bf5f';
+				if (getClickableState(this.layer, this.id)) color = '#bf8f8f';
+				return {'width':'597px','min-height':'25px','background-color':color,'color':'rgba(0, 0, 0, 0.5)','border':'4px solid rgba(0, 0, 0, 0.125)','border-radius':'20px','transform':'scale(1, 1)'};
+			},
+			unlocked() {
+				return hasChallenge('i', 22);
 			},
 		},
 	},
@@ -2932,7 +2955,7 @@ addLayer('i', {
 			onEnter() {
 				doReset('i', true);
 			},
-			style: {'width':'300px','height':'230px','border-radius':'20px'},
+			style: {'width':'290px','height':'230px','border-radius':'20px'},
 			completionLimit: 5,
 			unlocked() {
 				return hasMilestone('i', 9);
@@ -2952,7 +2975,7 @@ addLayer('i', {
 			onEnter() {
 				doReset('i', true);
 			},
-			style: {'width':'300px','height':'230px','border-radius':'20px'},
+			style: {'width':'290px','height':'230px','border-radius':'20px'},
 			completionLimit: 5,
 			unlocked() {
 				return hasMilestone('i', 9);
@@ -2972,7 +2995,7 @@ addLayer('i', {
 			onEnter() {
 				doReset('i', true);
 			},
-			style: {'width':'300px','height':'230px','border-radius':'20px'},
+			style: {'width':'290px','height':'230px','border-radius':'20px'},
 			completionLimit: 5,
 			unlocked() {
 				return hasMilestone('i', 9);
@@ -2981,7 +3004,7 @@ addLayer('i', {
 		22: {
 			name: 'Feat of Space',
 			fullDisplay() {
-				return 'Restriction: unit\'s effect is disabled<br>' + 'Goal: ' + format(new Decimal('1e1000').pow(challengeCompletions(this.layer, this.id)).mul('1e4000')) + ' arabic numerals<br>Reward: multiply the unit effect\'s exponent by 2<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/3';
+				return 'Restriction: unit\'s effect is disabled<br>' + 'Goal: ' + format(new Decimal('1e1000').pow(challengeCompletions(this.layer, this.id)).mul('1e4000')) + ' arabic numerals<br>Reward: multiply the effect scaling of the unit effect by 2<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/3';
 			},
 			rewardEffect() {
 				return new Decimal(2).pow(challengeCompletions(this.layer, this.id));
@@ -2992,7 +3015,7 @@ addLayer('i', {
 			onEnter() {
 				doReset('i', true);
 			},
-			style: {'width':'300px','height':'230px','border-radius':'20px'},
+			style: {'width':'290px','height':'230px','border-radius':'20px'},
 			completionLimit: 3,
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('i', 11);
