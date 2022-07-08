@@ -398,7 +398,7 @@ addLayer('rn', {
 			},
 			cost: new Decimal(1e50),
 			unlocked() {
-				return hasMilestone('d', 2);
+				return player.rn.upgrades.length >= 15 && hasMilestone('d', 2);
 			},
 		},
 		42: {
@@ -416,7 +416,7 @@ addLayer('rn', {
 			},
 			cost: new Decimal(1e66),
 			unlocked() {
-				return hasMilestone('d', 3);
+				return player.rn.upgrades.length >= 15 && hasMilestone('d', 3);
 			},
 		},
 		43: {
@@ -431,7 +431,7 @@ addLayer('rn', {
 			},
 			cost: new Decimal(1e80),
 			unlocked() {
-				return hasMilestone('d', 4);
+				return player.rn.upgrades.length >= 15 && hasMilestone('d', 4);
 			},
 		},
 	},
@@ -1415,7 +1415,7 @@ addLayer('d', {
 			cost: new Decimal(109),
 			unlocked() {
 				if (inChallenge('i', 12)) return false;
-				return hasUpgrade('d', 11);
+				return player.d.upgrades.length >= 1;
 			},
 		},
 		22: {
@@ -1428,7 +1428,7 @@ addLayer('d', {
 			cost: new Decimal(126),
 			unlocked() {
 				if (inChallenge('i', 12)) return false;
-				return hasUpgrade('d', 11);
+				return player.d.upgrades.length >= 1;
 			},
 		},
 		31: {
@@ -1440,7 +1440,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(127),
 			unlocked() {
-				return hasUpgrade('d', 21) && hasUpgrade('d', 22);
+				return player.d.upgrades.length >= 3;
 			},
 		},
 		32: {
@@ -1456,7 +1456,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(148),
 			unlocked() {
-				return hasUpgrade('d', 21) && hasUpgrade('d', 22);
+				return player.d.upgrades.length >= 3;
 			},
 		},
 		33: {
@@ -1468,7 +1468,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(147),
 			unlocked() {
-				return hasUpgrade('d', 21) && hasUpgrade('d', 22);
+				return player.d.upgrades.length >= 3;
 			},
 		},
 		41: {
@@ -1480,7 +1480,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(164),
 			unlocked() {
-				return hasUpgrade('d', 31) && hasUpgrade('d', 32) && hasUpgrade('d', 33);
+				return player.d.upgrades.length >= 6;
 			},
 		},
 		42: {
@@ -1495,7 +1495,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(197),
 			unlocked() {
-				return hasUpgrade('d', 31) && hasUpgrade('d', 32) && hasUpgrade('d', 33);
+				return player.d.upgrades.length >= 6;
 			},
 		},
 		43: {
@@ -1511,7 +1511,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(162),
 			unlocked() {
-				return hasUpgrade('d', 31) && hasUpgrade('d', 32) && hasUpgrade('d', 33);
+				return player.d.upgrades.length >= 6;
 			},
 		},
 		44: {
@@ -1523,7 +1523,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(193),
 			unlocked() {
-				return hasUpgrade('d', 31) && hasUpgrade('d', 32) && hasUpgrade('d', 33);
+				return player.d.upgrades.length >= 6;
 			},
 		},
 		51: {
@@ -1535,7 +1535,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(199),
 			unlocked() {
-				return hasUpgrade('d', 41) && hasUpgrade('d', 42) && hasUpgrade('d', 43) && hasUpgrade('d', 44);
+				return player.d.upgrades.length >= 10;
 			},
 		},
 		52: {
@@ -1550,7 +1550,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(217),
 			unlocked() {
-				return hasUpgrade('d', 41) && hasUpgrade('d', 42) && hasUpgrade('d', 43) && hasUpgrade('d', 44);
+				return player.d.upgrades.length >= 10;
 			},
 		},
 		53: {
@@ -1566,7 +1566,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(228),
 			unlocked() {
-				return hasUpgrade('d', 41) && hasUpgrade('d', 42) && hasUpgrade('d', 43) && hasUpgrade('d', 44);
+				return player.d.upgrades.length >= 10;
 			},
 		},
 		54: {
@@ -1582,7 +1582,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(224),
 			unlocked() {
-				return hasUpgrade('d', 41) && hasUpgrade('d', 42) && hasUpgrade('d', 43) && hasUpgrade('d', 44);
+				return player.d.upgrades.length >= 10;
 			},
 		},
 		55: {
@@ -1594,7 +1594,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(222),
 			unlocked() {
-				return hasUpgrade('d', 41) && hasUpgrade('d', 42) && hasUpgrade('d', 43) && hasUpgrade('d', 44);
+				return player.d.upgrades.length >= 10;
 			},
 		},
 		61: {
@@ -1606,7 +1606,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(229),
 			unlocked() {
-				return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
+				return player.d.upgrades.length >= 15;
 			},
 		},
 		62: {
@@ -1621,7 +1621,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(269),
 			unlocked() {
-				return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
+				return player.d.upgrades.length >= 15;
 			},
 		},
 		63: {
@@ -1637,7 +1637,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(251),
 			unlocked() {
-				return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
+				return player.d.upgrades.length >= 15;
 			},
 		},
 		64: {
@@ -1653,7 +1653,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(252),
 			unlocked() {
-				return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
+				return player.d.upgrades.length >= 15;
 			},
 		},
 		65: {
@@ -1665,7 +1665,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(277),
 			unlocked() {
-				return hasUpgrade('d', 51) && hasUpgrade('d', 52) && hasUpgrade('d', 53) && hasUpgrade('d', 54) && hasUpgrade('d', 55);
+				return player.d.upgrades.length >= 15;
 			},
 		},
 		71: {
@@ -1677,7 +1677,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(290),
 			unlocked() {
-				return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
+				return player.d.upgrades.length >= 20;
 			},
 		},
 		72: {
@@ -1692,7 +1692,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(420),
 			unlocked() {
-				return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
+				return player.d.upgrades.length >= 20;
 			},
 		},
 		73: {
@@ -1707,7 +1707,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(515),
 			unlocked() {
-				return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
+				return player.d.upgrades.length >= 20;
 			},
 		},
 		74: {
@@ -1723,7 +1723,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(352),
 			unlocked() {
-				return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
+				return player.d.upgrades.length >= 20;
 			},
 		},
 		75: {
@@ -1735,7 +1735,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(370),
 			unlocked() {
-				return hasUpgrade('d', 61) && hasUpgrade('d', 62) && hasUpgrade('d', 63) && hasUpgrade('d', 64) && hasUpgrade('d', 65);
+				return player.d.upgrades.length >= 20;
 			},
 		},
 		81: {
@@ -1747,7 +1747,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(5000),
 			unlocked() {
-				return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
+				return player.d.upgrades.length >= 25 && getBuyableAmount('i', 32).gte(1);
 			},
 		},
 		82: {
@@ -1759,7 +1759,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(3600),
 			unlocked() {
-				return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
+				return player.d.upgrades.length >= 25 && getBuyableAmount('i', 32).gte(1);
 			},
 		},
 		83: {
@@ -1774,7 +1774,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(7500),
 			unlocked() {
-				return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
+				return player.d.upgrades.length >= 25 && getBuyableAmount('i', 32).gte(1);
 			},
 		},
 		84: {
@@ -1790,7 +1790,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(4750),
 			unlocked() {
-				return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
+				return player.d.upgrades.length >= 25 && getBuyableAmount('i', 32).gte(1);
 			},
 		},
 		85: {
@@ -1802,7 +1802,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(3900),
 			unlocked() {
-				return hasUpgrade('d', 71) && hasUpgrade('d', 72) && hasUpgrade('d', 73) && hasUpgrade('d', 74) && hasUpgrade('d', 75) && getBuyableAmount('i', 32).gte(1);
+				return player.d.upgrades.length >= 25 && getBuyableAmount('i', 32).gte(1);
 			},
 		},
 		91: {
@@ -1814,7 +1814,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(17000),
 			unlocked() {
-				return hasUpgrade('d', 81) && hasUpgrade('d', 82) && hasUpgrade('d', 83) && hasUpgrade('d', 84) && hasUpgrade('d', 85) && getBuyableAmount('i', 72).gte(1);
+				return player.d.upgrades.length >= 30 && getBuyableAmount('i', 72).gte(1);
 			},
 		},
 		92: {
@@ -1826,7 +1826,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(18000),
 			unlocked() {
-				return hasUpgrade('d', 81) && hasUpgrade('d', 82) && hasUpgrade('d', 83) && hasUpgrade('d', 84) && hasUpgrade('d', 85) && getBuyableAmount('i', 72).gte(1);
+				return player.d.upgrades.length >= 30 && getBuyableAmount('i', 72).gte(1);
 			},
 		},
 		93: {
@@ -1842,7 +1842,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(19000),
 			unlocked() {
-				return hasUpgrade('d', 81) && hasUpgrade('d', 82) && hasUpgrade('d', 83) && hasUpgrade('d', 84) && hasUpgrade('d', 85) && getBuyableAmount('i', 72).gte(1);
+				return player.d.upgrades.length >= 30 && getBuyableAmount('i', 72).gte(1);
 			},
 		},
 		94: {
@@ -1858,7 +1858,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(16000),
 			unlocked() {
-				return hasUpgrade('d', 81) && hasUpgrade('d', 82) && hasUpgrade('d', 83) && hasUpgrade('d', 84) && hasUpgrade('d', 85) && getBuyableAmount('i', 72).gte(1);
+				return player.d.upgrades.length >= 30 && getBuyableAmount('i', 72).gte(1);
 			},
 		},
 		95: {
@@ -1870,7 +1870,7 @@ addLayer('d', {
 			},
 			cost: new Decimal(15000),
 			unlocked() {
-				return hasUpgrade('d', 81) && hasUpgrade('d', 82) && hasUpgrade('d', 83) && hasUpgrade('d', 84) && hasUpgrade('d', 85) && getBuyableAmount('i', 72).gte(1);
+				return player.d.upgrades.length >= 30 && getBuyableAmount('i', 72).gte(1);
 			},
 		},
 	},
