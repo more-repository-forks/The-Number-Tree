@@ -45,9 +45,9 @@ addLayer('rn', {
 	symbol: 'RN',
 	row: 0,
 	position: 0,
-	branches: ['d'],
+	branches: ['d', 'gn'],
 	tooltip() {
-		return numeralFormat(player.rn.points) + ' roman numerals';
+		return romanNumeralFormat(player.rn.points) + ' roman numerals';
 	},
 	startData() { return {
 		unlocked: true,
@@ -74,6 +74,7 @@ addLayer('rn', {
 		if (hasUpgrade('rn', 22)) gain = gain.mul(upgradeEffect('rn', 22));
 		if (hasUpgrade('rn', 32)) gain = gain.mul(upgradeEffect('rn', 32));
 		if (hasChallenge('i', 21)) gain = gain.mul(challengeEffect('i', 21));
+		if (hasMilestone('i', 15)) gain = gain.mul(tmp.i.effect);
 		return gain;
 	},
 	softcap: new Decimal("1e1000"),
@@ -105,7 +106,7 @@ addLayer('rn', {
 	prestigeButtonText() {
 		let resetGain = new Decimal(tmp.rn.resetGain), text = '';
 		if (player.rn.points.lt(1e3)) text = 'Reset for ';
-		text += '+<b>' + numeralFormat(resetGain) + '</b> roman numerals';
+		text += '+<b>' + romanNumeralFormat(resetGain) + '</b> roman numerals';
 		if (resetGain.lt(100) && player.rn.points.lt(1e3)) text += '<br><br>Next at ' + format(tmp.rn.nextAt) + ' arabic numerals';
 		return text;
 	},
@@ -117,7 +118,7 @@ addLayer('rn', {
 	},
 	hotkeys: [{
 		key: 'r', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
-		description: 'R: reset your arabic numerals for roman numerals',
+		description: 'R: reset for roman numerals',
 		onPress() { if (player.rn.unlocked) doReset('rn') },
 	}],
 	layerShown() {
@@ -126,8 +127,8 @@ addLayer('rn', {
 	tabFormat: [
 		['display-text',
 			function() {
-				if (player.rn.points.gte('1e1000')) return '<h2 class="layer-rn">' + numeralFormat(player.rn.points) + '</h2> roman numerals';
-				return 'You have <h2 class="layer-rn">' + numeralFormat(player.rn.points) + '</h2> roman numerals';
+				if (player.rn.points.gte('1e1000')) return '<h2 class="layer-rn">' + romanNumeralFormat(player.rn.points) + '</h2> roman numerals';
+				return 'You have <h2 class="layer-rn">' + romanNumeralFormat(player.rn.points) + '</h2> roman numerals';
 			},
 		],
 		'blank',
@@ -135,9 +136,9 @@ addLayer('rn', {
 		['display-text',
 			function() {
 				text = 'You have ' + format(player.points) + ' arabic numerals<br>';
-				if (tmp.rn.passiveGeneration) text += 'You are gaining ' + numeralFormat(tmp.rn.resetGain.mul(tmp.rn.passiveGeneration)) + ' roman numerals per second<br>';
-				text += '<br>Your best roman numerals is ' + numeralFormat(player.rn.best) + '<br>';
-				text += 'You have made a total of ' + numeralFormat(player.rn.total) + ' roman numerals';
+				if (tmp.rn.passiveGeneration) text += 'You are gaining ' + romanNumeralFormat(tmp.rn.resetGain.mul(tmp.rn.passiveGeneration)) + ' roman numerals per second<br>';
+				text += '<br>Your best roman numerals is ' + romanNumeralFormat(player.rn.best) + '<br>';
+				text += 'You have made a total of ' + romanNumeralFormat(player.rn.total) + ' roman numerals';
 				return text;
 			},
 		],
@@ -151,7 +152,7 @@ addLayer('rn', {
 				let text = `<h3>Countings</h3><br>
 					multiply arabic numeral generation based on the amount of roman numerals you have.<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -165,7 +166,7 @@ addLayer('rn', {
 				let text = `<h3>Practice...</h3><br>
 					multiply roman numeral gain based on the amount of total roman numerals you have.<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -178,7 +179,7 @@ addLayer('rn', {
 			fullDisplay() {
 				let text = `<h3>Again</h3><br>
 					multiply arabic numeral gain by ` + format(this.effect()) + ` when you have less than ` + format(this.cap()) + ` arabic numerals.<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -199,7 +200,7 @@ addLayer('rn', {
 			fullDisplay() {
 				let text = `<h3>Faster</h3><br>
 					multiply arabic numeral generation by ` + format(this.effect()) + ` when you have less than ` + format(this.cap()) + ` arabic numerals.<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -223,7 +224,7 @@ addLayer('rn', {
 				let text = `<h3>Repetitive</h3><br>
 					multiply arabic numeral gain based on the amount of arabic numerals you have.<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -236,7 +237,7 @@ addLayer('rn', {
 			fullDisplay() {
 				let text = `<h3>Calculator</h3><br>
 					shows the arabic numeral equivalent to all roman numerals alongside the normal values.<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				return text;
 			},
 			cost: new Decimal(600),
@@ -249,7 +250,7 @@ addLayer('rn', {
 				let text = `<h3>Makes Perfect</h3><br>
 					multiply roman numeral gain based on your best roman numerals.<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -265,7 +266,7 @@ addLayer('rn', {
 			fullDisplay() {
 				let text = `<h3>Again, Again</h3><br>
 					multiply the cap of <b>Again</b> by ` + format(this.effect()) + `.<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -282,7 +283,7 @@ addLayer('rn', {
 			fullDisplay() {
 				let text = `<h3>Faster, Faster</h3><br>
 					multiply the effect and cap of <b>Faster</b> by ` + format(this.effect()) + `.<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -299,7 +300,7 @@ addLayer('rn', {
 				let text = `<h3>Patterns</h3><br>
 					multiply arabic numeral gain based on the amount of arabic numerals you have.<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -315,7 +316,7 @@ addLayer('rn', {
 			fullDisplay() {
 				let text = `<h3>Priorities</h3><br>
 					you can change the priority of calculator values.<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				return text;
 			},
 			cost: new Decimal(250000),
@@ -328,7 +329,7 @@ addLayer('rn', {
 				let text = `<h3>Studying</h3><br>
 					multiply roman numeral gain based on your best roman numerals.<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -344,7 +345,7 @@ addLayer('rn', {
 			fullDisplay() {
 				let text = `<h3>Cycle</h3><br>
 					multiply the effect of <b>Again, Again</b> by ` + format(this.effect()) + `.<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -360,7 +361,7 @@ addLayer('rn', {
 			fullDisplay() {
 				let text = `<h3>Fastest</h3><br>
 					multiply the cap of <b>Faster</b> by ` + format(this.effect()) + `.<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -377,7 +378,7 @@ addLayer('rn', {
 				let text = `<h3>Correlation</h3><br>
 					multiply arabic numeral gain based on your best roman numerals.<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
 			},
@@ -393,7 +394,7 @@ addLayer('rn', {
 			fullDisplay() {
 				let text = `<h3>Override</h3><br>
 					you can override non-calculator values with calculator values.<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				return text;
 			},
 			cost: new Decimal(1e50),
@@ -406,7 +407,7 @@ addLayer('rn', {
 				let text = `<h3>Uncapped</h3><br>
 					multiply the caps of <b>Again</b> and <b>Faster</b> based on your best roman numerals.<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				return text;
 			},
 			effect() {
@@ -423,7 +424,7 @@ addLayer('rn', {
 			fullDisplay() {
 				let text = `<h3>To the Sky</h3><br>
 					multiply the effect of <b>Again</b>, <b>Faster</b>, and <b>Uncapped</b> by ` + format(this.effect()) + `.<br><br>
-					Cost: ` + numeralFormat(this.cost) + ` roman numerals`;
+					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				return text;
 			},
 			effect() {
@@ -608,13 +609,13 @@ addLayer('d', {
 	doReset(resettingLayer) {
 		let keep = ["numberUpgradeAuto", "baseUpAuto", "digitAuto", "limitBreakAuto"];
 		let keepUpg = [];
-		if (hasMilestone('i', 10)) keepUpg.push('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+		if (hasMilestone('i', 10) && resettingLayer == 'i') keepUpg.push('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 		if (layers[resettingLayer].row > this.row) layerDataReset('d', keep);
 		player[this.layer].milestones = keepUpg;
 	},
 	hotkeys: [{
 		key: 'd', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
-		description: 'D: reset your arabic numerals for digits',
+		description: 'D: reset for digits',
 		onPress() { if (player.d.unlocked) doReset('d') },
 	}],
 	effect() {
@@ -1880,7 +1881,7 @@ addLayer('i', {
 	name: 'intelligence',
 	symbol: 'I',
 	row: 1,
-	position: 0,
+	position: 1,
 	startData() { return {
 		unlocked: false,
 		points: new Decimal(0),
@@ -1932,7 +1933,7 @@ addLayer('i', {
 	},
 	hotkeys: [{
 		key: 'i', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
-		description: 'I: reset all previous progress for intelligence',
+		description: 'I: reset for intelligence',
 		onPress() { if (player.i.unlocked) doReset('i') },
 	}],
 	effect() {
@@ -1941,6 +1942,7 @@ addLayer('i', {
 		return new Decimal(10).pow(player.i.points);
 	},
 	effectDescription() {
+		if (hasMilestone('i', 15)) return 'which multiplies arabic numeral generation and roman numeral gain by <h2 class="layer-i">' + format(tmp.i.effect) + '</h2>x';
 		return 'which multiplies arabic numeral generation by <h2 class="layer-i">' + format(tmp.i.effect) + '</h2>x';
 	},
 	layerShown() {
@@ -2258,6 +2260,16 @@ addLayer('i', {
 			},
 			unlocked() {
 				return hasMilestone('i', 13) || hasMilestone('i', 14);
+			},
+		},
+		15: {
+			requirementDescription: "13 intelligence and<br>15 Feat of History completions",
+			effectDescription: "intelligence's effect also applies<br>to roman numeral gain",
+			done() {
+				return player.i.points.gte(13) && challengeCompletions('i', 21) >= 15;
+			},
+			unlocked() {
+				return hasMilestone('i', 14) || hasMilestone('i', 15);
 			},
 		},
 	},
@@ -3065,6 +3077,73 @@ addLayer('i', {
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('i', 12);
 			},
+		},
+	},
+});
+
+addLayer('gn', {
+	name: 'greek numerals',
+	symbol: 'GN',
+	row: 1,
+	position: 0,
+	tooltip() {
+		return greekNumeralFormat(player.gn.points) + ' greek numerals';
+	},
+	startData() { return {
+		unlocked: false,
+		points: new Decimal(0),
+		best: new Decimal(0),
+		total: new Decimal(0),
+	}},
+	color: '#ff9922',
+	resource: 'greek numerals',
+	baseResource: 'roman numerals',
+	baseAmount() {
+		return player.rn.points;
+	},
+	requires: new Decimal('1e6600'),
+	type: 'normal',
+	exponent: 0.02,
+	gainMult() {
+		let gain = new Decimal(1);
+		return gain;
+	},
+	prestigeButtonText() {
+		let resetGain = new Decimal(tmp.gn.resetGain), text = '';
+		if (player.gn.points.lt(1e3)) text = 'Reset for ';
+		text += '+<b>' + greekNumeralFormat(resetGain) + '</b> greek numerals';
+		if (resetGain.lt(100) && player.gn.points.lt(1e3)) text += '<br><br>Next at ' + romanNumeralFormat(tmp.gn.nextAt) + ' roman numerals';
+		return text;
+	},
+	hotkeys: [{
+		key: 'g', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
+		description: 'G: reset for greek numerals',
+		onPress() { if (player.i.unlocked) doReset('i') },
+	}],
+	layerShown() {
+		return hasMilestone('i', 9) || player.gn.unlocked;
+	},
+	tabFormat: {
+		"Main": {
+			content: [
+				['display-text',
+					function() {
+						if (player.gn.points.gte('1e1000')) return '<h2 class="layer-gn">' + greekNumeralFormat(player.rn.points) + '</h2> greek numerals';
+						return 'You have <h2 class="layer-gn">' + greekNumeralFormat(player.gn.points) + '</h2> greek numerals';
+					},
+				],
+				'blank',
+				'prestige-button',
+				['display-text',
+					function() {
+						text = 'You have ' + romanNumeralFormat(player.rn.points) + ' roman numerals<br>';
+						if (tmp.gn.passiveGeneration) text += 'You are gaining ' + greekNumeralFormat(tmp.gn.resetGain.mul(tmp.gn.passiveGeneration)) + ' greek numerals per second<br>';
+						text += '<br>Your best greek numerals is ' + greekNumeralFormat(player.gn.best) + '<br>';
+						text += 'You have made a total of ' + greekNumeralFormat(player.gn.total) + ' greek numerals';
+						return text;
+					},
+				],
+			],
 		},
 	},
 });

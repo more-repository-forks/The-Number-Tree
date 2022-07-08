@@ -264,11 +264,10 @@ const romanNumerals = [
     ["X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"],
     ["C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "Cↀ"],
     ["ↀ", "ↀↀ", "ↀↀↀ", "ↀↁ", "ↁ", "ↁↀ", "ↁↀↀ", "ↁↀↀↀ", "ↀↂ"],
-    ["ↂ", "ↂↂ", "ↂↂↂ", "ↂ3Ↄ", "3Ↄ", "3Ↄↂ", "3Ↄↂↂ", "3Ↄↂↂↂ", "ↂⅭ3Ↄ"],
-    ["Ⅽ3Ↄ", "Ⅽ3ↃⅭ3Ↄ", "Ⅽ3ↃⅭ3ↃⅭ3Ↄ", "Ⅽ3ↃⅭ3ↃⅭ3ↃⅭ3Ↄ", "Ⅽ3Ↄ4Ↄ"],
+    ["ↂ"],
 ];
 
-function numeralFormat(num) {
+function romanNumeralFormat(num) {
     // override
     if (hasUpgrade("rn", 21) && player.rn.calc && hasUpgrade("rn", 41) && player.rn.overCalc) return formatWhole(new Decimal(num));
     // setup
@@ -284,16 +283,16 @@ function numeralFormat(num) {
         };
         return "N";
     };
-    if (decimal.gte("e500000")) {
+    if (decimal.gte("e10000")) {
         decimal = decimal.layeradd10(0 - (decimal.layer - 1));
-        if (decimal.gte("e500000")) {
+        if (decimal.gte("e10000")) {
             layer = layer.add(1);
             decimal = decimal.layeradd10(-1);
         };
     };
-    if (decimal.gte(1e5)) {
+    if (decimal.gte(1e4)) {
         places = decimal.mul(2).log10().trunc();
-        places = places.div(5).trunc().mul(5).sub(1);
+        places = places.div(4).trunc().mul(4);
         decimal = decimal.div(new Decimal(10).pow(places)).trunc();
         let numsArray = [...places.toString()].reverse();
         for (let i = 0; i < numsArray.length; i++) {
@@ -325,6 +324,62 @@ function numeralFormat(num) {
         if (hasUpgrade("rn", 31) && player.rn.upCalc) return formatWhole(new Decimal(num)) + " (" + result + ")";
         return result + " (" + formatWhole(new Decimal(num)) + ")";
     };
+    return result;
+};
+
+const greekNumerals = [
+    ["αʹ", "βʹ", "γʹ", "δʹ", "εʹ", "ϛʹ", "ζʹ", "ηʹ", "θʹ"],
+    ["ιʹ", "κʹ", "λʹ", "μʹ", "νʹ", "ξʹ", "οʹ", "πʹ", "ϙʹ"],
+    ["ρʹ", "σʹ", "τʹ", "υʹ", "φʹ", "χʹ", "ψʹ", "ωʹ", "ϡʹ"],
+    ["͵α", "͵β", "͵γ", "͵δ", "͵ε", "͵ϛ", "͵ζ", "͵η", "͵θ"],
+    ["M"],
+];
+
+function greekNumeralFormat(num) {
+    // setup
+    let result = "", resultE = "";
+    let places = 0;
+    let decimal = new Decimal(num);
+    let layer = new Decimal(decimal.layer);
+    // calculation
+    if (decimal.mag === 0) return "𐆊";
+    if (decimal.gte("e10000")) {
+        decimal = decimal.layeradd10(0 - (decimal.layer - 1));
+        if (decimal.gte("e10000")) {
+            layer = layer.add(1);
+            decimal = decimal.layeradd10(-1);
+        };
+    };
+    if (decimal.gte(1e4)) {
+        places = decimal.mul(2).log10().trunc();
+        places = places.div(4).trunc().mul(4);
+        decimal = decimal.div(new Decimal(10).pow(places)).trunc();
+        let numsArray = [...places.toString()].reverse();
+        for (let i = 0; i < numsArray.length; i++) {
+            numsArray[i] = +numsArray[i];
+            if (numsArray[i] === 0) continue;
+            resultE = greekNumerals[i][numsArray[i] - 1] + resultE;
+        };
+    };
+    let numsArray = [...decimal.mag.toString()].reverse();
+    for (let i = 0; i < numsArray.length; i++) {
+        numsArray[i] = +numsArray[i];
+        if (numsArray[i] === 0) continue;
+        result = greekNumerals[i][numsArray[i] - 1] + result;
+    };
+    // return formatted decimal
+    if (layer == 2) result = "e" + result;
+    else if (layer == 3) result = "ee" + result;
+    else if (layer >= 4) result = "eee" + result;
+    if (new Decimal(num).gte("eeee1000")) {
+        let numsArray = [...layer.toString()].reverse(), resultF = "";
+        for (let i = 0; i < numsArray.length; i++) {
+            numsArray[i] = +numsArray[i];
+            if (numsArray[i] === 0) continue;
+            resultF = greekNumerals[i][numsArray[i] - 1] + resultF;
+        };
+        result = "eee" + resultE + "F" + resultF;
+    } else if (resultE) result += "e" + resultE;
     return result;
 };
 
