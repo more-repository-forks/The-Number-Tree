@@ -335,6 +335,10 @@ const greekNumerals = [
     ["M"],
 ];
 
+const arabicNumerals = [
+    ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+];
+
 function greekNumeralFormat(num) {
     // setup
     let result = "", resultE = "";
@@ -342,7 +346,10 @@ function greekNumeralFormat(num) {
     let decimal = new Decimal(num);
     let layer = new Decimal(decimal.layer);
     // calculation
-    if (decimal.mag === 0) return "𐆊";
+    if (decimal.mag === 0) {
+        if (player.gn.calc && hasUpgrade('gn', 15)) return "𐆊 (0)";
+        return "𐆊";
+    };
     if (decimal.gte("e10000")) {
         decimal = decimal.layeradd10(0 - (decimal.layer - 1));
         if (decimal.gte("e10000")) {
@@ -380,6 +387,23 @@ function greekNumeralFormat(num) {
         };
         result = "eee" + resultE + "F" + resultF;
     } else if (resultE) result += "e" + resultE;
+    if (player.gn.calc) {
+        let version = 0;
+        if (hasUpgrade('gn', 15)) version = 1;
+        if (version) {
+            let resultNum = formatWhole(new Decimal(num));
+            if (version < 10) resultNum = resultNum.replace(/9/g, "?");
+            if (version < 9) resultNum = resultNum.replace(/8/g, "?");
+            if (version < 8) resultNum = resultNum.replace(/7/g, "?");
+            if (version < 7) resultNum = resultNum.replace(/6/g, "?");
+            if (version < 6) resultNum = resultNum.replace(/5/g, "?");
+            if (version < 5) resultNum = resultNum.replace(/4/g, "?");
+            if (version < 4) resultNum = resultNum.replace(/3/g, "?");
+            if (version < 3) resultNum = resultNum.replace(/2/g, "?");
+            if (version < 2) resultNum = resultNum.replace(/1/g, "?");
+            return result + " (" + resultNum + ")";
+        };
+    };
     return result;
 };
 

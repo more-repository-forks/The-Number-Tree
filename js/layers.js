@@ -3190,6 +3190,7 @@ addLayer('gn', {
 		best: new Decimal(0),
 		bestOnce: new Decimal(0),
 		total: new Decimal(0),
+		calc: true,
 	}},
 	color: '#ff9922',
 	resource: 'greek numerals',
@@ -3273,6 +3274,7 @@ addLayer('gn', {
 					},
 				],
 				'upgrades',
+				'clickables',
 			],
 		},
 	},
@@ -3379,6 +3381,33 @@ addLayer('gn', {
 				return player.rn.best.add(1).log10().add(1).pow(0.05);
 			},
 			cost: new Decimal(1000),
+		},
+		15: {
+			fullDisplay() {
+				let text = `<h3>Process of Elimination</h3><br>
+					unlock translation tier 1.<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			cost: new Decimal(2000),
+		},
+	},
+	clickables: {
+		11: {
+			display() {
+				if (player.gn.calc) return '<h3>turn<br>translator<br>off';
+				return '<h3>turn<br>translator<br>on';
+			},
+			canClick() {
+				return true;
+			},
+			onClick() {
+				player.gn.calc = !player.gn.calc;
+			},
+			unlocked() {
+				return hasUpgrade('gn', 15);
+			},
 		},
 	},
 });
