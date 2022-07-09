@@ -3297,6 +3297,7 @@ addLayer('gn', {
 		bestOnce: new Decimal(0),
 		total: new Decimal(0),
 		calc: true,
+		calcTier: new Decimal(0),
 	}},
 	color: '#ff9922',
 	resource: 'greek numerals',
@@ -3383,6 +3384,12 @@ addLayer('gn', {
 				'clickables',
 			],
 		},
+	},
+	update(diff) {
+		let tier = new Decimal(0);
+		if (hasUpgrade('gn', 15) && !inChallenge('i', 32)) tier = new Decimal(1);
+		if (hasMilestone('gn', 5)) tier = tier.add(1);
+		player.gn.calcTier = tier;
 	},
 	milestones: {
 		0: {
