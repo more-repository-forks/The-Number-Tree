@@ -335,10 +335,6 @@ const greekNumerals = [
     ["M"],
 ];
 
-const arabicNumerals = [
-    ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-];
-
 function greekNumeralFormat(num) {
     // setup
     let result = "", resultE = "";
@@ -387,7 +383,7 @@ function greekNumeralFormat(num) {
         };
         result = "eee" + resultE + "F" + resultF;
     } else if (resultE) result += "e" + resultE;
-    if (player.gn.calc) {
+    if (player.gn.calc && !inChallenge('i', 32)) {
         let version = 0;
         if (hasUpgrade('gn', 15)) version = 1;
         if (version) {

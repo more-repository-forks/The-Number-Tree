@@ -945,7 +945,11 @@ addLayer('d', {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
 			},
 			style: {'width':'120px','height':'120px'},
-			purchaseLimit: 1000,
+			purchaseLimit() {
+				let cap = new Decimal(1000);
+				if (hasUpgrade('gn', 22) && !inChallenge('i', 32)) cap = cap.add(upgradeEffect('gn', 22));
+				return cap;
+			},
 			unlocked() {
 				return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0);
 			},
@@ -1249,7 +1253,11 @@ addLayer('d', {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
 			},
 			style: {'width':'120px','height':'120px'},
-			purchaseLimit: 50,
+			purchaseLimit() {
+				let cap = new Decimal(50);
+				if (hasUpgrade('gn', 21) && !inChallenge('i', 32)) cap = cap.add(upgradeEffect('gn', 21));
+				return cap;
+			},
 			unlocked() {
 				return hasMilestone('d', 17);
 			},
@@ -3392,6 +3400,40 @@ addLayer('gn', {
 			},
 			cost: new Decimal(2000),
 		},
+		21: {
+			fullDisplay() {
+				let text = `<h3>Greek Markets</h3><br>
+					increase the cap of <b>Cheapest</b> based on the amount of greek numerals you have.<br>
+					Currently: +` + formatWhole(this.effect()) + `<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			effect() {
+				return player.gn.points.add(1).pow(0.75).round();
+			},
+			cost: new Decimal(1250),
+			unlocked() {
+				return player.gn.upgrades.length >= 5;
+			},
+		},
+		22: {
+			fullDisplay() {
+				let text = `<h3>Greek Multiplication</h3><br>
+					increase the cap of <b>Triple</b> based on the amount of greek numerals you have.<br>
+					Currently: +` + formatWhole(this.effect()) + `<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			effect() {
+				return player.gn.points.add(1).pow(0.5).round();
+			},
+			cost: new Decimal(1500),
+			unlocked() {
+				return player.gn.upgrades.length >= 5;
+			},
+		},
 	},
 	clickables: {
 		11: {
@@ -3406,7 +3448,7 @@ addLayer('gn', {
 				player.gn.calc = !player.gn.calc;
 			},
 			unlocked() {
-				return hasUpgrade('gn', 15);
+				return hasUpgrade('gn', 15) && !inChallenge('i', 32);
 			},
 		},
 	},
