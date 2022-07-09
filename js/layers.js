@@ -3130,6 +3130,7 @@ addLayer('i', {
 				doReset('i', true);
 			},
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			marked: false,
 			completionLimit: 10,
 			unlocked() {
 				return hasMilestone('i', 9);
@@ -3150,6 +3151,7 @@ addLayer('i', {
 				doReset('i', true);
 			},
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			marked: false,
 			completionLimit: 10,
 			unlocked() {
 				return hasMilestone('i', 9);
@@ -3170,6 +3172,7 @@ addLayer('i', {
 				doReset('i', true);
 			},
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			marked: false,
 			completionLimit: 20,
 			unlocked() {
 				return hasMilestone('i', 9);
@@ -3190,6 +3193,7 @@ addLayer('i', {
 				doReset('i', true);
 			},
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			marked: false,
 			completionLimit: 3,
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('i', 11);
@@ -3211,6 +3215,7 @@ addLayer('i', {
 			},
 			countsAs: [12, 22],
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			marked: false,
 			completionLimit: 15,
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('i', 12);
@@ -3232,6 +3237,7 @@ addLayer('i', {
 			},
 			countsAs: [21],
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			marked: false,
 			completionLimit: 10,
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('gn', 4);
@@ -3253,6 +3259,7 @@ addLayer('i', {
 			},
 			countsAs: [11, 21, 32],
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			marked: false,
 			completionLimit: 10,
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('i', 20);
@@ -3274,6 +3281,7 @@ addLayer('i', {
 			},
 			countsAs: [11, 12, 21, 22, 31, 32, 41],
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			marked: false,
 			completionLimit: 20,
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('i', 21);
