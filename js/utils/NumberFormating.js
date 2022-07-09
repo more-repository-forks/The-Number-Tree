@@ -384,19 +384,20 @@ function greekNumeralFormat(num) {
         result = "eee" + resultE + "F" + resultF;
     } else if (resultE) result += "e" + resultE;
     if (player.gn.calc && !inChallenge('i', 32)) {
-        let version = 0;
-        if (hasUpgrade('gn', 15)) version = 1;
-        if (version) {
+        let tier = 0;
+        if (hasUpgrade('gn', 15)) tier = 1;
+        if (hasMilestone('gn', 5)) tier++;
+        if (tier) {
             let resultNum = formatWhole(new Decimal(num));
-            if (version < 10) resultNum = resultNum.replace(/9/g, "?");
-            if (version < 9) resultNum = resultNum.replace(/8/g, "?");
-            if (version < 8) resultNum = resultNum.replace(/7/g, "?");
-            if (version < 7) resultNum = resultNum.replace(/6/g, "?");
-            if (version < 6) resultNum = resultNum.replace(/5/g, "?");
-            if (version < 5) resultNum = resultNum.replace(/4/g, "?");
-            if (version < 4) resultNum = resultNum.replace(/3/g, "?");
-            if (version < 3) resultNum = resultNum.replace(/2/g, "?");
-            if (version < 2) resultNum = resultNum.replace(/1/g, "?");
+            if (tier < 10) resultNum = resultNum.replace(/9/g, "?");
+            if (tier < 9) resultNum = resultNum.replace(/8/g, "?");
+            if (tier < 8) resultNum = resultNum.replace(/7/g, "?");
+            if (tier < 7) resultNum = resultNum.replace(/6/g, "?");
+            if (tier < 6) resultNum = resultNum.replace(/5/g, "?");
+            if (tier < 5) resultNum = resultNum.replace(/4/g, "?");
+            if (tier < 4) resultNum = resultNum.replace(/3/g, "?");
+            if (tier < 3) resultNum = resultNum.replace(/2/g, "?");
+            if (tier < 2) resultNum = resultNum.replace(/1/g, "?");
             return result + " (" + resultNum + ")";
         };
     };

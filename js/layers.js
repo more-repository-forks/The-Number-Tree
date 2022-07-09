@@ -3364,6 +3364,15 @@ addLayer('gn', {
 				return player.gn.points.gte(2000) && player.gn.bestOnce.gte(220);
 			},
 		},
+		5: {
+			requirementDescription() {
+				return greekNumeralFormat(2500) + " greek numerals and " + greekNumeralFormat(250) + " greek numerals in one reset";
+			},
+			effectDescription: "gain a free translation tier",
+			done() {
+				return player.gn.points.gte(2500) && player.gn.bestOnce.gte(250);
+			},
+		},
 	},
 	upgrades: {
 		11: {
