@@ -3094,7 +3094,7 @@ addLayer('i', {
 		11: {
 			name: 'Feat of Binary',
 			fullDisplay() {
-				return 'Restriction: you cannot buy Base Ups<br>' + 'Goal: ' + format(new Decimal('1e100').pow(challengeCompletions(this.layer, this.id)).mul('1e1000')) + ' arabic numerals<br>Reward: increase <b>Up Even More</b>\'s cap by 1<br>Currently: +' + formatWhole(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/5';
+				return 'Restriction: you cannot buy Base Ups<br>' + 'Goal: ' + format(new Decimal('1e100').pow(challengeCompletions(this.layer, this.id)).mul('1e1000')) + ' arabic numerals<br>Reward: increase <b>Up Even More</b>\'s cap by 1<br>Currently: +' + formatWhole(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/' + this.completionLimit;
 			},
 			rewardEffect() {
 				return challengeCompletions(this.layer, this.id);
@@ -3106,7 +3106,7 @@ addLayer('i', {
 				doReset('i', true);
 			},
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
-			completionLimit: 5,
+			completionLimit: 10,
 			unlocked() {
 				return hasMilestone('i', 9);
 			},
@@ -3114,7 +3114,7 @@ addLayer('i', {
 		12: {
 			name: 'Feat of Limits',
 			fullDisplay() {
-				return 'Restriction: you can only buy the first Limit Break upgrade<br>' + 'Goal: ' + format(new Decimal('1e100').pow(challengeCompletions(this.layer, this.id)).mul('1e1100')) + ' arabic numerals<br>Reward: increase <b>Up the Up</b>\'s cap by 25<br>Currently: +' + formatWhole(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/5';
+				return 'Restriction: you can only buy the first Limit Break upgrade<br>' + 'Goal: ' + format(new Decimal('1e100').pow(challengeCompletions(this.layer, this.id)).mul('1e1100')) + ' arabic numerals<br>Reward: increase <b>Up the Up</b>\'s cap by 25<br>Currently: +' + formatWhole(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/' + this.completionLimit;
 			},
 			rewardEffect() {
 				return new Decimal(challengeCompletions(this.layer, this.id)).mul(25);
@@ -3126,7 +3126,7 @@ addLayer('i', {
 				doReset('i', true);
 			},
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
-			completionLimit: 5,
+			completionLimit: 10,
 			unlocked() {
 				return hasMilestone('i', 9);
 			},
@@ -3134,7 +3134,7 @@ addLayer('i', {
 		21: {
 			name: 'Feat of History',
 			fullDisplay() {
-				return 'Restriction: you cannot gain roman numerals, but arabic numeral gain 750x<br>' + 'Goal: ' + format(new Decimal(200).pow(challengeCompletions(this.layer, this.id)).mul(1e13)) + ' arabic numerals<br>Reward: multiply roman numeral gain by 10,000<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/20';
+				return 'Restriction: you cannot gain roman numerals, but arabic numeral gain 750x<br>' + 'Goal: ' + format(new Decimal(200).pow(challengeCompletions(this.layer, this.id)).mul(1e13)) + ' arabic numerals<br>Reward: multiply roman numeral gain by 10,000<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/' + this.completionLimit;
 			},
 			rewardEffect() {
 				return new Decimal(10000).pow(challengeCompletions(this.layer, this.id));
@@ -3154,7 +3154,7 @@ addLayer('i', {
 		22: {
 			name: 'Feat of Space',
 			fullDisplay() {
-				return 'Restriction: unit\'s effect is disabled<br>' + 'Goal: ' + format(new Decimal('1e1000').pow(challengeCompletions(this.layer, this.id)).mul('1e4000')) + ' arabic numerals<br>Reward: multiply the effect scaling of the unit effect by 2<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/3';
+				return 'Restriction: unit\'s effect is disabled<br>' + 'Goal: ' + format(new Decimal('1e1000').pow(challengeCompletions(this.layer, this.id)).mul('1e4000')) + ' arabic numerals<br>Reward: multiply the effect scaling of the unit effect by 2<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/' + this.completionLimit;
 			},
 			rewardEffect() {
 				return new Decimal(2).pow(challengeCompletions(this.layer, this.id));
@@ -3174,7 +3174,7 @@ addLayer('i', {
 		31: {
 			name: 'Feat of Dimensions',
 			fullDisplay() {
-				return 'Restrictions: Feat of Limits and Feat of Space\'s restrictions<br>' + 'Goal: ' + format(new Decimal('1e50').pow(challengeCompletions(this.layer, this.id)).mul('1e1200')) + ' arabic numerals<br>Reward: divide the intelligence cost requirement by 1.666<br>Currently: /' + format(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/10';
+				return 'Restrictions: Feat of Limits and Feat of Space\'s restrictions<br>' + 'Goal: ' + format(new Decimal('1e50').pow(challengeCompletions(this.layer, this.id)).mul('1e1200')) + ' arabic numerals<br>Reward: divide the intelligence cost requirement by 1.666<br>Currently: /' + format(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/' + this.completionLimit;
 			},
 			rewardEffect() {
 				return new Decimal(1.666).pow(challengeCompletions(this.layer, this.id));
@@ -3187,7 +3187,7 @@ addLayer('i', {
 			},
 			countsAs: [12, 22],
 			style: {'width':'290px','height':'230px','border-radius':'20px'},
-			completionLimit: 10,
+			completionLimit: 15,
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('i', 12);
 			},
@@ -3195,7 +3195,7 @@ addLayer('i', {
 		32: {
 			name: 'Feat of Forgotten History',
 			fullDisplay() {
-				return 'Restrictions: Feat of History\'s restriction and Studies are useless<br>' + 'Goal: ' + format(new Decimal(1e5).pow(challengeCompletions(this.layer, this.id)).mul(1e50)) + ' arabic numerals<br>Reward: divide the intelligence cost requirement by 2<br>Currently: /' + format(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/10';
+				return 'Restrictions: Feat of History\'s restriction and Studies are useless<br>' + 'Goal: ' + format(new Decimal(1e5).pow(challengeCompletions(this.layer, this.id)).mul(1e50)) + ' arabic numerals<br>Reward: divide the intelligence cost requirement by 2<br>Currently: /' + format(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/' + this.completionLimit;
 			},
 			rewardEffect() {
 				return new Decimal(2).pow(challengeCompletions(this.layer, this.id));
