@@ -161,6 +161,8 @@ addLayer('rn', {
 	},
 	doReset(resettingLayer) {
 		let keep = [];
+		if (hasMilestone('i', 17) && resettingLayer == 'i') keep.push('upgrades');
+		if (hasMilestone('i', 19) && resettingLayer == 'i') keep.push('calc', 'upCalc', 'overCalc');
 		if (hasMilestone('gn', 1) && resettingLayer == 'gn') keep.push('upgrades');
 		if (hasMilestone('gn', 2) && resettingLayer == 'gn') keep.push('calc', 'upCalc', 'overCalc');
 		if (layers[resettingLayer].row > this.row) layerDataReset('rn', keep);
@@ -2001,7 +2003,7 @@ addLayer('i', {
 		return gain;
 	},
 	canBuyMax() {
-		return false;
+		return hasMilestone('i', 18);
 	},
 	hotkeys: [{
 		key: 'i', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
@@ -2352,6 +2354,36 @@ addLayer('i', {
 			},
 			unlocked() {
 				return hasMilestone('i', 15) || hasMilestone('i', 16);
+			},
+		},
+		17: {
+			requirementDescription: "19 intelligence",
+			effectDescription: "retain roman numeral upgrades<br>on intelligence resets",
+			done() {
+				return player.i.points.gte(19);
+			},
+			unlocked() {
+				return hasMilestone('i', 16) || hasMilestone('i', 17);
+			},
+		},
+		18: {
+			requirementDescription: "20 intelligence",
+			effectDescription: "you can buy max intelligence",
+			done() {
+				return player.i.points.gte(20);
+			},
+			unlocked() {
+				return hasMilestone('i', 17) || hasMilestone('i', 18);
+			},
+		},
+		19: {
+			requirementDescription: "27 intelligence",
+			effectDescription: "retain calculator prefrences<br>on intelligence resets",
+			done() {
+				return player.i.points.gte(27);
+			},
+			unlocked() {
+				return hasMilestone('i', 18) || hasMilestone('i', 19);
 			},
 		},
 	},
