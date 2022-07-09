@@ -2001,6 +2001,7 @@ addLayer('i', {
 		if (hasUpgrade('d', 93)) gain = gain.div(upgradeEffect('d', 93));
 		if (hasChallenge('i', 31)) gain = gain.div(challengeEffect('i', 31));
 		if (hasChallenge('i', 32)) gain = gain.div(challengeEffect('i', 32));
+		if (hasChallenge('i', 41)) gain = gain.div(challengeEffect('i', 41));
 		return gain;
 	},
 	canBuyMax() {
@@ -2092,6 +2093,7 @@ addLayer('i', {
 				['challenges', '2'],
 				['clickables', '3'],
 				['challenges', '3'],
+				['challenges', '4'],
 			],
 			unlocked() {
 				return hasMilestone('i', 9);
@@ -2385,6 +2387,16 @@ addLayer('i', {
 			},
 			unlocked() {
 				return hasMilestone('i', 18) || hasMilestone('i', 19);
+			},
+		},
+		20: {
+			requirementDescription: "29 intelligence and<br>6 Feat of Binary completions",
+			effectDescription: "unlocks a new Feat",
+			done() {
+				return player.i.points.gte(29) && challengeCompletions('i', 11) >= 6;
+			},
+			unlocked() {
+				return hasMilestone('i', 19) || hasMilestone('i', 20);
 			},
 		},
 	},
@@ -3212,6 +3224,27 @@ addLayer('i', {
 			completionLimit: 10,
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('gn', 4);
+			},
+		},
+		41: {
+			name: 'Feat of Past and Present',
+			fullDisplay() {
+				return 'Restrictions: Feat of Binary and Feat of Forgotten History\'s restrictions<br>' + 'Goal: ' + format(new Decimal(1e25).pow(challengeCompletions(this.layer, this.id)).mul(1e200)) + ' arabic numerals<br>Reward: divide the intelligence cost requirement by 1.5<br>Currently: /' + format(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/' + this.completionLimit;
+			},
+			rewardEffect() {
+				return new Decimal(1.5).pow(challengeCompletions(this.layer, this.id));
+			},
+			canComplete() {
+				return player.points.gte(new Decimal(1e25).pow(challengeCompletions(this.layer, this.id)).mul(1e200));
+			},
+			onEnter() {
+				doReset('i', true);
+			},
+			countsAs: [11, 21, 32],
+			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			completionLimit: 10,
+			unlocked() {
+				return hasMilestone('i', 9) && hasMilestone('i', 20);
 			},
 		},
 	},
