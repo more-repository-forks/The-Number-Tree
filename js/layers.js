@@ -780,6 +780,7 @@ addLayer('d', {
 		if (hasUpgrade('d', 82)) cap = cap.mul(5);
 		if (hasUpgrade('d', 92)) cap = cap.mul(10);
 		if (hasUpgrade('gn', 12) && !inChallenge('i', 32)) cap = cap.mul(upgradeEffect('gn', 12));
+		if (hasUpgrade('gn', 23) && !inChallenge('i', 32)) cap = cap.mul(upgradeEffect('gn', 23));
 		player.d.max = cap.round();
 		player.d.timer += diff;
 		if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
@@ -3474,6 +3475,20 @@ addLayer('gn', {
 			unlocked() {
 				return player.gn.upgrades.length >= 5;
 			},
+		},
+		23: {
+			fullDisplay() {
+				let text = `<h3>Greek Counting</h3><br>
+					multiply the digit limit based on the amount of greek numerals you have.<br>
+					Currently: ` + format(this.effect()) + `x<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			effect() {
+				return player.gn.points.add(1).pow(0.03);
+			},
+			cost: new Decimal(2500),
 		},
 	},
 	clickables: {
