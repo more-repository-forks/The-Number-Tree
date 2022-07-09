@@ -2002,6 +2002,7 @@ addLayer('i', {
 		if (hasChallenge('i', 31)) gain = gain.div(challengeEffect('i', 31));
 		if (hasChallenge('i', 32)) gain = gain.div(challengeEffect('i', 32));
 		if (hasChallenge('i', 41)) gain = gain.div(challengeEffect('i', 41));
+		if (hasChallenge('i', 42)) gain = gain.div(challengeEffect('i', 42));
 		return gain;
 	},
 	canBuyMax() {
@@ -2397,6 +2398,16 @@ addLayer('i', {
 			},
 			unlocked() {
 				return hasMilestone('i', 19) || hasMilestone('i', 20);
+			},
+		},
+		21: {
+			requirementDescription: "30 intelligence and<br>7 Feat of Binary completions",
+			effectDescription: "unlocks a new Feat",
+			done() {
+				return player.i.points.gte(30) && challengeCompletions('i', 11) >= 7;
+			},
+			unlocked() {
+				return hasMilestone('i', 20) || hasMilestone('i', 21);
 			},
 		},
 	},
@@ -3245,6 +3256,27 @@ addLayer('i', {
 			completionLimit: 10,
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('i', 20);
+			},
+		},
+		42: {
+			name: 'Feat of Time',
+			fullDisplay() {
+				return 'Restrictions: all previous intelligence Feat restrictions<br>' + 'Goal: ' + format(new Decimal(1e10).pow(challengeCompletions(this.layer, this.id)).mul(1e240)) + ' arabic numerals<br>Reward: divide the intelligence cost requirement by 1.75<br>Currently: /' + format(challengeEffect(this.layer, this.id)) + '<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/' + this.completionLimit;
+			},
+			rewardEffect() {
+				return new Decimal(1.75).pow(challengeCompletions(this.layer, this.id));
+			},
+			canComplete() {
+				return player.points.gte(new Decimal(1e10).pow(challengeCompletions(this.layer, this.id)).mul(1e240));
+			},
+			onEnter() {
+				doReset('i', true);
+			},
+			countsAs: [11, 12, 21, 22, 31, 32, 41],
+			style: {'width':'290px','height':'230px','border-radius':'20px'},
+			completionLimit: 20,
+			unlocked() {
+				return hasMilestone('i', 9) && hasMilestone('i', 21);
 			},
 		},
 	},
