@@ -1993,6 +1993,7 @@ addLayer('i', {
 		score: new Decimal(0),
 		scoreEff: new Decimal(1),
 		simAuto: false,
+		replicateAuto: false,
 	}},
 	color: '#ccff44',
 	resource: 'intelligence',
@@ -2191,6 +2192,15 @@ addLayer('i', {
 				if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols" || upgrade < 40 || upgrade > 70) continue;
 				if (tmp.i.buyables[upgrade].unlocked && tmp.i.buyables[upgrade].canBuy) {
 					player.i.money = player.i.money.sub(tmp.i.buyables[upgrade].cost);
+					setBuyableAmount('i', upgrade, getBuyableAmount('i', upgrade).add(1));
+				};
+			};
+		};
+		if (player.i.replicateAuto) {
+			for (upgrade in tmp.i.buyables) {
+				if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols" || (upgrade > 40 && upgrade < 70)) continue;
+				if (tmp.i.buyables[upgrade].unlocked && tmp.i.buyables[upgrade].canBuy) {
+					player.points = player.points.sub(tmp.i.buyables[upgrade].cost);
 					setBuyableAmount('i', upgrade, getBuyableAmount('i', upgrade).add(1));
 				};
 			};
@@ -3664,6 +3674,16 @@ addLayer('gn', {
 			effectDescription: "unlock Comprehension",
 			done() {
 				return player.gn.points.gte(250000) && player.gn.bestOnce.gte(25000);
+			},
+		},
+		16: {
+			requirementDescription() {
+				return greekNumeralFormat(2000000) + " greek numerals and " + greekNumeralFormat(200000) + " greek numerals in one reset";
+			},
+			effectDescription: "unlocks Replication autobuyer",
+			toggles: [["i", "replicateAuto"]],
+			done() {
+				return player.gn.points.gte(2000000) && player.gn.bestOnce.gte(200000);
 			},
 		},
 	},
