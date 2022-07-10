@@ -3333,7 +3333,8 @@ addLayer('i', {
 				let cap = 20;
 				if (hasMilestone('i', 22)) cap = cap * 2;
 				if (hasMilestone('gn', 11)) cap = cap * 2;
-				return cap;
+				if (getBuyableAmount('gn', 14).gt(0)) cap = cap * buyableEffect('gn', 14).toNumber();
+				return Math.round(cap);
 			},
 			unlocked() {
 				return hasMilestone('i', 9) && hasMilestone('i', 21);
@@ -3986,6 +3987,34 @@ addLayer('gn', {
 			},
 			buy() {
 				player.points = player.points.sub(this.cost());
+				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+			},
+			style: {'width':'120px','height':'120px'},
+			//purchaseLimit: 999,
+			unlocked() {
+				return hasMilestone('gn', 15);
+			},
+		},
+		14: {
+			cost() {
+				return new Decimal(10).pow(getBuyableAmount(this.layer, this.id)).mul(1000000);
+			},
+			effect() {
+				let eff = new Decimal(1.2).pow(getBuyableAmount(this.layer, this.id));
+				return eff;
+			},
+			display() {
+				return `<h3>Time Path</h3><br>`
+					+ `Multiply the cap of Feat of Time by 1.2.<br>`
+					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
+					+ `Cost: ` + format(this.cost()) + ` greek numerals<br>`
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+			},
+			canAfford() {
+				return player.gn.points.gte(this.cost());
+			},
+			buy() {
+				player.gn.points = player.gn.points.sub(this.cost());
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
 			},
 			style: {'width':'120px','height':'120px'},
