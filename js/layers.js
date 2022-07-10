@@ -3320,6 +3320,7 @@ addLayer('gn', {
 		let gain = new Decimal(1);
 		if (hasUpgrade('gn', 13) && !inChallenge('i', 32)) gain = gain.mul(upgradeEffect('gn', 13));
 		if (hasUpgrade('gn', 14) && !inChallenge('i', 32)) gain = gain.mul(upgradeEffect('gn', 14));
+		if (hasUpgrade('gn', 24) && !inChallenge('i', 32)) gain = gain.mul(upgradeEffect('gn', 24));
 		return gain;
 	},
 	softcap: new Decimal(100),
@@ -3396,7 +3397,10 @@ addLayer('gn', {
 	update(diff) {
 		let tier = new Decimal(0);
 		if (hasUpgrade('gn', 15) && !inChallenge('i', 32)) tier = new Decimal(1);
+		if (hasUpgrade('gn', 25) && !inChallenge('i', 32)) tier = new Decimal(2);
 		if (hasMilestone('gn', 5)) tier = tier.add(1);
+		if (hasMilestone('gn', 6)) tier = tier.add(1);
+		if (hasMilestone('gn', 7)) tier = tier.add(1);
 		player.gn.calcTier = tier;
 	},
 	milestones: {
@@ -3452,6 +3456,24 @@ addLayer('gn', {
 			effectDescription: "gain a free translation tier",
 			done() {
 				return player.gn.points.gte(2500) && player.gn.bestOnce.gte(250);
+			},
+		},
+		6: {
+			requirementDescription() {
+				return greekNumeralFormat(5000) + " greek numerals and " + greekNumeralFormat(300) + " greek numerals in one reset";
+			},
+			effectDescription: "gain a free translation tier",
+			done() {
+				return player.gn.points.gte(5000) && player.gn.bestOnce.gte(300);
+			},
+		},
+		7: {
+			requirementDescription() {
+				return greekNumeralFormat(6000) + " greek numerals and " + greekNumeralFormat(666) + " greek numerals in one reset";
+			},
+			effectDescription: "gain a free translation tier",
+			done() {
+				return player.gn.points.gte(6000) && player.gn.bestOnce.gte(666);
 			},
 		},
 	},
@@ -3569,13 +3591,46 @@ addLayer('gn', {
 				return player.gn.points.add(1).pow(0.03);
 			},
 			cost: new Decimal(2500),
+			unlocked() {
+				return player.gn.upgrades.length >= 5;
+			},
+		},
+		24: {
+			fullDisplay() {
+				let text = `<h3>Greek Diplomacy</h3><br>
+					multiply greek numeral gain based on your translation tier.<br>
+					Currently: ` + format(this.effect()) + `x<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			effect() {
+				return player.gn.calcTier.add(1).pow(0.5);
+			},
+			cost: new Decimal(5000),
+			unlocked() {
+				return player.gn.upgrades.length >= 5;
+			},
+		},
+		25: {
+			fullDisplay() {
+				let text = `<h3>Ask the Locals</h3><br>
+					unlock translation tier 2.<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			cost: new Decimal(4500),
+			unlocked() {
+				return player.gn.upgrades.length >= 5;
+			},
 		},
 	},
 	clickables: {
 		11: {
 			display() {
-				if (player.gn.calc) return '<h3>turn<br>translator<br>off';
-				return '<h3>turn<br>translator<br>on';
+				if (player.gn.calc) return '<h3>turn<br>translator<br>off</h3><br>your translation tier is ' + formatWhole(player.gn.calcTier);
+				return '<h3>turn<br>translator<br>on</h3><br>your translation tier is ' + formatWhole(player.gn.calcTier);
 			},
 			canClick() {
 				return true;
