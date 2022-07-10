@@ -5,7 +5,8 @@ addLayer('N', {
 	position: 0,
 	startData() { return {
 		unlocked: true,
-		points: new Decimal(1),
+		points: new Decimal(0),
+		record: new Decimal(0),
 	}},
 	color: '#cccccc',
 	resource: 'notes',
@@ -20,7 +21,7 @@ addLayer('N', {
 		'blank',
 		['display-text',
 			function() {
-				let text = '<h3>Note #1:</h3><br><br>';
+				let text = '<h3>Note #1 - Roman Numeral Transcription</h3><br><br>';
 				text += 'N ----- 0<br>';
 				text += 'I ----- 1<br>';
 				text += 'V ----- 5<br>';
@@ -32,7 +33,7 @@ addLayer('N', {
 				text += 'ↁ ----- 5,000<br>';
 				text += 'ↂ ----- 10,000<br>';
 				if (player.N.points.gte(2)) {
-					text += '<br><h3>Note #2:</h3><br><br>';
+					text += '<br><h3>Note #2 - Greek Numeral Transcription</h3><br><br>';
 					text += '𐆊 ----- 0<br>';
 					text += 'αʹ ----- 1<br>';
 					text += 'βʹ ----- 2<br>';
@@ -79,7 +80,14 @@ addLayer('N', {
 	update(diff) {
 		let amount = new Decimal(1);
 		if (player.gn.unlocked) amount = amount.add(1);
-		player.N.points = amount;
+		player.N.points = amount.round();
+		if (player.N.points.gt(player.N.record)) {
+			let title = 'title not found';
+			player.N.record = player.N.record.add(1).round();
+			if (player.N.points.eq(1)) title = 'Roman Numeral Transcription';
+			else if (player.N.points.eq(2)) title = 'Greek Numeral Transcription';
+			doPopup('none', title, 'New note found!', 3, '#cccccc');
+		};
 	},
 });
 
