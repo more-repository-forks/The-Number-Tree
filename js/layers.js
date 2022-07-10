@@ -3460,11 +3460,11 @@ addLayer('gn', {
 		},
 		6: {
 			requirementDescription() {
-				return greekNumeralFormat(5000) + " greek numerals and " + greekNumeralFormat(300) + " greek numerals in one reset";
+				return greekNumeralFormat(3000) + " greek numerals and " + greekNumeralFormat(300) + " greek numerals in one reset";
 			},
 			effectDescription: "gain a free translation tier",
 			done() {
-				return player.gn.points.gte(5000) && player.gn.bestOnce.gte(300);
+				return player.gn.points.gte(3000) && player.gn.bestOnce.gte(300);
 			},
 		},
 		7: {
