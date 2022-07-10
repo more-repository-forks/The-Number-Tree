@@ -3460,6 +3460,9 @@ addLayer('gn', {
 		if (hasMilestone('gn', 9)) tier = tier.add(1);
 		if (hasMilestone('gn', 10)) tier = tier.add(1);
 		if (hasMilestone('gn', 12)) tier = tier.add(1);
+		if (hasMilestone('gn', 14)) tier = tier.add(1);
+		// mul
+		if (hasUpgrade('gn', 35) && !inChallenge('i', 32)) tier = tier.mul(2);
 		// pow
 		if (hasMilestone('gn', 13)) tier = tier.pow(2);
 		player.gn.calcTier = tier;
@@ -3589,6 +3592,15 @@ addLayer('gn', {
 			effectDescription: "translation tiers are squared",
 			done() {
 				return player.gn.points.gte(40000) && player.gn.bestOnce.gte(2222);
+			},
+		},
+		14: {
+			requirementDescription() {
+				return greekNumeralFormat(200000) + " greek numerals and " + greekNumeralFormat(20000) + " greek numerals in one reset";
+			},
+			effectDescription: "gain a free translation tier",
+			done() {
+				return player.gn.points.gte(200000) && player.gn.bestOnce.gte(20000);
 			},
 		},
 	},
@@ -3800,6 +3812,19 @@ addLayer('gn', {
 				return player.gn.points.add(1).pow(0.1);
 			},
 			cost: new Decimal(30000),
+			unlocked() {
+				return player.gn.upgrades.length >= 10;
+			},
+		},
+		35: {
+			fullDisplay() {
+				let text = `<h3>Linguistics Class</h3><br>
+					double translation tiers<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			cost: new Decimal(100000),
 			unlocked() {
 				return player.gn.upgrades.length >= 10;
 			},
