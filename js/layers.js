@@ -3358,6 +3358,7 @@ addLayer('gn', {
 		total: new Decimal(0),
 		calc: true,
 		calcTier: new Decimal(0),
+		tierMeta: '',
 	}},
 	color: '#ff9922',
 	resource: 'greek numerals',
@@ -3446,12 +3447,43 @@ addLayer('gn', {
 				'blank',
 			],
 		},
+		"Comprehension": {
+			content: [
+				['display-text',
+					function() {
+						if (player.gn.points.gte('1e1000')) return '<h2 class="layer-gn">' + greekNumeralFormat(player.rn.points) + '</h2> greek numerals';
+						return 'You have <h2 class="layer-gn">' + greekNumeralFormat(player.gn.points) + '</h2> greek numerals';
+					},
+				],
+				'blank',
+				'prestige-button',
+				['blank', '3px'],
+				['display-text',
+					function() {
+						text = 'You have ' + romanNumeralFormat(player.rn.points) + ' roman numerals<br>';
+						if (tmp.gn.passiveGeneration) text += 'You are gaining ' + greekNumeralFormat(tmp.gn.resetGain.mul(tmp.gn.passiveGeneration)) + ' greek numerals per second<br>';
+						text += '<br>Your best greek numerals is ' + greekNumeralFormat(player.gn.best) + '<br>';
+						text += 'Your best greek numerals in one reset is ' + greekNumeralFormat(player.gn.bestOnce) + '<br>';
+						text += 'You have made a total of ' + greekNumeralFormat(player.gn.total) + ' greek numerals<br><br>';
+						text += 'Your translation tier is <h2 class="layer-gn">' + formatWhole(player.gn.calcTier) + '</h2><br>';
+						text += 'formula: (' + player.gn.tierMeta + ')';
+						return text;
+					},
+				],
+				'blank',
+			],
+			unlocked() {
+				hasMilestone('gn', 15);
+			},
+		},
 	},
 	update(diff) {
 		let tier = new Decimal(0);
+		let meta = '';
 		// set
 		if (hasUpgrade('gn', 15) && !inChallenge('i', 32)) tier = new Decimal(1);
 		if (hasUpgrade('gn', 25) && !inChallenge('i', 32)) tier = new Decimal(2);
+		meta += formatWhole(tier);
 		// add
 		if (hasMilestone('gn', 5)) tier = tier.add(1);
 		if (hasMilestone('gn', 6)) tier = tier.add(1);
@@ -3461,10 +3493,20 @@ addLayer('gn', {
 		if (hasMilestone('gn', 10)) tier = tier.add(1);
 		if (hasMilestone('gn', 12)) tier = tier.add(1);
 		if (hasMilestone('gn', 14)) tier = tier.add(1);
+		if (tier.sub(meta).gt(0)) meta = '(' + meta + '+' + tier.sub(meta) + ')';
 		// mul
-		if (hasUpgrade('gn', 35) && !inChallenge('i', 32)) tier = tier.mul(2);
+		let mul = new Decimal(1);
+		if (hasUpgrade('gn', 35) && !inChallenge('i', 32)) {
+			tier = tier.mul(2);
+			mul = mul.mul(2);
+		};
+		meta += '*' + mul;
 		// pow
-		if (hasMilestone('gn', 13)) tier = tier.pow(2);
+		if (hasMilestone('gn', 13)) {
+			tier = tier.pow(2);
+			meta = '(' + meta + ')^2';
+		};
+		player.gn.tierMeta = meta;
 		player.gn.calcTier = tier;
 	},
 	milestones: {
@@ -3601,6 +3643,15 @@ addLayer('gn', {
 			effectDescription: "gain a free translation tier",
 			done() {
 				return player.gn.points.gte(200000) && player.gn.bestOnce.gte(20000);
+			},
+		},
+		15: {
+			requirementDescription() {
+				return greekNumeralFormat(250000) + " greek numerals and " + greekNumeralFormat(25000) + " greek numerals in one reset";
+			},
+			effectDescription: "unlock Comprehension",
+			done() {
+				return player.gn.points.gte(250000) && player.gn.bestOnce.gte(25000);
 			},
 		},
 	},
