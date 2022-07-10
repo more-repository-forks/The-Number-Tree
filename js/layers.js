@@ -2419,6 +2419,16 @@ addLayer('i', {
 				return hasMilestone('i', 20) || hasMilestone('i', 21);
 			},
 		},
+		22: {
+			requirementDescription: "86 intelligence and<br>40 Feat of Time completions",
+			effectDescription: "multiply the cap of Feat of Time by 2",
+			done() {
+				return player.i.points.gte(86) && challengeCompletions('i', 42) >= 40;
+			},
+			unlocked() {
+				return hasMilestone('i', 21) || hasMilestone('i', 22);
+			},
+		},
 	},
 	clickables: {
 		11: {
@@ -3309,6 +3319,7 @@ addLayer('i', {
 			marked: false,
 			completionLimit() {
 				let cap = 20;
+				if (hasMilestone('i', 22)) cap = cap * 2;
 				if (hasMilestone('gn', 11)) cap = cap * 2;
 				return cap;
 			},
