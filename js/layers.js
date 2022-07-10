@@ -781,6 +781,7 @@ addLayer('d', {
 		if (hasUpgrade('d', 92)) cap = cap.mul(10);
 		if (hasUpgrade('gn', 12) && !inChallenge('i', 32)) cap = cap.mul(upgradeEffect('gn', 12));
 		if (hasUpgrade('gn', 23) && !inChallenge('i', 32)) cap = cap.mul(upgradeEffect('gn', 23));
+		if (hasUpgrade('gn', 31) && !inChallenge('i', 32)) cap = cap.mul(upgradeEffect('gn', 31));
 		player.d.max = cap.round();
 		player.d.timer += diff;
 		if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
@@ -813,26 +814,33 @@ addLayer('d', {
 		};
 	},
 	automate() {
-		if (player.d.limitBreakAuto) {
-			for (upgrade in tmp.d.upgrades) {
-				if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols") continue;
-				if (tmp.d.upgrades[upgrade].unlocked) {
-					buyUpgrade('d', upgrade);
+		let on = [false];
+		for (let num = 0; num <= 0; num++) {
+			if (player.d.limitBreakAuto) {
+				for (upgrade in tmp.d.upgrades) {
+					if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols") continue;
+					if (tmp.d.upgrades[upgrade].unlocked) {
+						buyUpgrade('d', upgrade);
+					};
 				};
 			};
-		};
-		if (player.d.numberUpgradeAuto) {
-			for (upgrade in tmp.d.buyables) {
-				if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols" || (upgrade == "91" && !player.d.baseUpAuto)) continue;
-				if (tmp.d.buyables[upgrade].unlocked && tmp.d.buyables[upgrade].canBuy) {
-					player.points = player.points.sub(tmp.d.buyables[upgrade].cost);
-					setBuyableAmount('d', upgrade, getBuyableAmount('d', upgrade).add(1));
+			if (player.d.numberUpgradeAuto) {
+				for (upgrade in tmp.d.buyables) {
+					if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols" || (upgrade == "91" && !player.d.baseUpAuto)) continue;
+					if (tmp.d.buyables[upgrade].unlocked && tmp.d.buyables[upgrade].canBuy) {
+						player.points = player.points.sub(tmp.d.buyables[upgrade].cost);
+						setBuyableAmount('d', upgrade, getBuyableAmount('d', upgrade).add(1));
+					};
+				};
+			} else if (player.d.baseUpAuto) {
+				if (tmp.d.buyables[91].unlocked && tmp.d.buyables[91].canBuy) {
+					player.points = player.points.sub(tmp.d.buyables[91].cost);
+					setBuyableAmount('d', 91, getBuyableAmount('d', 91).add(1));
 				};
 			};
-		} else if (player.d.baseUpAuto) {
-			if (tmp.d.buyables[91].unlocked && tmp.d.buyables[91].canBuy) {
-				player.points = player.points.sub(tmp.d.buyables[91].cost);
-				setBuyableAmount('d', 91, getBuyableAmount('d', 91).add(1));
+			if (hasUpgrade('gn', 32) && !inChallenge('i', 32) && !on[0]) {
+				on[0] = true;
+				num--;
 			};
 		};
 	},
@@ -2003,6 +2011,7 @@ addLayer('i', {
 		if (hasChallenge('i', 32)) gain = gain.div(challengeEffect('i', 32));
 		if (hasChallenge('i', 41)) gain = gain.div(challengeEffect('i', 41));
 		if (hasChallenge('i', 42)) gain = gain.div(challengeEffect('i', 42));
+		if (hasUpgrade('gn', 33) && !inChallenge('i', 32)) gain = gain.div(upgradeEffect('gn', 33));
 		return gain;
 	},
 	canBuyMax() {
@@ -3391,6 +3400,7 @@ addLayer('gn', {
 				],
 				'upgrades',
 				'clickables',
+				'blank',
 			],
 		},
 	},
@@ -3401,6 +3411,9 @@ addLayer('gn', {
 		if (hasMilestone('gn', 5)) tier = tier.add(1);
 		if (hasMilestone('gn', 6)) tier = tier.add(1);
 		if (hasMilestone('gn', 7)) tier = tier.add(1);
+		if (hasMilestone('gn', 8)) tier = tier.add(1);
+		if (hasMilestone('gn', 9)) tier = tier.add(1);
+		if (hasMilestone('gn', 10)) tier = tier.add(1);
 		player.gn.calcTier = tier;
 	},
 	milestones: {
@@ -3474,6 +3487,33 @@ addLayer('gn', {
 			effectDescription: "gain a free translation tier",
 			done() {
 				return player.gn.points.gte(6000) && player.gn.bestOnce.gte(666);
+			},
+		},
+		8: {
+			requirementDescription() {
+				return greekNumeralFormat(7500) + " greek numerals and " + greekNumeralFormat(750) + " greek numerals in one reset";
+			},
+			effectDescription: "gain a free translation tier",
+			done() {
+				return player.gn.points.gte(7500) && player.gn.bestOnce.gte(750);
+			},
+		},
+		9: {
+			requirementDescription() {
+				return greekNumeralFormat(8750) + " greek numerals and " + greekNumeralFormat(875) + " greek numerals in one reset";
+			},
+			effectDescription: "gain a free translation tier",
+			done() {
+				return player.gn.points.gte(8750) && player.gn.bestOnce.gte(875);
+			},
+		},
+		10: {
+			requirementDescription() {
+				return greekNumeralFormat(10000) + " greek numerals and " + greekNumeralFormat(1000) + " greek numerals in one reset";
+			},
+			effectDescription: "gain a free translation tier",
+			done() {
+				return player.gn.points.gte(10000) && player.gn.bestOnce.gte(1000);
 			},
 		},
 	},
@@ -3597,7 +3637,7 @@ addLayer('gn', {
 		},
 		24: {
 			fullDisplay() {
-				let text = `<h3>Greek Diplomacy</h3><br>
+				let text = `<h3>Greek Dictionary</h3><br>
 					multiply greek numeral gain based on your translation tier.<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
@@ -3623,6 +3663,53 @@ addLayer('gn', {
 			cost: new Decimal(4500),
 			unlocked() {
 				return player.gn.upgrades.length >= 5;
+			},
+		},
+		31: {
+			fullDisplay() {
+				let text = `<h3>Greek Geometry</h3><br>
+					multiply the digit limit based on the amount of greek numerals you have.<br>
+					Currently: ` + format(this.effect()) + `x<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			effect() {
+				return player.gn.points.add(1).pow(0.02);
+			},
+			cost: new Decimal(7500),
+			unlocked() {
+				return player.gn.upgrades.length >= 10;
+			},
+		},
+		32: {
+			fullDisplay() {
+				let text = `<h3>Greek Markets</h3><br>
+					all digit autobuyers can buy 2x bulk.<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			cost: new Decimal(10000),
+			unlocked() {
+				return player.gn.upgrades.length >= 10;
+			},
+		},
+		33: {
+			fullDisplay() {
+				let text = `<h3>Greek EQ</h3><br>
+					divide the intelligence cost requirement based on your translation tier.<br>
+					Currently: /` + format(this.effect()) + `<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			effect() {
+				return player.gn.calcTier.add(1).pow(0.5);
+			},
+			cost: new Decimal(20000),
+			unlocked() {
+				return player.gn.upgrades.length >= 10;
 			},
 		},
 	},
