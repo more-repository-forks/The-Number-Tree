@@ -3496,7 +3496,7 @@ addLayer('gn', {
 		if (hasMilestone('gn', 12)) tier = tier.add(1);
 		if (hasMilestone('gn', 14)) tier = tier.add(1);
 		if (getBuyableAmount('gn', 11).gt(0)) tier = tier.add(buyableEffect('gn', 11));
-		if (tier.sub(meta).gt(0)) meta = '(' + meta + '+' + format(tier.sub(meta)) + ')';
+		if (tier.sub(meta).gt(0)) meta += '+' + format(tier.sub(meta));
 		// mul
 		let mul = new Decimal(1);
 		let eff = new Decimal(2);
@@ -3506,15 +3506,19 @@ addLayer('gn', {
 		if (hasUpgrade('gn', 35) && !inChallenge('i', 32)) {
 			tier = tier.mul(eff);
 			mul = mul.mul(eff);
+			meta = '(' + meta + ')*' + format(mul);
 		};
-		meta += '*' + format(mul);
 		// pow
+		eff = new Decimal(2);
+		if (getBuyableAmount('gn', 13).gt(0)) {
+			eff = eff.add(buyableEffect('gn', 13));
+		};
 		if (hasMilestone('gn', 13)) {
-			tier = tier.pow(2);
-			meta = '(' + meta + ')^2';
+			tier = tier.pow(eff);
+			meta = '(' + meta + ')^' + format(eff);
 		};
 		player.gn.tierMeta = meta;
-		player.gn.calcTier = tier;
+		player.gn.calcTier = tier.round();
 	},
 	milestones: {
 		0: {
@@ -3945,6 +3949,34 @@ addLayer('gn', {
 			display() {
 				return `<h3>Multiplication</h3><br>`
 					+ `Increase the multiplication factor in the translation formula by 0.75.<br>`
+					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
+					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+			},
+			canAfford() {
+				return player.points.gte(this.cost());
+			},
+			buy() {
+				player.points = player.points.sub(this.cost());
+				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+			},
+			style: {'width':'120px','height':'120px'},
+			//purchaseLimit: 999,
+			unlocked() {
+				return hasMilestone('gn', 15);
+			},
+		},
+		13: {
+			cost() {
+				return new Decimal('1e7500').pow(getBuyableAmount(this.layer, this.id)).mul('1e37500');
+			},
+			effect() {
+				let eff = getBuyableAmount(this.layer, this.id).mul(0.2);
+				return eff;
+			},
+			display() {
+				return `<h3>Exponential</h3><br>`
+					+ `Increase the exponential factor in the translation formula by 0.2.<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
