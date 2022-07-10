@@ -671,8 +671,9 @@ addLayer('d', {
 			keep.push("numberButtonAuto");
 			keepMile.push('18');
 		};
+		if (hasMilestone('gn', 17) && resettingLayer == 'gn') keep.push('milestones');
 		if (layers[resettingLayer].row > this.row) layerDataReset('d', keep);
-		player[this.layer].milestones = keepMile;
+		if (!keep.includes('milestones')) player[this.layer].milestones = keepMile;
 	},
 	hotkeys: [{
 		key: 'd', // Use uppercase if it's combined with shift, or 'ctrl+x' for holding down ctrl.
@@ -3686,6 +3687,15 @@ addLayer('gn', {
 				return player.gn.points.gte(2000000) && player.gn.bestOnce.gte(200000);
 			},
 		},
+		17: {
+			requirementDescription() {
+				return greekNumeralFormat(10000000) + " greek numerals and " + greekNumeralFormat(1000000) + " greek numerals in one reset";
+			},
+			effectDescription: "retain digit milestones on greek numeral resets",
+			done() {
+				return player.gn.points.gte(10000000) && player.gn.bestOnce.gte(1000000);
+			},
+		},
 	},
 	upgrades: {
 		11: {
@@ -3954,7 +3964,7 @@ addLayer('gn', {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
 			},
 			style: {'width':'120px','height':'120px'},
-			//purchaseLimit: 999,
+			purchaseLimit: 10,
 			unlocked() {
 				return hasMilestone('gn', 15);
 			},
@@ -3982,7 +3992,7 @@ addLayer('gn', {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
 			},
 			style: {'width':'120px','height':'120px'},
-			//purchaseLimit: 999,
+			purchaseLimit: 10,
 			unlocked() {
 				return hasMilestone('gn', 15);
 			},
@@ -4010,7 +4020,7 @@ addLayer('gn', {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
 			},
 			style: {'width':'120px','height':'120px'},
-			//purchaseLimit: 999,
+			purchaseLimit: 5,
 			unlocked() {
 				return hasMilestone('gn', 15);
 			},
@@ -4038,7 +4048,6 @@ addLayer('gn', {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
 			},
 			style: {'width':'120px','height':'120px'},
-			//purchaseLimit: 999,
 			unlocked() {
 				return hasMilestone('gn', 15);
 			},
