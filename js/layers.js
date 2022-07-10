@@ -3466,7 +3466,7 @@ addLayer('gn', {
 						text += 'Your best greek numerals in one reset is ' + greekNumeralFormat(player.gn.bestOnce) + '<br>';
 						text += 'You have made a total of ' + greekNumeralFormat(player.gn.total) + ' greek numerals<br><br>';
 						text += 'Your translation tier is <h2 class="layer-gn">' + formatWhole(player.gn.calcTier) + '</h2><br>';
-						text += 'formula: (' + player.gn.tierMeta + ')';
+						text += 'formula: ' + player.gn.tierMeta;
 						return text;
 					},
 				],
@@ -3496,14 +3496,18 @@ addLayer('gn', {
 		if (hasMilestone('gn', 12)) tier = tier.add(1);
 		if (hasMilestone('gn', 14)) tier = tier.add(1);
 		if (getBuyableAmount('gn', 11).gt(0)) tier = tier.add(buyableEffect('gn', 11));
-		if (tier.sub(meta).gt(0)) meta = '(' + meta + '+' + tier.sub(meta) + ')';
+		if (tier.sub(meta).gt(0)) meta = '(' + meta + '+' + format(tier.sub(meta)) + ')';
 		// mul
 		let mul = new Decimal(1);
-		if (hasUpgrade('gn', 35) && !inChallenge('i', 32)) {
-			tier = tier.mul(2);
-			mul = mul.mul(2);
+		let eff = new Decimal(2);
+		if (getBuyableAmount('gn', 12).gt(0)) {
+			eff = eff.add(buyableEffect('gn', 12));
 		};
-		meta += '*' + mul;
+		if (hasUpgrade('gn', 35) && !inChallenge('i', 32)) {
+			tier = tier.mul(eff);
+			mul = mul.mul(eff);
+		};
+		meta += '*' + format(mul);
 		// pow
 		if (hasMilestone('gn', 13)) {
 			tier = tier.pow(2);
@@ -3907,13 +3911,41 @@ addLayer('gn', {
 				return new Decimal('1e3000').pow(getBuyableAmount(this.layer, this.id)).mul('1e30000');
 			},
 			effect() {
-				let eff = getBuyableAmount(this.layer, this.id);
+				let eff = getBuyableAmount(this.layer, this.id).mul(1.1);
 				return eff;
 			},
 			display() {
 				return `<h3>Addition</h3><br>`
-					+ `Increase the addition effect of the translation formula by 1.<br>`
-					+ `Currently: +` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
+					+ `Increase the addition factor in the translation formula by 1.1.<br>`
+					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
+					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+			},
+			canAfford() {
+				return player.points.gte(this.cost());
+			},
+			buy() {
+				player.points = player.points.sub(this.cost());
+				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+			},
+			style: {'width':'120px','height':'120px'},
+			//purchaseLimit: 999,
+			unlocked() {
+				return hasMilestone('gn', 15);
+			},
+		},
+		12: {
+			cost() {
+				return new Decimal('1e5000').pow(getBuyableAmount(this.layer, this.id)).mul('1e35000');
+			},
+			effect() {
+				let eff = getBuyableAmount(this.layer, this.id).mul(0.75);
+				return eff;
+			},
+			display() {
+				return `<h3>Multiplication</h3><br>`
+					+ `Increase the multiplication factor in the translation formula by 0.75.<br>`
+					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
 			},
