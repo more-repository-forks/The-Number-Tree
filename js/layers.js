@@ -782,6 +782,7 @@ addLayer('d', {
 		if (hasUpgrade('gn', 12) && !inChallenge('i', 32)) cap = cap.mul(upgradeEffect('gn', 12));
 		if (hasUpgrade('gn', 23) && !inChallenge('i', 32)) cap = cap.mul(upgradeEffect('gn', 23));
 		if (hasUpgrade('gn', 31) && !inChallenge('i', 32)) cap = cap.mul(upgradeEffect('gn', 31));
+		if (hasUpgrade('gn', 34) && !inChallenge('i', 32)) cap = cap.mul(upgradeEffect('gn', 34));
 		player.d.max = cap.round();
 		player.d.timer += diff;
 		if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 41))) {
@@ -2429,6 +2430,16 @@ addLayer('i', {
 				return hasMilestone('i', 21) || hasMilestone('i', 22);
 			},
 		},
+		23: {
+			requirementDescription: "98 intelligence",
+			effectDescription: "multiply the cap of Feat of<br>Past and Present by 2",
+			done() {
+				return player.i.points.gte(98);
+			},
+			unlocked() {
+				return hasMilestone('i', 22) || hasMilestone('i', 23);
+			},
+		},
 	},
 	clickables: {
 		11: {
@@ -3293,6 +3304,7 @@ addLayer('i', {
 			marked: false,
 			completionLimit() {
 				let cap = 10;
+				if (hasMilestone('i', 23)) cap = cap * 2;
 				if (hasMilestone('gn', 11)) cap = cap * 2;
 				return cap;
 			},
@@ -3437,14 +3449,19 @@ addLayer('gn', {
 	},
 	update(diff) {
 		let tier = new Decimal(0);
+		// set
 		if (hasUpgrade('gn', 15) && !inChallenge('i', 32)) tier = new Decimal(1);
 		if (hasUpgrade('gn', 25) && !inChallenge('i', 32)) tier = new Decimal(2);
+		// add
 		if (hasMilestone('gn', 5)) tier = tier.add(1);
 		if (hasMilestone('gn', 6)) tier = tier.add(1);
 		if (hasMilestone('gn', 7)) tier = tier.add(1);
 		if (hasMilestone('gn', 8)) tier = tier.add(1);
 		if (hasMilestone('gn', 9)) tier = tier.add(1);
 		if (hasMilestone('gn', 10)) tier = tier.add(1);
+		if (hasMilestone('gn', 12)) tier = tier.add(1);
+		// pow
+		if (hasMilestone('gn', 13)) tier = tier.pow(2);
 		player.gn.calcTier = tier;
 	},
 	milestones: {
@@ -3554,6 +3571,24 @@ addLayer('gn', {
 			effectDescription: "multiply the caps of Feats of Binary, Limits, Dimesions, Past and Present, and Time by 2",
 			done() {
 				return player.gn.points.gte(20000) && player.gn.bestOnce.gte(1111);
+			},
+		},
+		12: {
+			requirementDescription() {
+				return greekNumeralFormat(30000) + " greek numerals and " + greekNumeralFormat(2000) + " greek numerals in one reset";
+			},
+			effectDescription: "gain a free translation tier",
+			done() {
+				return player.gn.points.gte(30000) && player.gn.bestOnce.gte(2000);
+			},
+		},
+		13: {
+			requirementDescription() {
+				return greekNumeralFormat(40000) + " greek numerals and " + greekNumeralFormat(2222) + " greek numerals in one reset";
+			},
+			effectDescription: "translation tiers are squared",
+			done() {
+				return player.gn.points.gte(40000) && player.gn.bestOnce.gte(2222);
 			},
 		},
 	},
@@ -3748,6 +3783,23 @@ addLayer('gn', {
 				return player.gn.calcTier.add(1).pow(0.5);
 			},
 			cost: new Decimal(20000),
+			unlocked() {
+				return player.gn.upgrades.length >= 10;
+			},
+		},
+		34: {
+			fullDisplay() {
+				let text = `<h3>Greek Trigonometry</h3><br>
+					multiply the digit limit based on the amount of greek numerals you have.<br>
+					Currently: ` + format(this.effect()) + `x<br><br>
+					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
+				if (player.nerdMode) text += '';
+				return text;
+			},
+			effect() {
+				return player.gn.points.add(1).pow(0.1);
+			},
+			cost: new Decimal(30000),
 			unlocked() {
 				return player.gn.upgrades.length >= 10;
 			},
