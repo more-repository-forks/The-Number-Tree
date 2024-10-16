@@ -622,23 +622,25 @@ addLayer('d', {
 	layerShown() { return true },
 	tabFormat: {
 		"Number": {
-			content: [
-				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
-				'blank',
-				'prestige-button',
-				'resource-display',
-				'blank',
-				'grid',
-				'blank',
-				['row', [['buyable', 11], 'blank', 'clickables', 'blank', ['buyable', 12]]],
-				['blank', '13px'],
-				['buyables', '2'],
-				['blank', '13px'],
-				['buyables', '3'],
-				['blank', '13px'],
-				['buyables', '4'],
-				'blank',
-			],
+			content: () => {
+				let content = [
+					['display-text', 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
+					'blank',
+					'prestige-button',
+					'resource-display',
+					'blank',
+					'grid',
+					'blank',
+					['row', [['buyable', 11], 'blank', 'clickables', 'blank', ['buyable', 12]]],
+					['blank', '13px'],
+					['buyables', '2'],
+					['blank', '13px'],
+					['buyables', '3'],
+				];
+				if (hasMilestone('d', 17)) content.push(['blank', '13px'], ['buyables', '4']);
+				content.push('blank');
+				return content;
+			},
 		},
 		"Milestones": {
 			content: [
@@ -733,15 +735,15 @@ addLayer('d', {
 			};
 			if (player.d.numberUpgradeAuto) {
 				for (upgrade in tmp.d.buyables) {
-					if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols" || (upgrade == "91" && !player.d.baseUpAuto)) continue;
+					if (upgrade == "layer" || upgrade == "rows" || upgrade == "cols" || (upgrade == "51" && !player.d.baseUpAuto)) continue;
 					if (tmp.d.buyables[upgrade].unlocked && tmp.d.buyables[upgrade].canBuy) {
 						player.points = player.points.sub(tmp.d.buyables[upgrade].cost);
 						setBuyableAmount('d', upgrade, getBuyableAmount('d', upgrade).add(1));
 					};
 				};
 			} else if (player.d.baseUpAuto) {
-				if (tmp.d.buyables[91].unlocked && tmp.d.buyables[91].canBuy) {
-					player.points = player.points.sub(tmp.d.buyables[91].cost);
+				if (tmp.d.buyables[51].unlocked && tmp.d.buyables[51].canBuy) {
+					player.points = player.points.sub(tmp.d.buyables[51].cost);
 					addBuyables('d', 51, 1);
 				};
 			};
@@ -798,7 +800,7 @@ addLayer('d', {
 					+ `Increase the effect of the button to the right by 1<br>`
 					+ `Currently: +` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit());
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -825,7 +827,7 @@ addLayer('d', {
 					+ `multiply the effect of the button to the left by 3<br>`
 					+ `Currently: ` + formatWhole(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit());
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -851,7 +853,7 @@ addLayer('d', {
 					+ `passively increase your number by +1.5 (rounded down) every ` + formatTime(new Decimal(1).div(buyableEffect('d', 32))) + `<br>`
 					+ `Currently: +` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -869,7 +871,7 @@ addLayer('d', {
 					+ `Increase the speed of the upgrade above by +20%<br>`
 					+ `Currently: +` + formatWhole(getBuyableAmount(this.layer, this.id).mul(20)) + `%<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -894,7 +896,7 @@ addLayer('d', {
 				text += `<br>`
 					+ `Currently: ` + formatWhole(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit());
 				return text;
 			},
 			canAfford() { return player.points.gte(this.cost()) },
@@ -941,7 +943,7 @@ addLayer('d', {
 					+ `increase the cap of <b>One Up</b> by 15<br>`
 					+ `Currently: +` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -989,10 +991,10 @@ addLayer('d', {
 			effect() { return getBuyableAmount(this.layer, this.id).add(2) },
 			display() {
 				return `<h1>Base Up</h1><br><br><h3>`
-					+ `upgrade your numbers to the next base, which allows for higher numbers. also multiplies the number effect by 2<br><br>`
+					+ `Upgrade your numbers to the next base (allowing for higher numbers) and multiply the number effect by 2<br><br>`
 					+ `Currently: base ` + formatWhole(buyableEffect(this.layer, this.id)) + ` and ` + formatWhole(new Decimal(2).pow(getBuyableAmount(this.layer, this.id))) + `x<br><br>`
-					+ `Cost: ` + format(this.cost()) + ` of your numnber<br><br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `</h3>`;
+					+ `Cost: ` + format(this.cost()) + ` of your number<br><br>`
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit) + `</h3>`;
 			},
 			canAfford() { return player.d.number.gte(this.cost()) },
 			buy() {
@@ -1190,7 +1192,7 @@ addLayer('d', {
 		},
 		18: {
 			requirementDescription: "number 1e630",
-			effectDescription: "unlock auto press 'make number larger'",
+			effectDescription: "unlocks auto press 'make number larger'",
 			toggles: [["d", "numberButtonAuto"]],
 			done() { return player.d.number.gte('1e630') },
 			unlocked() { return hasMilestone('d', 17) || hasMilestone('d', 18) },
@@ -1676,7 +1678,7 @@ addLayer('i', {
 				'prestige-button',
 				'resource-display',
 				'blank',
-				['display-text', () => 'You have <h2 class="layer-i">' + formatWhole(player.i.units) + '</h2> units, which divides the digit cost requirement by <h2 class="layer-i">' + format(player.i.unitEffect) + '</h2>'],
+				['display-text', () => 'You have <h2 class="layer-i">' + formatWhole(player.i.units) + '</h2> units, which divides the digit cost requirement by <h2 class="layer-i">' + format(player.i.unitEffect) + '</h2> (digit cost requirement cannot go below 1e10)'],
 				'blank',
 				['row', [['buyables', '1'], ['clickables', '1'], ['buyables', '2']]],
 				['blank', '13px'],
