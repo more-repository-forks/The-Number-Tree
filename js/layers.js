@@ -586,7 +586,6 @@ addLayer('d', {
 			keepMile.push('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 		};
 		if ((hasMilestone('gn', 3) && resettingLayer == 'gn') || (hasMilestone('i', 16) && resettingLayer == 'i')) {
-			keep.push("numberButtonAuto");
 			keepMile.push('18');
 		};
 		if (hasMilestone('gn', 17) && resettingLayer == 'gn') keep.push('milestones');
@@ -607,7 +606,7 @@ addLayer('d', {
 		else if (hasMilestone('d', 10)) logValue = new Decimal(0.1);
 		else if (hasMilestone('d', 1)) logValue = new Decimal(0.2);
 		else if (hasMilestone('d', 0)) logValue = new Decimal(0.5);
-		if (getBuyableAmount('d', 42)) logValue = logValue.div(buyableEffect('d', 42));
+		if (getBuyableAmount('d', 42).gt(0)) logValue = logValue.div(buyableEffect('d', 42));
 		let eff = player.d.number.add(1).log(logValue.add(1)).mul(player.d.points);
 		if (getBuyableAmount('d', 51)) eff = eff.mul(new Decimal(2).pow(getBuyableAmount('d', 51)));
 		if (hasUpgrade('d', 32)) eff = eff.mul(upgradeEffect('d', 32));
@@ -624,7 +623,7 @@ addLayer('d', {
 		"Number": {
 			content: () => {
 				let content = [
-					['display-text', 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
+					['display-text', 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits (and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>), which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
 					'blank',
 					'prestige-button',
 					'resource-display',
@@ -644,7 +643,7 @@ addLayer('d', {
 		},
 		"Milestones": {
 			content: [
-				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
+				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits (and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>), which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
 				'blank',
 				'prestige-button',
 				'resource-display',
@@ -655,7 +654,7 @@ addLayer('d', {
 		},
 		"Base Up": {
 			content: [
-				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
+				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits (and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>), which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
 				'blank',
 				'prestige-button',
 				'resource-display',
@@ -667,7 +666,7 @@ addLayer('d', {
 		},
 		"Limit Break": {
 			content: [
-				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
+				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits (and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>), which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
 				'blank',
 				'prestige-button',
 				'resource-display',
@@ -695,10 +694,12 @@ addLayer('d', {
 		if (hasUpgrade('gn', 34) && !inChallenge('i', 32)) cap = cap.mul(upgradeEffect('gn', 34));
 		player.d.max = cap.round();
 		player.d.timer += diff;
-		if (player.d.timer >= new Decimal(1).div(buyableEffect('d', 32))) {
-			player.d.number = player.d.number.add(buyableEffect('d', 22));
-			if (player.d.numberButtonAuto) player.d.number = player.d.number.add(player.d.clickPower).round();
-			player.d.timer = 0;
+		let timer = new Decimal(1).div(buyableEffect('d', 32)).toNumber();
+		if (player.d.timer >= timer) {
+			let ticks = Math.floor(player.d.timer / timer);
+			player.d.number = player.d.number.add(buyableEffect('d', 22).mul(ticks));
+			if (hasMilestone('d', 18)) player.d.number = player.d.number.add(player.d.clickPower.mul(ticks)).round();
+			player.d.timer -= timer * ticks;
 		};
 		let power = new Decimal(1);
 		if (getBuyableAmount('d', 11).gt(0)) power = power.add(buyableEffect('d', 11));
@@ -1020,7 +1021,7 @@ addLayer('d', {
 					+ `Multiply the base effect of <b>Up the Up</b> by 1.25<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit());
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -1043,7 +1044,7 @@ addLayer('d', {
 					+ `Divide the logarithm base above 1 in the number effect formula by 750<br>`
 					+ `Currently: /` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -1066,7 +1067,7 @@ addLayer('d', {
 					+ `divide the cost of the upgrades above by 1e20<br>`
 					+ `Currently: /` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit());
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -1092,116 +1093,115 @@ addLayer('d', {
 			requirementDescription: "40 digits and number 300,000",
 			effectDescription: "improves the number effect formula<br>log1.5 --> log1.2",
 			done() { return player.d.points.gte(40) && player.d.number.gte(300000) },
-			unlocked() { return hasMilestone('d', 0) || hasMilestone('d', 1) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		2: {
 			requirementDescription: "60 digits and number 1,000,000",
 			effectDescription: "unlocks a new roman numeral upgrade",
 			done() { return player.d.points.gte(60) && player.d.number.gte(1000000) },
-			unlocked() { return hasMilestone('d', 1) || hasMilestone('d', 2) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		3: {
 			requirementDescription: "80 digits and number 10,000,000",
 			effectDescription: "unlocks a second new roman numeral upgrade",
 			done() { return player.d.points.gte(80) && player.d.number.gte(10000000) },
-			unlocked() { return hasMilestone('d', 2) || hasMilestone('d', 3) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		4: {
 			requirementDescription: "99 digits and number 100,000,000",
 			effectDescription: "unlocks a third new roman numeral upgrade",
 			done() { return player.d.points.gte(99) && player.d.number.gte(100000000) },
-			unlocked() { return hasMilestone('d', 3) || hasMilestone('d', 4) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		5: {
 			requirementDescription: "number 1e11",
 			effectDescription: "roman numerals reset nothing",
 			done() { return player.d.number.gte(1e11) },
-			unlocked() { return hasMilestone('d', 4) || hasMilestone('d', 5) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		6: {
 			requirementDescription: "number 1e15",
 			effectDescription: "gain 1,000% of roman numeral gain per second",
 			done() { return player.d.number.gte(1e15) },
-			unlocked() { return hasMilestone('d', 5) || hasMilestone('d', 6) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		7: {
 			requirementDescription: "number 1e16",
 			effectDescription: "unlocks two new digit number upgrades",
 			done() { return player.d.number.gte(1e16) },
-			unlocked() { return hasMilestone('d', 6) || hasMilestone('d', 7) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		8: {
 			requirementDescription: "number 1e24",
 			effectDescription: "unlocks two new digit number upgrades",
 			done() { return player.d.number.gte(1e24) },
-			unlocked() { return hasMilestone('d', 7) || hasMilestone('d', 8) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		9: {
 			requirementDescription: "360 One Ups",
 			effectDescription: "unlocks Base Up",
 			done() { return getBuyableAmount('d', 11).gte(360) },
-			unlocked() { return hasMilestone('d', 8) || hasMilestone('d', 9) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		10: {
 			requirementDescription: "number 1e35",
 			effectDescription: "improves the number effect formula<br>log1.2 --> log1.1",
 			done() { return player.d.number.gte(1e35) },
-			unlocked() { return hasMilestone('d', 9) || hasMilestone('d', 10) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		11: {
 			requirementDescription: "number 1e36",
 			effectDescription: "improves the number effect formula<br>log1.1 --> log1.02",
 			done() { return player.d.number.gte(1e36) },
-			unlocked() { return hasMilestone('d', 10) || hasMilestone('d', 11) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		12: {
 			requirementDescription: "number 1e40",
 			effectDescription: "improves the number effect formula<br>log1.02 --> log1.005",
 			done() { return player.d.number.gte(1e40) },
-			unlocked() { return hasMilestone('d', 11) || hasMilestone('d', 12) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		13: {
 			requirementDescription: "number 1e45",
 			effectDescription: "improves the number effect formula<br>log1.005 --> log1.001",
 			done() { return player.d.number.gte(1e45) },
-			unlocked() { return hasMilestone('d', 12) || hasMilestone('d', 13) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		14: {
 			requirementDescription: "number 1e66",
 			effectDescription: "improves the number effect formula<br>log1.001 --> log1.0001",
 			done() { return player.d.number.gte(1e66) },
-			unlocked() { return hasMilestone('d', 13) || hasMilestone('d', 14) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		15: {
 			requirementDescription: "number 1e99",
 			effectDescription: "unlocks Limit Break",
 			done() { return player.d.number.gte(1e99) },
-			unlocked() { return hasMilestone('d', 14) || hasMilestone('d', 15) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		16: {
 			requirementDescription: "number 1e101",
 			effectDescription: "you can buy max digits",
 			done() { return player.d.number.gte(1e101) },
-			unlocked() { return hasMilestone('d', 15) || hasMilestone('d', 16) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		17: {
 			requirementDescription: "number 1e116",
 			effectDescription: "unlocks three new digit number upgrades",
 			done() { return player.d.number.gte(1e111) },
-			unlocked() { return hasMilestone('d', 16) || hasMilestone('d', 17) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		18: {
 			requirementDescription: "number 1e630",
-			effectDescription: "unlocks auto press 'make number larger'",
-			toggles: [["d", "numberButtonAuto"]],
+			effectDescription: "<b>Lazing</b> also presses the button above it on activation",
 			done() { return player.d.number.gte('1e630') },
-			unlocked() { return hasMilestone('d', 17) || hasMilestone('d', 18) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 		19: {
 			requirementDescription: "number 1e1750",
 			effectDescription: "double the digit limit",
 			done() { return player.d.number.gte('1e1750') },
-			unlocked() { return hasMilestone('d', 18) || hasMilestone('d', 19) },
+			unlocked() { return hasMilestone('d', this.id - 1) || hasMilestone('d', this.id) },
 		},
 	},
 	upgrades: {
@@ -1487,7 +1487,7 @@ addLayer('d', {
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
-			cost: new Decimal(5000),
+			cost: new Decimal(5500),
 			unlocked() { return player.d.upgrades.length >= 25 && getBuyableAmount('i', 32).gte(1) },
 		},
 		82: {
@@ -1834,142 +1834,142 @@ addLayer('i', {
 			effectDescription: "unlocks Base Up autobuyer",
 			toggles: [["d", "baseUpAuto"]],
 			done() { return player.i.points.gte(2) },
-			unlocked() { return hasMilestone('i', 0) || hasMilestone('i', 1) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		2: {
 			requirementDescription: "3 intelligence",
 			effectDescription: "unlocks digit autobuyer",
 			toggles: [["d", "digitAuto"]],
 			done() { return player.i.points.gte(3) },
-			unlocked() { return hasMilestone('i', 1) || hasMilestone('i', 2) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		3: {
 			requirementDescription: "4 intelligence",
 			effectDescription: "digits reset nothing",
 			done() { return player.i.points.gte(4) },
-			unlocked() { return hasMilestone('i', 2) || hasMilestone('i', 3) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		4: {
 			requirementDescription: "5 intelligence",
 			effectDescription: "unlocks Limit Break autobuyer",
 			toggles: [["d", "limitBreakAuto"]],
 			done() { return player.i.points.gte(5) },
-			unlocked() { return hasMilestone('i', 3) || hasMilestone('i', 4) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		5: {
 			requirementDescription: "5 intelligence and 11,111 digits",
 			effectDescription: "unlocks Simulation",
 			done() { return player.i.points.gte(5) && player.d.points.gte(11111) },
-			unlocked() { return hasMilestone('i', 4) || hasMilestone('i', 5) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		6: {
 			requirementDescription: "1,000,000 money",
 			effectDescription: "unlocks Simulation autobuyer",
 			toggles: [["i", "simAuto"]],
 			done() { return player.i.money.gte(1000000) },
-			unlocked() { return hasMilestone('i', 5) || hasMilestone('i', 6) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		7: {
 			requirementDescription: "6 intelligence",
 			effectDescription: "unlocks 4 new Simulation upgrades",
 			done() { return player.i.points.gte(6) },
-			unlocked() { return hasMilestone('i', 6) || hasMilestone('i', 7) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		8: {
 			requirementDescription: "7 intelligence",
 			effectDescription: "unlocks 3 new Replicator upgrades",
 			done() { return player.i.points.gte(7) },
-			unlocked() { return hasMilestone('i', 7) || hasMilestone('i', 8) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		9: {
 			requirementDescription: "8 intelligence and 20,000 digits",
 			effectDescription: "unlocks Feats",
 			done() { return player.i.points.gte(8) && player.d.points.gte(20000) },
-			unlocked() { return hasMilestone('i', 8) || hasMilestone('i', 9) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		10: {
 			requirementDescription: "9 intelligence",
-			effectDescription: "retain the first 10 digit milestones<br>on intelligence resets",
+			effectDescription: "retain the first 10 digit milestones on intelligence resets",
 			done() { return player.i.points.gte(9) },
-			unlocked() { return hasMilestone('i', 9) || hasMilestone('i', 10) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		11: {
 			requirementDescription: "9 intelligence and 30,000 digits",
 			effectDescription: "unlocks a new Feat",
 			done() { return player.i.points.gte(9) && player.d.points.gte(30000) },
-			unlocked() { return hasMilestone('i', 10) || hasMilestone('i', 11) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		12: {
-			requirementDescription: "11 intelligence and<br>3 Feat of History completions",
+			requirementDescription: "11 intelligence and 3 Feat of History completions",
 			effectDescription: "unlocks a new Feat",
 			done() { return player.i.points.gte(11) && challengeCompletions('i', 21) >= 3 },
-			unlocked() { return hasMilestone('i', 11) || hasMilestone('i', 12) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		13: {
 			requirementDescription: "12 intelligence",
-			effectDescription: "improve intelligence effect formula<br>10^x --> 100^x",
+			effectDescription: "improve intelligence effect formula (10^x --> 100^x)",
 			done() { return player.i.points.gte(12) },
-			unlocked() { return hasMilestone('i', 12) || hasMilestone('i', 13) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		14: {
-			requirementDescription: "13 intelligence and<br>9 Feat of History completions",
-			effectDescription: "improve intelligence effect formula<br>100^x --> 1,000^x",
+			requirementDescription: "13 intelligence and 9 Feat of History completions",
+			effectDescription: "improve intelligence effect formula (100^x --> 1,000^x)",
 			done() { return player.i.points.gte(13) && challengeCompletions('i', 21) >= 9 },
-			unlocked() { return hasMilestone('i', 13) || hasMilestone('i', 14) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		15: {
-			requirementDescription: "13 intelligence and<br>15 Feat of History completions",
-			effectDescription: "intelligence's effect also applies<br>to roman numeral gain",
+			requirementDescription: "13 intelligence and 15 Feat of History completions",
+			effectDescription: "the intelligence effect also applies to roman numeral gain",
 			done() { return player.i.points.gte(13) && challengeCompletions('i', 21) >= 15 },
-			unlocked() { return hasMilestone('i', 14) || hasMilestone('i', 15) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		16: {
 			requirementDescription: "15 intelligence",
-			effectDescription: "retain the 19th digit milestone<br>on intelligence resets",
+			effectDescription: "retain the 19th digit milestone on intelligence resets",
 			done() { return player.i.points.gte(15) },
-			unlocked() { return hasMilestone('i', 15) || hasMilestone('i', 16) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		17: {
 			requirementDescription: "19 intelligence",
-			effectDescription: "retain roman numeral upgrades<br>on intelligence resets",
+			effectDescription: "retain roman numeral upgrades on intelligence resets",
 			done() { return player.i.points.gte(19) },
-			unlocked() { return hasMilestone('i', 16) || hasMilestone('i', 17) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		18: {
 			requirementDescription: "20 intelligence",
 			effectDescription: "you can buy max intelligence",
 			done() { return player.i.points.gte(20) },
-			unlocked() { return hasMilestone('i', 17) || hasMilestone('i', 18) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		19: {
 			requirementDescription: "27 intelligence",
-			effectDescription: "retain calculator prefrences<br>on intelligence resets",
+			effectDescription: "retain calculator prefrences on intelligence resets",
 			done() { return player.i.points.gte(27) },
-			unlocked() { return hasMilestone('i', 18) || hasMilestone('i', 19) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		20: {
-			requirementDescription: "29 intelligence and<br>6 Feat of Binary completions",
+			requirementDescription: "29 intelligence and 6 Feat of Binary completions",
 			effectDescription: "unlocks a new Feat",
 			done() { return player.i.points.gte(29) && challengeCompletions('i', 11) >= 6 },
-			unlocked() { return hasMilestone('i', 19) || hasMilestone('i', 20) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		21: {
-			requirementDescription: "30 intelligence and<br>7 Feat of Binary completions",
+			requirementDescription: "30 intelligence and 7 Feat of Binary completions",
 			effectDescription: "unlocks a new Feat",
 			done() { return player.i.points.gte(30) && challengeCompletions('i', 11) >= 7 },
-			unlocked() { return hasMilestone('i', 20) || hasMilestone('i', 21) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		22: {
-			requirementDescription: "86 intelligence and<br>40 Feat of Time completions",
+			requirementDescription: "86 intelligence and 40 Feat of Time completions",
 			effectDescription: "multiply the cap of Feat of Time by 2",
 			done() { return player.i.points.gte(86) && challengeCompletions('i', 42) >= 40 },
-			unlocked() { return hasMilestone('i', 21) || hasMilestone('i', 22) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 		23: {
 			requirementDescription: "98 intelligence",
-			effectDescription: "multiply the cap of Feat of<br>Past and Present by 2",
+			effectDescription: "multiply the cap of Feat of Past and Present by 2",
 			done() { return player.i.points.gte(98) },
-			unlocked() { return hasMilestone('i', 22) || hasMilestone('i', 23) },
+			unlocked() { return hasMilestone('i', this.id - 1) || hasMilestone('i', this.id) },
 		},
 	},
 	clickables: {
@@ -1978,39 +1978,24 @@ addLayer('i', {
 				if (getBuyableAmount('i', 11).gt(0)) return "<h2>replicate your units " + formatWhole(buyableEffect('i', 11)) + " times";
 				return "<h2>replicate your units";
 			},
-			canClick() {
-				if (player.i.unlocked) return true;
-				return false;
-			},
+			canClick() { return player.i.unlocked },
 			onClick() {
 				let power = new Decimal(2);
 				if (getBuyableAmount('i', 31).gt(0)) power = power.mul(buyableEffect('i', 31));
 				if (getBuyableAmount('i', 71).gt(0)) power = power.mul(buyableEffect('i', 71));
-				for (let num = 0; num < buyableEffect('i', 11).toNumber(); num++) {
-					player.i.units = player.i.units.mul(power);
-				};
+				if (getBuyableAmount('i', 11).gt(0)) power = power.pow(buyableEffect('i', 11));
+				player.i.units = player.i.units.mul(power);
 			},
 		},
 		21: {
-			display() {
-				return "<h2>mine " + format(player.i.raw_power) + " raw materials";
-			},
-			canClick() {
-				return true;
-			},
-			onClick() {
-				player.i.raw = player.i.raw.add(player.i.raw_power).mul(1000).round().div(1000);
-			},
+			display() { return "<h2>mine " + format(player.i.raw_power) + " raw materials" },
+			canClick() { return true },
+			onClick() { player.i.raw = player.i.raw.add(player.i.raw_power).mul(1000).round().div(1000)},
 			unlocked() { return hasMilestone('i', 5) },
 		},
 		22: {
-			display() {
-				return "<h2>process " + format(player.i.process_power) + " materials";
-			},
-			canClick() {
-				if (player.i.raw.gte(player.i.process_power)) return true;
-				return false;
-			},
+			display() { return "<h2>process " + format(player.i.process_power) + " materials" },
+			canClick() { return player.i.raw.gte(player.i.process_power) },
 			onClick() {
 				player.i.raw = player.i.raw.sub(player.i.process_power).mul(1000).round().div(1000);
 				player.i.processed = player.i.processed.add(player.i.process_power).mul(1000).round().div(1000);
@@ -2018,13 +2003,8 @@ addLayer('i', {
 			unlocked() { return hasMilestone('i', 5) },
 		},
 		23: {
-			display() {
-				return "<h3>craft " + format(player.i.craft_power) + " processed materials into " + formatWhole(player.i.craft_power.mul(player.i.craft_eff).div(5)) + " products";
-			},
-			canClick() {
-				if (player.i.processed.gte(player.i.craft_power)) return true;
-				return false;
-			},
+			display() { return "<h3>craft " + format(player.i.craft_power) + " processed materials into " + formatWhole(player.i.craft_power.mul(player.i.craft_eff).div(5)) + " products" },
+			canClick() { return player.i.processed.gte(player.i.craft_power) },
 			onClick() {
 				player.i.processed = player.i.processed.sub(player.i.craft_power).mul(1000).round().div(1000);
 				player.i.products = player.i.products.add(player.i.craft_power.mul(player.i.craft_eff).div(5)).round();
@@ -2032,13 +2012,8 @@ addLayer('i', {
 			unlocked() { return hasMilestone('i', 5) },
 		},
 		24: {
-			display() {
-				return "<h3>sell " + formatWhole(player.i.sell_power) + " products for " + format(player.i.sell_power.mul(player.i.sell_eff)) + " money";
-			},
-			canClick() {
-				if (player.i.products.gte(player.i.sell_power)) return true;
-				return false;
-			},
+			display() { return "<h3>sell " + formatWhole(player.i.sell_power) + " products for " + format(player.i.sell_power.mul(player.i.sell_eff)) + " money" },
+			canClick() { return player.i.products.gte(player.i.sell_power) },
 			onClick() {
 				player.i.products = player.i.products.sub(player.i.sell_power).round();
 				player.i.money = player.i.money.add(player.i.sell_power.mul(player.i.sell_eff)).mul(1000).round().div(1000);
@@ -2047,12 +2022,10 @@ addLayer('i', {
 		},
 		31: {
 			display() {
-				if (!getClickableState(this.layer, this.id)) return "<h2>Feat of Space's effect is ON";
-				return "<h2>Feat of Space's effect is OFF";
+				if (!getClickableState(this.layer, this.id)) return "<h2>Feat of Space effect is on";
+				return "<h2>Feat of Space effect is off";
 			},
-			canClick() {
-				return true;
-			},
+			canClick() { return true },
 			onClick() {
 				if (getClickableState(this.layer, this.id)) setClickableState(this.layer, this.id, false);
 				else setClickableState(this.layer, this.id, true);
@@ -2077,7 +2050,7 @@ addLayer('i', {
 					+ `Multiply the effect of the button to the right by 2<br>`
 					+ `Currently: ` + formatWhole(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -2086,7 +2059,6 @@ addLayer('i', {
 			},
 			style: {'width':'120px','height':'120px'},
 			purchaseLimit: 5,
-			unlocked() { return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0) },
 		},
 		21: {
 			cost() { return new Decimal('1e200').pow(getBuyableAmount(this.layer, this.id)).mul('1e2000') },
@@ -2096,10 +2068,10 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>More Effective</h3><br>`
-					+ `Increase the effect scaling of the unit effect by 0.075<br>`
+					+ `Increase the unit effect exponent by 0.075<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -2108,7 +2080,6 @@ addLayer('i', {
 			},
 			style: {'width':'120px','height':'120px'},
 			purchaseLimit: 20,
-			unlocked() { return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0) },
 		},
 		31: {
 			cost() { return new Decimal('1e500').pow(getBuyableAmount(this.layer, this.id)).mul('1e2500') },
@@ -2129,7 +2100,6 @@ addLayer('i', {
 				addBuyables(this.layer, this.id, 1);
 			},
 			style: {'width':'120px','height':'120px'},
-			unlocked() { return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0) },
 		},
 		32: {
 			cost() { return new Decimal('1e5900') },
@@ -2141,7 +2111,7 @@ addLayer('i', {
 				return `<h3>Galaxies</h3><br>`
 					+ `unlock 5 more Limit Break upgrades<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -2150,7 +2120,6 @@ addLayer('i', {
 			},
 			style: {'width':'120px','height':'120px'},
 			purchaseLimit: 1,
-			unlocked() { return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0) },
 		},
 		33: {
 			cost() { return new Decimal('1e250').pow(getBuyableAmount(this.layer, this.id)).mul('1e3000') },
@@ -2160,7 +2129,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Efficiency</h3><br>`
-					+ `Increase the effect scaling of the unit effect by 0.25<br>`
+					+ `Increase the unit effect exponent by 0.25<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2171,7 +2140,6 @@ addLayer('i', {
 				addBuyables(this.layer, this.id, 1);
 			},
 			style: {'width':'120px','height':'120px'},
-			unlocked() { return this.canAfford() || getBuyableAmount(this.layer, this.id).gt(0) },
 		},
 		41: {
 			cost() {
@@ -2188,7 +2156,7 @@ addLayer('i', {
 					+ `Increase the effect of the button above by 0.1<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2215,7 +2183,7 @@ addLayer('i', {
 					+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 					+ `Increment: ` + formatTime(player.i.timerP) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2241,7 +2209,7 @@ addLayer('i', {
 					+ `Increase the capacity of the button above by 4.5 (and increase eff slightly.)<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2267,7 +2235,7 @@ addLayer('i', {
 					+ `Increase the capacity of the button above by 1.2 (and increase eff slightly.)<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2295,14 +2263,14 @@ addLayer('i', {
 						+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 						+ `Increment: ` + formatTime(player.i.timerM) + `<br><br>`
 						+ `Cost: ` + format(this.cost()) + ` money<br>`
-						+ `Amount: 0`;
+						+ `Amount: 0/0`;
 				};
 				return `<h3>Buy Excavator</h3><br>`
 					+ `Divide the auto increment of the button above by 1.5<br>`
 					+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 					+ `Increment: ` + formatTime(player.i.timerM) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2328,7 +2296,7 @@ addLayer('i', {
 					+ `Increase the effect of the button above by 0.2<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2356,14 +2324,14 @@ addLayer('i', {
 						+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 						+ `Increment: ` + formatTime(player.i.timerC) + `<br><br>`
 						+ `Cost: ` + format(this.cost()) + ` money<br>`
-						+ `Amount: 0`;
+						+ `Amount: 0/0`;
 				};
 				return `<h3>Buy Robot V2.0</h3><br>`
 					+ `Divide the auto increment of the button above by 1.5<br>`
 					+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 					+ `Increment: ` + formatTime(player.i.timerC) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2391,14 +2359,14 @@ addLayer('i', {
 						+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 						+ `Increment: ` + formatTime(player.i.timerS) + `<br><br>`
 						+ `Cost: ` + format(this.cost()) + ` money<br>`
-						+ `Amount: 0`;
+						+ `Amount: 0/0`;
 				};
 				return `<h3>Hire Merchant</h3><br>`
 					+ `Divide the auto increment of the button above by 1.5<br>`
 					+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 					+ `Increment: ` + formatTime(player.i.timerS) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2420,7 +2388,7 @@ addLayer('i', {
 					+ `Multiply the effect of the button above by 2<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2442,7 +2410,7 @@ addLayer('i', {
 					+ `Multiply the effect of the button above by 1.9<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2464,7 +2432,7 @@ addLayer('i', {
 					+ `Multiply the capacity of the button above and the score worth of products by 1.25<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2486,7 +2454,7 @@ addLayer('i', {
 					+ `Multiply the capacity of the button above by 2.2<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.i.money.gte(this.cost()) },
 			buy() {
@@ -2528,7 +2496,7 @@ addLayer('i', {
 				return `<h3>Dimensions</h3><br>`
 					+ `unlock 5 more Limit Break upgrades<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
-					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
+					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `/` + formatWhole(this.purchaseLimit);
 			},
 			canAfford() { return player.points.gte(this.cost()) },
 			buy() {
@@ -2612,7 +2580,7 @@ addLayer('i', {
 		22: {
 			name: 'Feat of Space',
 			fullDisplay() {
-				return 'Restriction: unit\'s effect is disabled<br>' + 'Goal: ' + format(new Decimal('1e1000').pow(challengeCompletions(this.layer, this.id)).mul('1e4000')) + ' arabic numerals<br>Reward: multiply the effect scaling of the unit effect by 2<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/' + this.completionLimit;
+				return 'Restriction: the unit effect is disabled<br>' + 'Goal: ' + format(new Decimal('1e1000').pow(challengeCompletions(this.layer, this.id)).mul('1e4000')) + ' arabic numerals<br>Reward: multiply the unit effect exponent by 2<br>Currently: ' + formatWhole(challengeEffect(this.layer, this.id)) + 'x<br>Completions: ' + formatWhole(challengeCompletions(this.layer, this.id)) + '/' + this.completionLimit;
 			},
 			rewardEffect() { return new Decimal(2).pow(challengeCompletions(this.layer, this.id)) },
 			canComplete() { return player.points.gte(new Decimal('1e1000').pow(challengeCompletions(this.layer, this.id)).mul('1e4000')) },
