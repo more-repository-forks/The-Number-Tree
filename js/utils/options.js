@@ -10,25 +10,22 @@ function getStartOptions() { return {
 	showStory: true,
 	forceOneTab: false,
 	tooltipForcing: true,
-	colorDisplayMode: 0,
-	colorDisplay: 0,
 	extendplaces: false,
 }};
 
 function toggleOpt(name) {
 	options[name] = !options[name];
-	if (name == 'hqTree')
-		changeTreeQuality();
+	if (name == 'hqTree') changeTreeQuality();
 };
 
-var styleCooldown = 0;
+let styleCooldown = 0;
 
 function changeTreeQuality() {
-	var on = options.hqTree;
-	document.body.style.setProperty('--hqProperty1',on?'2px solid':'4px solid');
-	document.body.style.setProperty('--hqProperty2a',on?'-4px -4px 4px #00000040 inset':'-4px -4px 4px #00000000 inset');
-	document.body.style.setProperty('--hqProperty2b',on?'0px 0px 20px var(--background)':'');
-	document.body.style.setProperty('--hqProperty3',on?'2px 2px 4px #00000040':'none');
+	let on = options.hqTree;
+	document.body.style.setProperty('--hqProperty1', on ? '2px solid' : '4px solid');
+	document.body.style.setProperty('--hqProperty2a', on ? '-4px -4px 4px #00000040 inset' : '-4px -4px 4px #00000000 inset');
+	document.body.style.setProperty('--hqProperty2b', on ? '0px 0px 20px var(--background)' : '');
+	document.body.style.setProperty('--hqProperty3', on ? '2px 2px 4px #00000040' : 'none');
 };
 
 function toggleAuto(toggle) {

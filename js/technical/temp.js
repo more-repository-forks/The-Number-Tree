@@ -1,10 +1,10 @@
-var tmp = {};
-var temp = tmp; // Proxy for tmp
-var funcs = {};
-var NaNalert = false;
+let tmp = {};
+let temp = tmp; // Proxy for tmp
+let funcs = {};
+let NaNalert = false;
 
-// Tmp will not call these
-var activeFunctions = [
+// tmp will not call these
+let activeFunctions = [
 	"startData", "onPrestige", "doReset", "update", "automate",
 	"buy", "buyMax", "respec", "onPress", "onClick", "onHold", "masterButtonPress",
 	"sellOne", "sellAll", "pay", "actualCostFunction", "actualEffectFunction",
@@ -15,7 +15,7 @@ var activeFunctions = [
 ];
 
 // Add the names of classes to traverse
-var traversableClasses = [];
+let traversableClasses = [];
 
 function setupTemp() {
 	tmp = {};
@@ -25,9 +25,8 @@ function setupTemp() {
 	tmp.scrolled = 0;
 	tmp.gameEnded = false;
 	funcs = {};
-
 	setupTempData(layers, tmp, funcs);
-	for (layer in layers){
+	for (layer in layers) {
 		tmp[layer].resetGain = {};
 		tmp[layer].nextAt = {};
 		tmp[layer].nextAtDisp = {};
@@ -38,23 +37,20 @@ function setupTemp() {
 		setupBuyables(layer);
 		tmp[layer].trueGlowColor = [];
 	};
-
 	tmp.other = {
 		lastPoints: player.points || decimalZero,
 		oomps: decimalZero,
 		screenWidth: 0,
 		screenHeight: 0,
     };
-
 	updateWidth();
-
 	temp = tmp;
-}
+};
 
 const boolNames = ["unlocked", "deactivated"];
 
 function setupTempData(layerData, tmpData, funcsData) {
-	for (item in layerData){
+	for (item in layerData) {
 		if (layerData[item] == null) {
 			tmpData[item] = null;
 		} else if (layerData[item] instanceof Decimal)
@@ -70,26 +66,20 @@ function setupTempData(layerData, tmpData, funcsData) {
 		} else if ((!!layerData[item]) && (typeof layerData[item] === "object") && traversableClasses.includes(layerData[item].constructor.name)) {
 			tmpData[item] = new layerData[item].constructor();
 			funcsData[item] = new layerData[item].constructor();
-		} else if (isFunction(layerData[item]) && !activeFunctions.includes(item)){
+		} else if (isFunction(layerData[item]) && !activeFunctions.includes(item)) {
 			funcsData[item] = layerData[item];
-			if (boolNames.includes(item))
-				tmpData[item] = false;
-			else
-				tmpData[item] = decimalOne; // The safest thing to put probably?
+			if (boolNames.includes(item)) tmpData[item] = false;
+			else tmpData[item] = decimalOne; // The safest thing to put probably?
 		} else {
 			tmpData[item] = layerData[item];
 		};
 	};
 };
 
-
 function updateTemp() {
-	if (tmp === undefined)
-		setupTemp();
-
+	if (tmp === undefined) setupTemp();
 	updateTempData(layers, tmp, funcs);
-
-	for (layer in layers){
+	for (layer in layers) {
 		tmp[layer].resetGain = getResetGain(layer);
 		tmp[layer].nextAt = getNextAt(layer);
 		tmp[layer].nextAtDisp = getNextAt(layer, true);
@@ -99,12 +89,10 @@ function updateTemp() {
 		tmp[layer].prestigeNotify = prestigeNotify(layer);
 		if (tmp[layer].passiveGeneration === true) tmp[layer].passiveGeneration = 1; // new Decimal(true) = decimalZero
 	};
-
 	tmp.pointGen = getPointGen();
 	tmp.backgroundStyle = readData(backgroundStyle);
-
 	tmp.displayThings = [];
-	for (thing in displayThings){
+	for (thing in displayThings) {
 		let text = displayThings[thing];
 		if (isFunction(text)) text = text();
 		tmp.displayThings.push(text);
@@ -112,13 +100,13 @@ function updateTemp() {
 };
 
 function updateTempData(layerData, tmpData, funcsData, useThis) {
-	for (item in funcsData){
+	for (item in funcsData) {
 		if (Array.isArray(layerData[item])) {
 			if (item !== "tabFormat" && item !== "content") // These are only updated when needed
 				updateTempData(layerData[item], tmpData[item], funcsData[item], useThis);
 		} else if ((!!layerData[item]) && (layerData[item].constructor === Object) || (typeof layerData[item] === "object") && traversableClasses.includes(layerData[item].constructor.name)) {
 			updateTempData(layerData[item], tmpData[item], funcsData[item], useThis);
-		} else if (isFunction(layerData[item]) && !isFunction(tmpData[item])){
+		} else if (isFunction(layerData[item]) && !isFunction(tmpData[item])) {
 			let value;
 			if (useThis !== undefined) value = layerData[item].bind(useThis)();
 			else value = layerData[item]();
@@ -144,7 +132,6 @@ function setupBuyables(layer) {
 		if (isPlainObject(layers[layer].buyables[id])) {
 			let b = layers[layer].buyables[id];
 			b.actualCostFunction = b.cost;
-			console.log("update " + layer + " " + id + " buyable");
 			b.cost = function(x) {
 				x = (x === undefined ? player[this.layer].buyables[this.id] : x);
 				return layers[this.layer].buyables[this.id].actualCostFunction(x);

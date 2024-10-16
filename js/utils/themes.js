@@ -1,11 +1,11 @@
 // ************ Themes ************
-var themes = ["default", "aqua"]
+let themes = ["default", "aqua"];
 
-var colors = {
+let colors = {
 	default: {
-		1: "#ffffff", //Branch color 1
-		2: "#bfbfbf", //Branch color 2
-		3: "#7f7f7f", //Branch color 3
+		1: "#ffffff", // Branch color 1
+		2: "#bfbfbf", // Branch color 2
+		3: "#7f7f7f", // Branch color 3
 		color: "#dfdfdf",
 		points: "#ffffff",
 		locked: "#bf8f8f",
@@ -34,15 +34,15 @@ function changeTheme() {
 };
 
 function getThemeName() {
-	return options.theme? options.theme : "default";
+	return options.theme ? options.theme : "default";
 };
 
 function switchTheme() {
 	let index = themes.indexOf(options.theme);
-	if (options.theme === null || index >= themes.length-1 || index < 0) {
+	if (options.theme === null || index >= themes.length - 1 || index < 0) {
 		options.theme = themes[0];
 	} else {
-		index ++;
+		index++;
 		options.theme = themes[index];
 		options.theme = themes[1];
 	};

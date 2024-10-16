@@ -124,7 +124,7 @@ function inChallenge(layer, id) {
 
 // ************ Misc ************
 
-var onTreeTab = true
+let onTreeTab = true
 
 function showTab(name, prev) {
 	if (LAYERS.includes(name) && !layerunlocked(name)) return;
@@ -132,7 +132,7 @@ function showTab(name, prev) {
 	if (tmp[name] && player.tab === name && isPlainObject(tmp[name].tabFormat)) {
 		player.subtabs[name].mainTabs = Object.keys(layers[name].tabFormat)[0];
 	};
-	var toTreeTab = name == 'none';
+	let toTreeTab = name == 'none';
 	player.tab = name;
 	if (tmp[name] && (tmp[name].row !== 'side') && (tmp[name].row !== 'otherside')) player.lastSafeTab = name;
 	updateTabFormats();
@@ -145,7 +145,7 @@ function showNavTab(name, prev) {
 	if (LAYERS.includes(name) && !layerunlocked(name)) return;
 	if (player.navTab !== name) clearParticles(function(p) {return p.layer === player.navTab});
 	if (tmp[name] && tmp[name].previousTab !== undefined) prev = tmp[name].previousTab;
-	var toTreeTab = name == 'tree-tab';
+	let toTreeTab = name == 'tree-tab';
 	console.log(name + prev);
 	if (name!== 'none' && prev && !tmp[prev]?.leftTab == !tmp[name]?.leftTab) player[name].prevTab = prev;
 	else if (player[name])
@@ -244,7 +244,7 @@ function updateMilestones(layer) {
 			if (layers[layer].milestones[id].onComplete) layers[layer].milestones[id].onComplete();
 			if (layers[layer].milestones[id].color) color = layers[layer].milestones[id].color;
 			else color = tmp[layer].color;
-			if (tmp[layer].milestonePopups || tmp[layer].milestonePopups === undefined) doPopup('milestone',tmp[layer].milestones[id].requirementDescription,'Milestone Gotten!',3,color);
+			if (tmp[layer].milestonePopups || tmp[layer].milestonePopups === undefined) doPopup('milestone', tmp[layer].milestones[id].requirementDescription, 'Milestone Gotten!', 3, color);
 			player[layer].lastMilestone = id;
 		};
 	};
@@ -258,7 +258,7 @@ function updateAchievements(layer) {
 			if (layers[layer].achievements[id].onComplete) layers[layer].achievements[id].onComplete();
 			if (layers[layer].achievements[id].color) color = layers[layer].achievements[id].color;
 			else color = tmp[layer].color;
-			if (tmp[layer].achievementPopups || tmp[layer].achievementPopups === undefined) doPopup('achievement',tmp[layer].achievements[id].name,'Achievement Gotten!',3,color);
+			if (tmp[layer].achievementPopups || tmp[layer].achievementPopups === undefined) doPopup('achievement', tmp[layer].achievements[id].name, 'Achievement Gotten!', 3, color);
 		};
 	};
 };
@@ -270,7 +270,7 @@ function addTime(diff, layer) {
 		data = data[layer];
 		time = data.time;
 	};
-	//I am not that good to perfectly fix that leak. ~ DB Aarex
+	// I am not that good to perfectly fix that leak. ~ DB Aarex
 	if (time + 0 !== time) {
 		console.log('Memory leak detected. Trying to fix...');
 		time = toNumber(time);
@@ -285,8 +285,8 @@ function addTime(diff, layer) {
 	else data.timePlayed = time;
 };
 
-shiftDown = false;
-ctrlDown = false;
+let shiftDown = false;
+let ctrlDown = false;
 
 document.onkeydown = function (e) {
 	if (player === undefined) return;
@@ -310,7 +310,7 @@ document.onkeyup = function (e) {
 	ctrlDown = e.ctrlKey;
 };
 
-var onFocused = false;
+let onFocused = false;
 
 function focused(x) {
 	onFocused = x;
@@ -337,8 +337,8 @@ function toValue(value, oldValue) {
 };
 
 // Variables that must be defined to display popups
-var activePopups = [];
-var popupID = 0;
+let activePopups = [];
+let popupID = 0;
 
 // Function to show popups
 function doPopup(type = 'none', text = 'This is a test popup.', title = '', timer = 3, color = '') {
