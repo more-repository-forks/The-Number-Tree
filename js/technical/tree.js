@@ -7,9 +7,7 @@ let layoutInfo = {
 
 // A "ghost" layer which offsets other layers in the tree
 addNode("spacer", {
-	row: 1,
 	layerShown: "ghost",
-	size: "none",
 });
 
 addLayer("tree-tab", {

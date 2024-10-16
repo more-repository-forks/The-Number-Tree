@@ -114,6 +114,14 @@ addLayer('rn', {
 		if (hasUpgrade('rn', 12)) gain = gain.mul(upgradeEffect('rn', 12));
 		if (hasUpgrade('rn', 22)) gain = gain.mul(upgradeEffect('rn', 22));
 		if (hasUpgrade('rn', 32)) gain = gain.mul(upgradeEffect('rn', 32));
+		if (hasUpgrade('d', 22)) gain = gain.mul(2);
+		if (hasUpgrade('d', 33)) gain = gain.mul(2);
+		if (hasUpgrade('d', 44)) gain = gain.mul(2);
+		if (hasUpgrade('d', 55)) gain = gain.mul(2);
+		if (hasUpgrade('d', 65)) gain = gain.mul(2);
+		if (hasUpgrade('d', 75)) gain = gain.mul(2);
+		if (hasUpgrade('d', 85)) gain = gain.mul(2);
+		if (hasUpgrade('d', 95)) gain = gain.mul(2);
 		if (hasChallenge('i', 21)) gain = gain.mul(challengeEffect('i', 21));
 		if (hasMilestone('i', 15)) gain = gain.mul(tmp.i.effect);
 		return gain;
@@ -165,9 +173,7 @@ addLayer('rn', {
 		description: 'R: reset for roman numerals',
 		onPress() { if (player.rn.unlocked) doReset('rn') },
 	}],
-	layerShown() {
-		return true;
-	},
+	layerShown() { return true },
 	tabFormat: [
 		['display-text', () => {
 			if (player.rn.points.gte('1e1000')) return '<h2 class="layer-rn">' + romanNumeralFormat(player.rn.points) + '</h2> roman numerals';
@@ -176,14 +182,14 @@ addLayer('rn', {
 		],
 		'blank',
 		'prestige-button',
-		['blank', '3px'],
-		['display-text', () => {
+		['custom-resource-display', () => {
 			let text = 'You have ' + format(player.points) + ' arabic numerals<br>';
 			if (tmp.rn.passiveGeneration) text += 'You are gaining ' + romanNumeralFormat(tmp.rn.resetGain.mul(tmp.rn.passiveGeneration)) + ' roman numerals per second<br>';
 			text += '<br>Your best roman numerals is ' + romanNumeralFormat(player.rn.best) + '<br>';
 			text += 'You have made a total of ' + romanNumeralFormat(player.rn.total) + ' roman numerals';
 			return text;
 		}],
+		'blank',
 		'upgrades',
 		'clickables',
 		'blank',
@@ -192,7 +198,7 @@ addLayer('rn', {
 		11: {
 			fullDisplay() {
 				let text = `<h3>Countings</h3><br>
-					multiply arabic numeral generation based on the amount of roman numerals you have.<br>
+					multiply arabic numeral generation based on the amount of roman numerals you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
@@ -204,7 +210,7 @@ addLayer('rn', {
 		12: {
 			fullDisplay() {
 				let text = `<h3>Practice...</h3><br>
-					multiply roman numeral gain based on the amount of total roman numerals you have.<br>
+					multiply roman numeral gain based on the amount of total roman numerals you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
@@ -216,7 +222,7 @@ addLayer('rn', {
 		13: {
 			fullDisplay() {
 				let text = `<h3>Again</h3><br>
-					multiply arabic numeral gain by ` + format(this.effect()) + ` when you have less than ` + format(this.cap()) + ` arabic numerals.<br><br>
+					multiply arabic numeral gain by ` + format(this.effect()) + ` when you have less than ` + format(this.cap()) + ` arabic numerals<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
@@ -237,7 +243,7 @@ addLayer('rn', {
 		14: {
 			fullDisplay() {
 				let text = `<h3>Faster</h3><br>
-					multiply arabic numeral generation by ` + format(this.effect()) + ` when you have less than ` + format(this.cap()) + ` arabic numerals.<br><br>
+					multiply arabic numeral generation by ` + format(this.effect()) + ` when you have less than ` + format(this.cap()) + ` arabic numerals<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
@@ -260,7 +266,7 @@ addLayer('rn', {
 		15: {
 			fullDisplay() {
 				let text = `<h3>Repetitive</h3><br>
-					multiply arabic numeral gain based on the amount of arabic numerals you have.<br>
+					multiply arabic numeral gain based on the amount of arabic numerals you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
@@ -272,7 +278,7 @@ addLayer('rn', {
 		21: {
 			fullDisplay() {
 				let text = `<h3>Calculator</h3><br>
-					shows the arabic numeral equivalent to all roman numerals alongside the normal values.<br><br>
+					shows the arabic numeral equivalent to all roman numerals alongside the normal values<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				return text;
 			},
@@ -282,7 +288,7 @@ addLayer('rn', {
 		22: {
 			fullDisplay() {
 				let text = `<h3>Makes Perfect</h3><br>
-					multiply roman numeral gain based on your best roman numerals.<br>
+					multiply roman numeral gain based on your best roman numerals<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
@@ -295,7 +301,7 @@ addLayer('rn', {
 		23: {
 			fullDisplay() {
 				let text = `<h3>Again, Again</h3><br>
-					multiply the cap of <b>Again</b> by ` + format(this.effect()) + `.<br><br>
+					multiply the cap of <b>Again</b> by ` + format(this.effect()) + `<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
@@ -310,7 +316,7 @@ addLayer('rn', {
 		24: {
 			fullDisplay() {
 				let text = `<h3>Faster, Faster</h3><br>
-					multiply the effect and cap of <b>Faster</b> by ` + format(this.effect()) + `.<br><br>
+					multiply the effect and cap of <b>Faster</b> by ` + format(this.effect()) + `<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
@@ -322,7 +328,7 @@ addLayer('rn', {
 		25: {
 			fullDisplay() {
 				let text = `<h3>Patterns</h3><br>
-					multiply arabic numeral gain based on the amount of arabic numerals you have.<br>
+					multiply arabic numeral gain based on the amount of arabic numerals you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
@@ -335,7 +341,7 @@ addLayer('rn', {
 		31: {
 			fullDisplay() {
 				let text = `<h3>Priorities</h3><br>
-					you can change the priority of calculator values.<br><br>
+					you can change the priority of calculator values<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				return text;
 			},
@@ -345,7 +351,7 @@ addLayer('rn', {
 		32: {
 			fullDisplay() {
 				let text = `<h3>Studying</h3><br>
-					multiply roman numeral gain based on your best roman numerals.<br>
+					multiply roman numeral gain based on your best roman numerals<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
@@ -358,7 +364,7 @@ addLayer('rn', {
 		33: {
 			fullDisplay() {
 				let text = `<h3>Cycle</h3><br>
-					multiply the effect of <b>Again, Again</b> by ` + format(this.effect()) + `.<br><br>
+					multiply the effect of <b>Again, Again</b> by ` + format(this.effect()) + `<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
@@ -370,7 +376,7 @@ addLayer('rn', {
 		34: {
 			fullDisplay() {
 				let text = `<h3>Fastest</h3><br>
-					multiply the cap of <b>Faster</b> by ` + format(this.effect()) + `.<br><br>
+					multiply the cap of <b>Faster</b> by ` + format(this.effect()) + `<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
@@ -382,7 +388,7 @@ addLayer('rn', {
 		35: {
 			fullDisplay() {
 				let text = `<h3>Correlation</h3><br>
-					multiply arabic numeral gain based on your best roman numerals.<br>
+					multiply arabic numeral gain based on your best roman numerals<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
@@ -395,7 +401,7 @@ addLayer('rn', {
 		41: {
 			fullDisplay() {
 				let text = `<h3>Override</h3><br>
-					you can override non-calculator values with calculator values.<br><br>
+					you can override non-calculator values with calculator values<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				return text;
 			},
@@ -405,7 +411,7 @@ addLayer('rn', {
 		42: {
 			fullDisplay() {
 				let text = `<h3>Uncapped</h3><br>
-					multiply the caps of <b>Again</b> and <b>Faster</b> based on your best roman numerals.<br>
+					multiply the caps of <b>Again</b> and <b>Faster</b> based on your best roman numerals<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				return text;
@@ -421,7 +427,7 @@ addLayer('rn', {
 		43: {
 			fullDisplay() {
 				let text = `<h3>To the Sky</h3><br>
-					multiply the effect of <b>Again</b>, <b>Faster</b>, and <b>Uncapped</b> by ` + format(this.effect()) + `.<br><br>
+					multiply the effect of <b>Again</b>, <b>Faster</b>, and <b>Uncapped</b> by ` + format(this.effect()) + `<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				return text;
 			},
@@ -615,9 +621,7 @@ addLayer('d', {
 		if (hasUpgrade('d', 94)) eff = eff.mul(upgradeEffect('d', 94));
 		return eff;
 	},
-	layerShown() {
-		return true;
-	},
+	layerShown() { return true },
 	tabFormat: {
 		"Number": {
 			content: [
@@ -625,6 +629,7 @@ addLayer('d', {
 				'blank',
 				'prestige-button',
 				'resource-display',
+				'blank',
 				'grid',
 				'blank',
 				['row', [['buyable', 11], 'blank', 'clickables', 'blank', ['buyable', 12]]],
@@ -632,8 +637,9 @@ addLayer('d', {
 				['buyables', '2'],
 				['blank', '13px'],
 				['buyables', '3'],
-				['blank', '5px'],
+				['blank', '13px'],
 				['buyables', '4'],
+				'blank',
 			],
 		},
 		"Milestones": {
@@ -642,7 +648,9 @@ addLayer('d', {
 				'blank',
 				'prestige-button',
 				'resource-display',
+				'blank',
 				'milestones',
+				'blank',
 			],
 		},
 		"Base Up": {
@@ -653,6 +661,7 @@ addLayer('d', {
 				'resource-display',
 				'blank',
 				['buyable', 51],
+				'blank',
 			],
 			unlocked() { return hasMilestone('d', 9) },
 		},
@@ -691,11 +700,11 @@ addLayer('d', {
 			if (player.d.numberButtonAuto) player.d.number = player.d.number.add(player.d.clickPower).round();
 			player.d.timer = 0;
 		};
-		let limit = new Decimal(getNumberBase()).pow(player.d.points).round().sub(1);
 		let power = new Decimal(1);
 		if (getBuyableAmount('d', 11).gt(0)) power = power.add(buyableEffect('d', 11));
 		if (getBuyableAmount('d', 12).gt(0)) power = power.mul(buyableEffect('d', 12));
-		player.d.clickPower = power.min(limit);
+		player.d.clickPower = power;
+		let limit = new Decimal(getNumberBase()).pow(player.d.points).round().sub(1);
 		if (player.d.number.gte(limit)) {
 			player.d.number = limit;
 			player.d.limited = true;
@@ -773,7 +782,7 @@ addLayer('d', {
 	},
 	clickables: {
 		11: {
-			display() { return '<h3>Make number +' + formatWhole(player.d.clickPower) + ' <span style="word-break: break-word">(+' + Math.round(player.d.clickPower.toNumber()).toString(getNumberBase()) + ')</span> larger' },
+			display() { return '<h3>Make number +' + formatWhole(player.d.clickPower) + (hasUpgrade('d', 11) || buyableEffect('d', 51).gte(10) || player.d.points.gt(99) ? '' : ' <span style="word-break: break-word">(+' + Math.round(player.d.clickPower.toNumber()).toString(getNumberBase()) + ')</span>') + ' larger' },
 			canClick() { return true },
 			onClick() { player.d.number = player.d.number.add(player.d.clickPower).round() },
 		},
@@ -788,7 +797,7 @@ addLayer('d', {
 			},
 			display() {
 				return `<h3>One Up</h3><br>`
-					+ `Increase the effect of the button to the right by 1.<br>`
+					+ `Increase the effect of the button to the right by 1<br>`
 					+ `Currently: +` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -815,7 +824,7 @@ addLayer('d', {
 			effect() { return new Decimal(3).pow(getBuyableAmount(this.layer, this.id)) },
 			display() {
 				return `<h3>Triple</h3><br>`
-					+ `multiply the effect of the button to the left by 3.<br>`
+					+ `multiply the effect of the button to the left by 3<br>`
 					+ `Currently: ` + formatWhole(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -841,7 +850,7 @@ addLayer('d', {
 			},
 			display() {
 				return `<h3>Lazing</h3><br>`
-					+ `gain +1.5 passive number increase, rounded down.<br>`
+					+ `passively increase your number by +1.5 (rounded down) every ` + formatTime(new Decimal(1).div(buyableEffect('d', 32))) + `<br>`
 					+ `Currently: +` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -859,9 +868,8 @@ addLayer('d', {
 			effect() { return getBuyableAmount(this.layer, this.id).mul(20).div(100).add(1) },
 			display() {
 				return `<h3>Rapid Idle</h3><br>`
-					+ `passive number increase is +20% faster.<br>`
-					+ `Currently: +` + formatWhole(getBuyableAmount(this.layer, this.id).mul(20)) + `%<br>`
-					+ `Increment: ` + formatTime(new Decimal(1).div(buyableEffect(this.layer, this.id))) + `<br><br>`
+					+ `Increase the speed of the upgrade above by +20%<br>`
+					+ `Currently: +` + formatWhole(getBuyableAmount(this.layer, this.id).mul(20)) + `%<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
 			},
@@ -882,10 +890,10 @@ addLayer('d', {
 			},
 			display() {
 				let text = `<h3>Up the Up</h3><br>`
-					+ `Multiply the effect of the upgrade directly above by `;
+					+ `Multiply the effect of the upgrade above by `;
 				if (getBuyableAmount('d', 41).gt(0)) text += format(buyableEffect('d', 41).mul(2));
 				else text += '2';
-				text += `.<br>`
+				text += `<br>`
 					+ `Currently: ` + formatWhole(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -914,7 +922,7 @@ addLayer('d', {
 			effect() { return new Decimal(5).pow(getBuyableAmount(this.layer, this.id)) },
 			display() {
 				return `<h3>Worth the Time</h3><br>`
-					+ `Multiply the effect of the upgrade to the left by 5.<br>`
+					+ `Multiply the effect of the upgrade to the left by 5<br>`
 					+ `Currently: ` + formatWhole(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -932,7 +940,7 @@ addLayer('d', {
 			effect() { return getBuyableAmount(this.layer, this.id).mul(15) },
 			display() {
 				return `<h3>Higher!</h3><br>`
-					+ `increase the cap of <b>One Up</b> by 15.<br>`
+					+ `increase the cap of <b>One Up</b> by 15<br>`
 					+ `Currently: +` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -955,7 +963,7 @@ addLayer('d', {
 			effect() { return new Decimal(1e10).pow(getBuyableAmount(this.layer, this.id)) },
 			display() {
 				return `<h3>Cheap</h3><br>`
-					+ `divide the cost of the upgrades above by 1e10.<br>`
+					+ `divide the cost of all of the upgrades above by 1e10<br>`
 					+ `Currently: /` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -983,9 +991,9 @@ addLayer('d', {
 			effect() { return getBuyableAmount(this.layer, this.id).add(2) },
 			display() {
 				return `<h1>Base Up</h1><br><br><h3>`
-					+ `upgrade your numbers to the next base, which allows for higher numbers. also multiplies the number effect by 2.<br><br>`
+					+ `upgrade your numbers to the next base, which allows for higher numbers. also multiplies the number effect by 2<br><br>`
 					+ `Currently: base ` + formatWhole(buyableEffect(this.layer, this.id)) + ` and ` + formatWhole(new Decimal(2).pow(getBuyableAmount(this.layer, this.id))) + `x<br><br>`
-					+ `Cost: number ` + format(this.cost()) + `<br><br>`
+					+ `Cost: ` + format(this.cost()) + ` of your numnber<br><br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id)) + `</h3>`;
 			},
 			canAfford() { return player.d.number.gte(this.cost()) },
@@ -1009,7 +1017,7 @@ addLayer('d', {
 			effect() { return new Decimal(1.25).pow(getBuyableAmount(this.layer, this.id)) },
 			display() {
 				return `<h3>Up Even More</h3><br>`
-					+ `Multiply the base effect of <b>Up the Up</b> by 1.25.<br>`
+					+ `Multiply the base effect of <b>Up the Up</b> by 1.25<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -1032,7 +1040,7 @@ addLayer('d', {
 			effect() { return new Decimal(750).pow(getBuyableAmount(this.layer, this.id)) },
 			display() {
 				return `<h3>Weaken Chains</h3><br>`
-					+ `Divide the logarithm in the number effect formula by 750.<br>`
+					+ `Divide the logarithm base above 1 in the number effect formula by 750<br>`
 					+ `Currently: /` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -1055,7 +1063,7 @@ addLayer('d', {
 			},
 			display() {
 				return `<h3>Cheapest</h3><br>`
-					+ `divide the cost of the upgrades above by 1e20.<br>`
+					+ `divide the cost of the upgrades above by 1e20<br>`
 					+ `Currently: /` + formatWhole(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -1177,7 +1185,7 @@ addLayer('d', {
 			unlocked() { return hasMilestone('d', 15) || hasMilestone('d', 16) },
 		},
 		17: {
-			requirementDescription: "number 1e111",
+			requirementDescription: "number 1e116",
 			effectDescription: "unlocks three new digit number upgrades",
 			done() { return player.d.number.gte(1e111) },
 			unlocked() { return hasMilestone('d', 16) || hasMilestone('d', 17) },
@@ -1200,7 +1208,7 @@ addLayer('d', {
 		11: {
 			fullDisplay() {
 				let text = `<h3>Limit Break</h3><br>
-					double the digit limit, but increase their cost exponent (1.2 --> 1.75)<br><br>
+					double the digit limit, but increase the digit cost exponent<br>(1.2 --> 1.75)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1210,11 +1218,11 @@ addLayer('d', {
 		21: {
 			fullDisplay() {
 				let text = `<h3>Digit Bend</h3><br>
-					decrease the digit cost exponent (1.75 --> 1.7)<br><br>
+					decrease the digit cost exponent<br>(1.75 --> 1.7)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
-			cost: new Decimal(109),
+			cost: new Decimal(108),
 			unlocked() {
 				if (inChallenge('i', 12)) return false;
 				return player.d.upgrades.length >= 1;
@@ -1223,11 +1231,11 @@ addLayer('d', {
 		22: {
 			fullDisplay() {
 				let text = `<h3>Roman Numeral Bend</h3><br>
-					increase roman numeral gain after softcap (^0.2 --> ^0.5)<br><br>
+					double roman numeral gain and increase roman numeral gain after softcap<br>(^0.2 --> ^0.5)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
-			cost: new Decimal(126),
+			cost: new Decimal(125),
 			unlocked() {
 				if (inChallenge('i', 12)) return false;
 				return player.d.upgrades.length >= 1;
@@ -1236,11 +1244,11 @@ addLayer('d', {
 		31: {
 			fullDisplay() {
 				let text = `<h3>Digit Warp</h3><br>
-					decrease the digit cost exponent (1.7 --> 1.65)<br><br>
+					decrease the digit cost exponent<br>(1.7 --> 1.65)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
-			cost: new Decimal(127),
+			cost: new Decimal(126),
 			unlocked() { return player.d.upgrades.length >= 3 },
 		},
 		32: {
@@ -1258,7 +1266,7 @@ addLayer('d', {
 		33: {
 			fullDisplay() {
 				let text = `<h3>Roman Numeral Warp</h3><br>
-					increase roman numeral gain after softcap (^0.5 --> ^0.75)<br><br>
+					double roman numeral gain and increase roman numeral gain after softcap<br>(^0.5 --> ^0.75)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1268,7 +1276,7 @@ addLayer('d', {
 		41: {
 			fullDisplay() {
 				let text = `<h3>Digit Hole</h3><br>
-					decrease the digit cost exponent (1.65 --> 1.6)<br><br>
+					decrease the digit cost exponent<br>(1.65 --> 1.6)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1278,7 +1286,7 @@ addLayer('d', {
 		42: {
 			fullDisplay() {
 				let text = `<h3>Limit Hole</h3><br>
-					multiply the digit limit by 1.5, and divide digit cost requirement by 1e20<br><br>
+					multiply the digit limit by 1.5 and divide digit cost requirement by 1e20<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1301,7 +1309,7 @@ addLayer('d', {
 		44: {
 			fullDisplay() {
 				let text = `<h3>Roman Numeral Hole</h3><br>
-					increase roman numeral gain after softcap (^0.75 --> ^0.8)<br><br>
+					double roman numeral gain and increase roman numeral gain after softcap<br>(^0.75 --> ^0.8)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1311,7 +1319,7 @@ addLayer('d', {
 		51: {
 			fullDisplay() {
 				let text = `<h3>Digit Void</h3><br>
-					decrease the digit cost exponent (1.6 --> 1.575)<br><br>
+					decrease the digit cost exponent<br>(1.6 --> 1.575)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1321,7 +1329,7 @@ addLayer('d', {
 		52: {
 			fullDisplay() {
 				let text = `<h3>Limit Void</h3><br>
-					increase the base digit limit by 1, and divide digit cost requirement by 1e50<br><br>
+					increase the base digit limit by 1 and divide digit cost requirement by 1e50<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1356,7 +1364,7 @@ addLayer('d', {
 		55: {
 			fullDisplay() {
 				let text = `<h3>Roman Numeral Void</h3><br>
-					increase roman numeral gain after softcap (^0.8 --> ^0.825)<br><br>
+					double roman numeral gain and increase roman numeral gain after softcap<br>(^0.8 --> ^0.825)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1366,7 +1374,7 @@ addLayer('d', {
 		61: {
 			fullDisplay() {
 				let text = `<h3>Digit Space</h3><br>
-					decrease the digit cost exponent (1.575 --> 1.55)<br><br>
+					decrease the digit cost exponent<br>(1.575 --> 1.55)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1376,7 +1384,7 @@ addLayer('d', {
 		62: {
 			fullDisplay() {
 				let text = `<h3>Limit Space</h3><br>
-					multiply the digit limit by 1.5, and divide digit cost requirement by 1e75<br><br>
+					multiply the digit limit by 1.5 and divide digit cost requirement by 1e75<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1411,7 +1419,7 @@ addLayer('d', {
 		65: {
 			fullDisplay() {
 				let text = `<h3>Roman Numeral Space</h3><br>
-					increase roman numeral gain after softcap (^0.825 --> ^0.85)<br><br>
+					double roman numeral gain and increase roman numeral gain after softcap<br>(^0.825 --> ^0.85)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1421,7 +1429,7 @@ addLayer('d', {
 		71: {
 			fullDisplay() {
 				let text = `<h3>Digit Star</h3><br>
-					decrease the digit cost exponent (1.55 --> 1.5)<br><br>
+					decrease the digit cost exponent<br>(1.55 --> 1.5)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1431,12 +1439,12 @@ addLayer('d', {
 		72: {
 			fullDisplay() {
 				let text = `<h3>Limit Star</h3><br>
-					multiply the digit limit by 4, and divide digit cost requirement by 1e800<br><br>
+					multiply the digit limit by 4 and divide digit cost requirement by 1e800<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
 			effect() { return new Decimal('1e800') },
-			cost: new Decimal(420),
+			cost: new Decimal(422),
 			unlocked() { return player.d.upgrades.length >= 20 },
 		},
 		73: {
@@ -1447,7 +1455,7 @@ addLayer('d', {
 				return text;
 			},
 			effect() { return new Decimal('1e700') },
-			cost: new Decimal(515),
+			cost: new Decimal(520),
 			unlocked() { return player.d.upgrades.length >= 20 },
 		},
 		74: {
@@ -1465,7 +1473,7 @@ addLayer('d', {
 		75: {
 			fullDisplay() {
 				let text = `<h3>Roman Numeral Star</h3><br>
-					increase roman numeral gain after softcap (^0.85 --> ^0.875)<br><br>
+					double roman numeral gain and increase roman numeral gain after softcap<br>(^0.85 --> ^0.875)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1475,7 +1483,7 @@ addLayer('d', {
 		81: {
 			fullDisplay() {
 				let text = `<h3>Digit Galaxy</h3><br>
-					decrease the digit cost exponent (1.5 --> 1.49)<br><br>
+					decrease the digit cost exponent<br>(1.5 --> 1.49)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1518,7 +1526,7 @@ addLayer('d', {
 		85: {
 			fullDisplay() {
 				let text = `<h3>Roman Numeral Galaxy</h3><br>
-					increase roman numeral gain after softcap (^0.875 --> ^0.88)<br><br>
+					double roman numeral gain and increase roman numeral gain after softcap<br>(^0.875 --> ^0.88)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1528,7 +1536,7 @@ addLayer('d', {
 		91: {
 			fullDisplay() {
 				let text = `<h3>Digit Dimension</h3><br>
-					decrease the digit cost exponent (1.49 --> 1.484)<br><br>
+					decrease the digit cost exponent<br>(1.49 --> 1.484)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1572,7 +1580,7 @@ addLayer('d', {
 		95: {
 			fullDisplay() {
 				let text = `<h3>Roman Numeral Dimension</h3><br>
-					increase roman numeral gain after softcap (^0.88 --> ^0.888)<br><br>
+					double roman numeral gain and increase roman numeral gain after softcap<br>(^0.88 --> ^0.888)<br><br>
 					Cost: ` + formatWhole(this.cost) + ` digits`;
 				return text;
 			},
@@ -1659,7 +1667,9 @@ addLayer('i', {
 				'main-display',
 				'prestige-button',
 				'resource-display',
+				'blank',
 				'milestones',
+				'blank',
 			],
 		},
 		"Replicator": {
@@ -1667,6 +1677,7 @@ addLayer('i', {
 				'main-display',
 				'prestige-button',
 				'resource-display',
+				'blank',
 				['display-text', () => 'You have <h2 class="layer-i">' + formatWhole(player.i.units) + '</h2> units, which divides the digit cost requirement by <h2 class="layer-i">' + format(player.i.unitEffect) + '</h2>'],
 				'blank',
 				['row', [['buyables', '1'], ['clickables', '1'], ['buyables', '2']]],
@@ -1674,6 +1685,7 @@ addLayer('i', {
 				['buyables', '3'],
 				['blank', '13px'],
 				['buyables', '7'],
+				'blank',
 			],
 			unlocked() { return player.i.unlocked },
 		},
@@ -1696,6 +1708,7 @@ addLayer('i', {
 				['buyables', '5'],
 				['blank', '13px'],
 				['buyables', '6'],
+				'blank',
 			],
 			unlocked() { return hasMilestone('i', 5) },
 		},
@@ -1711,6 +1724,7 @@ addLayer('i', {
 				['clickables', '3'],
 				['challenges', '3'],
 				['challenges', '4'],
+				'blank',
 			],
 			unlocked() { return hasMilestone('i', 9) },
 		},
@@ -2060,7 +2074,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Again</h3><br>`
-					+ `Multiply the effect of the button to the right by 2.<br>`
+					+ `Multiply the effect of the button to the right by 2<br>`
 					+ `Currently: ` + formatWhole(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2082,7 +2096,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>More Effective</h3><br>`
-					+ `Increase the effect scaling of the unit effect by 0.075.<br>`
+					+ `Increase the effect scaling of the unit effect by 0.075<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2104,7 +2118,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Power</h3><br>`
-					+ `Multiply replication power by 1.1.<br>`
+					+ `Multiply replication power by 1.1<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2125,7 +2139,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Galaxies</h3><br>`
-					+ `unlock 5 more Limit Break upgrades.<br><br>`
+					+ `unlock 5 more Limit Break upgrades<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
 			},
@@ -2146,7 +2160,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Efficiency</h3><br>`
-					+ `Increase the effect scaling of the unit effect by 0.25.<br>`
+					+ `Increase the effect scaling of the unit effect by 0.25<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2171,7 +2185,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Pickaxe Upgrade</h3><br>`
-					+ `Increase the effect of the button above by 0.1.<br>`
+					+ `Increase the effect of the button above by 0.1<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2197,7 +2211,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Hire Blacksmith</h3><br>`
-					+ `Divide the auto increment of the button above by 1.5.<br>`
+					+ `Divide the auto increment of the button above by 1.5<br>`
 					+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 					+ `Increment: ` + formatTime(player.i.timerP) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
@@ -2277,14 +2291,14 @@ addLayer('i', {
 			display() {
 				if (getBuyableAmount(this.layer, this.id).eq(0)) {
 					return `<h3>Buy Excavator</h3><br>`
-						+ `Unlock auto for the button above.<br>`
+						+ `Unlock auto for the button above<br>`
 						+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 						+ `Increment: ` + formatTime(player.i.timerM) + `<br><br>`
 						+ `Cost: ` + format(this.cost()) + ` money<br>`
 						+ `Amount: 0`;
 				};
 				return `<h3>Buy Excavator</h3><br>`
-					+ `Divide the auto increment of the button above by 1.5.<br>`
+					+ `Divide the auto increment of the button above by 1.5<br>`
 					+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 					+ `Increment: ` + formatTime(player.i.timerM) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
@@ -2311,7 +2325,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Hotter Forges</h3><br>`
-					+ `Increase the effect of the button above by 0.2.<br>`
+					+ `Increase the effect of the button above by 0.2<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2338,14 +2352,14 @@ addLayer('i', {
 			display() {
 				if (getBuyableAmount(this.layer, this.id).eq(0)) {
 					return `<h3>Buy Robot V2.0</h3><br>`
-						+ `Unlock auto for the button above.<br>`
+						+ `Unlock auto for the button above<br>`
 						+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 						+ `Increment: ` + formatTime(player.i.timerC) + `<br><br>`
 						+ `Cost: ` + format(this.cost()) + ` money<br>`
 						+ `Amount: 0`;
 				};
 				return `<h3>Buy Robot V2.0</h3><br>`
-					+ `Divide the auto increment of the button above by 1.5.<br>`
+					+ `Divide the auto increment of the button above by 1.5<br>`
 					+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 					+ `Increment: ` + formatTime(player.i.timerC) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
@@ -2373,14 +2387,14 @@ addLayer('i', {
 			display() {
 				if (getBuyableAmount(this.layer, this.id).eq(0)) {
 					return `<h3>Hire Merchant</h3><br>`
-						+ `Unlock auto for the button above.<br>`
+						+ `Unlock auto for the button above<br>`
 						+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 						+ `Increment: ` + formatTime(player.i.timerS) + `<br><br>`
 						+ `Cost: ` + format(this.cost()) + ` money<br>`
 						+ `Amount: 0`;
 				};
 				return `<h3>Hire Merchant</h3><br>`
-					+ `Divide the auto increment of the button above by 1.5.<br>`
+					+ `Divide the auto increment of the button above by 1.5<br>`
 					+ `Currently: /` + format(buyableEffect(this.layer, this.id)) + `<br>`
 					+ `Increment: ` + formatTime(player.i.timerS) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
@@ -2403,7 +2417,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Buy Dig Site</h3><br>`
-					+ `Multiply the effect of the button above by 2.<br>`
+					+ `Multiply the effect of the button above by 2<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2425,7 +2439,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>More Forges</h3><br>`
-					+ `Multiply the effect of the button above by 1.9.<br>`
+					+ `Multiply the effect of the button above by 1.9<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2447,7 +2461,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Better Formula</h3><br>`
-					+ `Multiply the capacity of the button above and the score worth of products by 1.25.<br>`
+					+ `Multiply the capacity of the button above and the score worth of products by 1.25<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2469,7 +2483,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Advertising</h3><br>`
-					+ `Multiply the capacity of the button above by 2.2.<br>`
+					+ `Multiply the capacity of the button above by 2.2<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` money<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2491,7 +2505,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Exponential</h3><br>`
-					+ `Multiply replication power by 1.5.<br>`
+					+ `Multiply replication power by 1.5<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2512,7 +2526,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Dimensions</h3><br>`
-					+ `unlock 5 more Limit Break upgrades.<br><br>`
+					+ `unlock 5 more Limit Break upgrades<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
 			},
@@ -2533,7 +2547,7 @@ addLayer('i', {
 			},
 			display() {
 				return `<h3>Passivity</h3><br>`
-					+ `gain 10x your current units every second.<br>`
+					+ `gain 10x your current units every second<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -2747,6 +2761,7 @@ addLayer('gn', {
 					return text;
 				}],
 				'milestones',
+				'blank',
 			],
 		},
 		"Studies": {
@@ -2935,7 +2950,7 @@ addLayer('gn', {
 		11: {
 			fullDisplay() {
 				let text = `<h3>Greek Know-How</h3><br>
-					multiply arabic numeral generation based on the amount of greek numerals you have.<br>
+					multiply arabic numeral generation based on the amount of greek numerals you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
@@ -2947,7 +2962,7 @@ addLayer('gn', {
 		12: {
 			fullDisplay() {
 				let text = `<h3>Greek Digits</h3><br>
-					multiply the digit limit based on the amount of greek numerals you have.<br>
+					multiply the digit limit based on the amount of greek numerals you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
@@ -2959,7 +2974,7 @@ addLayer('gn', {
 		13: {
 			fullDisplay() {
 				let text = `<h3>Greek IQ</h3><br>
-					multiply greek numeral gain based on the amount of intelligence you have.<br>
+					multiply greek numeral gain based on the amount of intelligence you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
@@ -2971,7 +2986,7 @@ addLayer('gn', {
 		14: {
 			fullDisplay() {
 				let text = `<h3>Greek Diplomacy</h3><br>
-					multiply greek numeral gain based on your best roman numerals.<br>
+					multiply greek numeral gain based on your best roman numerals<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
@@ -2983,7 +2998,7 @@ addLayer('gn', {
 		15: {
 			fullDisplay() {
 				let text = `<h3>Process of Elimination</h3><br>
-					unlock translation tier 1.<br><br>
+					unlock translation tier 1<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
 				return text;
@@ -2993,7 +3008,7 @@ addLayer('gn', {
 		21: {
 			fullDisplay() {
 				let text = `<h3>Greek Markets</h3><br>
-					increase the cap of <b>Cheapest</b> based on the amount of greek numerals you have.<br>
+					increase the cap of <b>Cheapest</b> based on the amount of greek numerals you have<br>
 					Currently: +` + formatWhole(this.effect()) + `<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
@@ -3006,7 +3021,7 @@ addLayer('gn', {
 		22: {
 			fullDisplay() {
 				let text = `<h3>Greek Multiplication</h3><br>
-					increase the cap of <b>Triple</b> based on the amount of greek numerals you have.<br>
+					increase the cap of <b>Triple</b> based on the amount of greek numerals you have<br>
 					Currently: +` + formatWhole(this.effect()) + `<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
@@ -3019,7 +3034,7 @@ addLayer('gn', {
 		23: {
 			fullDisplay() {
 				let text = `<h3>Greek Counting</h3><br>
-					multiply the digit limit based on the amount of greek numerals you have.<br>
+					multiply the digit limit based on the amount of greek numerals you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
@@ -3032,7 +3047,7 @@ addLayer('gn', {
 		24: {
 			fullDisplay() {
 				let text = `<h3>Greek Dictionary</h3><br>
-					multiply greek numeral gain based on your translation tier.<br>
+					multiply greek numeral gain based on your translation tier<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
@@ -3045,7 +3060,7 @@ addLayer('gn', {
 		25: {
 			fullDisplay() {
 				let text = `<h3>Ask the Locals</h3><br>
-					unlock translation tier 2.<br><br>
+					unlock translation tier 2<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
 				return text;
@@ -3056,7 +3071,7 @@ addLayer('gn', {
 		31: {
 			fullDisplay() {
 				let text = `<h3>Greek Geometry</h3><br>
-					multiply the digit limit based on the amount of greek numerals you have.<br>
+					multiply the digit limit based on the amount of greek numerals you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
@@ -3069,7 +3084,7 @@ addLayer('gn', {
 		32: {
 			fullDisplay() {
 				let text = `<h3>Greek Markets</h3><br>
-					all digit autobuyers can buy 2x bulk.<br><br>
+					all digit autobuyers can buy 2x bulk<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
 				return text;
@@ -3080,7 +3095,7 @@ addLayer('gn', {
 		33: {
 			fullDisplay() {
 				let text = `<h3>Greek EQ</h3><br>
-					divide the intelligence cost requirement based on your translation tier.<br>
+					divide the intelligence cost requirement based on your translation tier<br>
 					Currently: /` + format(this.effect()) + `<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
@@ -3093,7 +3108,7 @@ addLayer('gn', {
 		34: {
 			fullDisplay() {
 				let text = `<h3>Greek Trigonometry</h3><br>
-					multiply the digit limit based on the amount of greek numerals you have.<br>
+					multiply the digit limit based on the amount of greek numerals you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';
@@ -3139,7 +3154,7 @@ addLayer('gn', {
 			},
 			display() {
 				return `<h3>Addition</h3><br>`
-					+ `Increase the addition factor in the translation formula by 1.1.<br>`
+					+ `Increase the addition factor in the translation formula by 1.1<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -3161,7 +3176,7 @@ addLayer('gn', {
 			},
 			display() {
 				return `<h3>Multiplication</h3><br>`
-					+ `Increase the multiplication factor in the translation formula by 0.75.<br>`
+					+ `Increase the multiplication factor in the translation formula by 0.75<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -3183,7 +3198,7 @@ addLayer('gn', {
 			},
 			display() {
 				return `<h3>Exponential</h3><br>`
-					+ `Increase the exponential factor in the translation formula by 0.2.<br>`
+					+ `Increase the exponential factor in the translation formula by 0.2<br>`
 					+ `Currently: +` + format(buyableEffect(this.layer, this.id)) + `<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` arabic numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));
@@ -3205,7 +3220,7 @@ addLayer('gn', {
 			},
 			display() {
 				return `<h3>Time Path</h3><br>`
-					+ `Multiply the cap of Feat of Time by 1.2.<br>`
+					+ `Multiply the cap of Feat of Time by 1.2<br>`
 					+ `Currently: ` + format(buyableEffect(this.layer, this.id)) + `x<br><br>`
 					+ `Cost: ` + format(this.cost()) + ` greek numerals<br>`
 					+ `Amount: ` + formatWhole(getBuyableAmount(this.layer, this.id));

@@ -248,7 +248,7 @@ function setRowCol(upgrades) {
 	upgrades.cols = maxCol;
 };
 
-function someLayerUnlocked(row) {
+function somelayerUnlocked(row) {
 	for (layer in ROW_LAYERS[row])
 		if (player[layer].unlocked)
 			return true;

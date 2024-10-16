@@ -40,10 +40,6 @@ function canAffordPurchase(layer, thing, cost) {
 };
 
 function buyUpgrade(layer, id) {
-	buyUpg(layer, id);
-};
-
-function buyUpg(layer, id) {
 	if (!tmp[layer].upgrades || !tmp[layer].upgrades[id]) return;
 	let upg = tmp[layer].upgrades[id];
 	if (!player[layer].unlocked || player[layer].deactivated) return;
@@ -127,7 +123,7 @@ function inChallenge(layer, id) {
 let onTreeTab = true
 
 function showTab(name, prev) {
-	if (LAYERS.includes(name) && !layerunlocked(name)) return;
+	if (LAYERS.includes(name) && !layerUnlocked(name)) return;
 	if (player.tab !== name) clearParticles(function(p) {return p.layer === player.tab});
 	if (tmp[name] && player.tab === name && isPlainObject(tmp[name].tabFormat)) {
 		player.subtabs[name].mainTabs = Object.keys(layers[name].tabFormat)[0];
@@ -142,7 +138,7 @@ function showTab(name, prev) {
 
 function showNavTab(name, prev) {
 	console.log(prev);
-	if (LAYERS.includes(name) && !layerunlocked(name)) return;
+	if (LAYERS.includes(name) && !layerUnlocked(name)) return;
 	if (player.navTab !== name) clearParticles(function(p) {return p.layer === player.navTab});
 	if (tmp[name] && tmp[name].previousTab !== undefined) prev = tmp[name].previousTab;
 	let toTreeTab = name == 'tree-tab';
@@ -190,7 +186,7 @@ function prestigeNotify(layer) {
 };
 
 function notifyLayer(name) {
-	if (player.tab == name || !layerunlocked(name)) return;
+	if (player.tab == name || !layerUnlocked(name)) return;
 	player.notify[name] = 1;
 };
 
@@ -211,18 +207,9 @@ function subtabResetNotify(layer, family, id) {
 	else return subtab.prestigeNotify;
 };
 
-function nodeShown(layer) {
-	return layerShown(layer);
-};
-
-function layerunlocked(layer) {
+function layerUnlocked(layer) {
 	if (tmp[layer] && tmp[layer].type == 'none') return (player[layer].unlocked);
 	return LAYERS.includes(layer) && (player[layer].unlocked || (tmp[layer].canReset && tmp[layer].layerShown));
-};
-
-function keepGoing() {
-	player.keepGoing = true;
-	needCanvasUpdate = true;
 };
 
 function toNumber(x) {
@@ -285,6 +272,7 @@ function addTime(diff, layer) {
 	else data.timePlayed = time;
 };
 
+let focused = false;
 let shiftDown = false;
 let ctrlDown = false;
 
@@ -296,7 +284,7 @@ document.onkeydown = function (e) {
 	player.nerdMode = ctrlDown ? !player.nerdMode : player.nerdMode;
 	let key = e.key;
 	if (ctrlDown) key = 'ctrl+' + key;
-	if (onFocused) return;
+	if (focused) return;
 	if (ctrlDown && hotkeys[key]) e.preventDefault();
 	if (hotkeys[key]) {
 		let k = hotkeys[key];
@@ -308,12 +296,6 @@ document.onkeyup = function (e) {
 	if (!ctrlDown && player.nerdMode) tmp.nerdMode = false;
 	shiftDown = e.shiftKey;
 	ctrlDown = e.ctrlKey;
-};
-
-let onFocused = false;
-
-function focused(x) {
-	onFocused = x;
 };
 
 function isFunction(obj) {
