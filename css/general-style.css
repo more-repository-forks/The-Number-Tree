@@ -14,32 +14,6 @@ h1, h2, h3, b, input {
 	font-family: "Lucida Console", "Courier New", monospace
 }
 
-/* Layer Text */
-.layer-N {
-	color: #cccccc;
-	text-shadow: 0 0 10px #cccccc;
-}
-
-.layer-rn {
-	color: #aa4400;
-	text-shadow: 0 0 10px #aa4400;
-}
-
-.layer-d {
-	color: #888888;
-	text-shadow: 0 0 10px #888888;
-}
-
-.layer-i {
-	color: #ccff44;
-	text-shadow: 0 0 10px #ccff44;
-}
-
-.layer-gn {
-	color: #ff8822;
-	text-shadow: 0 0 10px #ff8822;
-}
-
 /* These are styles for different states of components. You can make layer-specific versions with .c.locked, for example */
 .locked {
 	background-color: #bf8f8f;

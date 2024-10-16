@@ -8,12 +8,10 @@ addLayer('N', {
 		points: new Decimal(0),
 		record: new Decimal(0),
 	}},
-	color: '#cccccc',
+	color: '#c0c0c0',
 	resource: 'notes',
 	type: 'none',
-	layerShown() {
-		return true;
-	},
+	layerShown() { return true },
 	tabFormat: [
 		['display-text', () => 'You have <h2 class="layer-N">' + formatWhole(player.N.points) + '</h2> notes'],
 		'blank',
@@ -26,7 +24,7 @@ addLayer('N', {
 			text += 'L ----- 50<br>';
 			text += 'C ----- 100<br>';
 			text += 'D ----- 500<br>';
-			text += 'ↀ ----- 1,000<br>';
+			text += '&#8576; ----- 1,000<br>';
 			if (player.N.points.gte(2)) {
 				text += '<br><h3>Note #2 - Greek Numeral Transcription</h3><br><br>';
 				text += '𐆊 ----- 0<br>';
@@ -101,7 +99,7 @@ addLayer('rn', {
 		upCalc: false,
 		overCalc: false,
 	}},
-	color: '#aa4400',
+	color: '#c06000',
 	resource: 'roman numerals',
 	baseResource: 'arabic numerals',
 	baseAmount() { return player.points },
@@ -198,7 +196,7 @@ addLayer('rn', {
 		11: {
 			fullDisplay() {
 				let text = `<h3>Countings</h3><br>
-					multiply arabic numeral generation based on the amount of roman numerals you have<br>
+					multiply arabic numeral gain based on the amount of roman numerals you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
@@ -243,7 +241,7 @@ addLayer('rn', {
 		14: {
 			fullDisplay() {
 				let text = `<h3>Faster</h3><br>
-					multiply arabic numeral generation by ` + format(this.effect()) + ` when you have less than ` + format(this.cap()) + ` arabic numerals<br><br>
+					multiply arabic numeral gain by ` + format(this.effect()) + ` when you have less than ` + format(this.cap()) + ` arabic numerals<br><br>
 					Cost: ` + romanNumeralFormat(this.cost) + ` roman numerals`;
 				if (player.nerdMode) text += '';
 				return text;
@@ -493,7 +491,7 @@ addLayer('d', {
 		digitAuto: false,
 		limitBreakAuto: false,
 	}},
-	color: '#888888',
+	color: '#a0a0a0',
 	resource: 'digits',
 	baseResource: 'arabic numerals',
 	baseAmount() { return player.points },
@@ -625,7 +623,7 @@ addLayer('d', {
 	tabFormat: {
 		"Number": {
 			content: [
-				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral generation by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
+				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
 				'blank',
 				'prestige-button',
 				'resource-display',
@@ -644,7 +642,7 @@ addLayer('d', {
 		},
 		"Milestones": {
 			content: [
-				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral generation by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
+				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
 				'blank',
 				'prestige-button',
 				'resource-display',
@@ -655,7 +653,7 @@ addLayer('d', {
 		},
 		"Base Up": {
 			content: [
-				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral generation by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
+				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
 				'blank',
 				'prestige-button',
 				'resource-display',
@@ -667,7 +665,7 @@ addLayer('d', {
 		},
 		"Limit Break": {
 			content: [
-				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral generation by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
+				['display-text', () => 'You have <h2 class="layer-d">' + formatWhole(player.d.points) + '</h2> digits, and your number is <h2 class="layer-d">' + formatWhole(player.d.number) + '</h2>, which increases arabic numeral gain by +<h2 class="layer-d">' + format(tmp.d.effect) + '</h2>%'],
 				'blank',
 				'prestige-button',
 				'resource-display',
@@ -1626,7 +1624,7 @@ addLayer('i', {
 		simAuto: false,
 		replicateAuto: false,
 	}},
-	color: '#ccff44',
+	color: '#c0e020',
 	resource: 'intelligence',
 	baseResource: 'digits',
 	roundUpCost: true,
@@ -1657,8 +1655,8 @@ addLayer('i', {
 		return new Decimal(10).pow(player.i.points);
 	},
 	effectDescription() {
-		if (hasMilestone('i', 15)) return 'which multiplies arabic numeral generation and roman numeral gain by <h2 class="layer-i">' + format(tmp.i.effect) + '</h2>x';
-		return 'which multiplies arabic numeral generation by <h2 class="layer-i">' + format(tmp.i.effect) + '</h2>x';
+		if (hasMilestone('i', 15)) return 'which multiplies arabic numeral gain and roman numeral gain by <h2 class="layer-i">' + format(tmp.i.effect) + '</h2>x';
+		return 'which multiplies arabic numeral gain by <h2 class="layer-i">' + format(tmp.i.effect) + '</h2>x';
 	},
 	layerShown() { return hasMilestone('d', 15) || player.i.unlocked },
 	tabFormat: {
@@ -2712,7 +2710,7 @@ addLayer('gn', {
 		calcTier: new Decimal(0),
 		tierMeta: '',
 	}},
-	color: '#ff8822',
+	color: '#e0a020',
 	resource: 'greek numerals',
 	baseResource: 'roman numerals',
 	baseAmount() { return player.rn.points },
@@ -2950,7 +2948,7 @@ addLayer('gn', {
 		11: {
 			fullDisplay() {
 				let text = `<h3>Greek Know-How</h3><br>
-					multiply arabic numeral generation based on the amount of greek numerals you have<br>
+					multiply arabic numeral gain based on the amount of greek numerals you have<br>
 					Currently: ` + format(this.effect()) + `x<br><br>
 					Cost: ` + greekNumeralFormat(this.cost) + ` greek numerals`;
 				if (player.nerdMode) text += '';

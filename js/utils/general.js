@@ -276,7 +276,7 @@ let focused = false;
 let shiftDown = false;
 let ctrlDown = false;
 
-document.onkeydown = function (e) {
+document.onkeydown = e => {
 	if (player === undefined) return;
 	shiftDown = e.shiftKey;
 	ctrlDown = e.ctrlKey;
@@ -292,7 +292,7 @@ document.onkeydown = function (e) {
 	};
 };
 
-document.onkeyup = function (e) {
+document.onkeyup = e => {
 	if (!ctrlDown && player.nerdMode) tmp.nerdMode = false;
 	shiftDown = e.shiftKey;
 	ctrlDown = e.ctrlKey;
@@ -305,6 +305,8 @@ function isFunction(obj) {
 function isPlainObject(obj) {
 	return (!!obj) && (obj.constructor === Object);
 };
+
+document.title = modInfo.name;
 
 // Converts a string value to whatever it's supposed to be
 function toValue(value, oldValue) {
